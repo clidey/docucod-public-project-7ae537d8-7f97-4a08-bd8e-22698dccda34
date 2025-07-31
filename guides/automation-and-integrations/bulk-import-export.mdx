@@ -3,4 +3,192 @@ title: "Importing and Exporting Bookmarks"
 description: "Guide to mass import from browsers, services like Pocket or Omnivore, and exporting your library for backup or migration. Includes troubleshooting common issues and tips for smooth transitions."
 ---
 
-*This page will automatically be generated from the codebase*
+# Importing and Exporting Bookmarks
+
+This guide empowers you to efficiently import your bookmarks and saved links in bulk from popular browsers and third-party services such as Pocket and Omnivore, as well as export your entire Linkwarden library for backup or migration. You'll learn actionable steps to transfer your data smoothly, avoid common pitfalls, and troubleshoot typical issues encountered during bulk import/export operations.
+
+---
+
+## 1. Overview of Importing and Exporting
+
+**What you will accomplish:**
+- Import thousands of bookmarks from different platforms into Linkwarden in organized collections
+- Export your links and collections in standard backup formats for secure storage or migration
+
+**Prerequisites:**
+- Have an active Linkwarden account with web or mobile access
+- Obtain your export files (JSON/CSV) or exported data from supported services
+- Confirm your subscription supports your total bookmark count
+
+**Expected Outcome:**
+- Migrated bookmarks neatly organized within Linkwarden
+- Ability to create a portable backup of your entire library
+
+**Estimated Time:** 10-30 minutes depending on data size and method
+
+**Difficulty:** Intermediate — familiarity with file handling recommended
+
+---
+
+## 2. Importing Bookmarks into Linkwarden
+
+### Supported Import Formats
+- **Pocket export format:** CSV file conforming to Pocket’s export schema
+- **Omnivore export format:** JSON array representing saved articles with metadata
+- **Linkwarden native backup:** Full JSON library including collections, links, and tags
+
+### Import Process Overview
+1. Prepare your data export from the source platform.
+2. Upload your file through the Import interface in Linkwarden.
+3. The system validates URLs, creates a new collection named after the source (e.g., “Imports” or “Omnivore Imports”), and imports links with associated tags.
+4. Review imported bookmarks and organize as needed.
+
+### Step-by-Step Import Instructions
+
+<Steps>
+<Step title="Export Your Bookmarks from Source Service">
+- For **Pocket**, export your data from the settings and save the CSV file.
+- For **Omnivore**, export your saved articles as JSON.
+- For Linkwarden native backups, use your existing export JSON file.
+</Step>
+<Step title="Access the Import Function in Linkwarden">
+- Log into your Linkwarden web app.
+- Navigate to the Import/Export section under Automation and Integrations.
+</Step>
+<Step title="Upload Your Bookmark Export File">
+- Select the appropriate import format option.
+- Upload the CSV or JSON file exported from your service.
+- Confirm to start import.
+</Step>
+<Step title="Wait for Import Completion">
+- The system parses the file, validates links, and creates a new dedicated collection.
+- Tags from the source service are preserved and attached where applicable.
+- Once complete, a confirmation message "Success." should appear.
+</Step>
+<Step title="Verify Imported Bookmarks">
+- Open the newly created collection, typically named “Imports” or with the source service name.
+- Check that links, titles, and tags were successfully imported.
+- Address any missing or invalid URLs manually.
+</Step>
+<Step title="Organize Imported Bookmarks">
+- Move bookmarks to existing collections as desired.
+- Apply additional tags or archival settings.
+- Ensure your link limits have not been exceeded.
+</Step>
+</Steps>
+
+### Important Details & Tips
+- URLs are strictly validated; malformed URLs are skipped automatically.
+- If link import count exceeds your subscription limits, the import will be rejected to protect your data quota.
+- Imported tags are implicitly created or linked based on source labels.
+- A new collection is always created for the import session to keep imported links grouped.
+
+### Example Scenario
+> You exported your entire Pocket library as a CSV file with over 1000 saved items. Uploading this file in Linkwarden creates a collection named 'Imports'. All your links and their Pocket tags are imported intact, ready for further archival and organization.
+
+---
+
+## 3. Exporting Your Linkwarden Library
+
+Exporting your library allows you to back up all your saved links or migrate them to another instance.
+
+### Export Options
+- Full Linkwarden JSON backup including collections, individual links, tags, and pinned links
+- Partial exports filtered by collections or tags (if supported in UI)
+
+### How to Export
+
+1. Go to the Import/Export page.
+2. Choose the Export option.
+3. Select full or filtered export.
+4. Click “Download” to save the backup JSON file locally.
+
+The resulting file can be imported later or opened for manual inspection.
+
+---
+
+## 4. Troubleshooting Common Issues
+
+<AccordionGroup title="Troubleshooting Import and Export">
+<Accordion title="My import fails due to too many links">
+Check your subscription limits. Bulk imports are blocked if adding all links exceeds your quota. Consider upgrading your plan or splitting your import into smaller batches.
+</Accordion>
+<Accordion title="Some links are missing after import">
+Only valid URLs are imported. Links with malformed or empty URLs are skipped silently. Review your source export for such entries.
+</Accordion>
+<Accordion title="Imported tags are missing or incomplete">
+Ensure tags in your export follow a supported format. Tag separators differ by service (e.g., pipe ‘|’ for Pocket). Invalid or empty tags are excluded.
+</Accordion>
+<Accordion title="Exported file is too large to manage">
+Large JSON backup files might be slow to open. Use filtering options to export smaller sets or rely on automated backup services.
+</Accordion>
+<Accordion title="Import steadily hangs or crashes">
+Check your internet stability and browser memory usage. Large imports may take time; avoid interrupting during upload.
+</Accordion>
+</AccordionGroup>
+
+---
+
+## 5. Best Practices and Recommendations
+
+- **Prepare Your Data:** Clean and validate your export files before importing to ensure smooth processing.
+- **Batch Your Imports:** If you have thousands of links, divide your export into smaller parts.
+- **Organize Post-Import:** Use collections and tags to restructure your imported links for easier retrieval.
+- **Regular Backups:** Schedule periodic exports of your Linkwarden library to secure your data.
+- **Monitor Limits:** Regularly review your subscription storage and link limits to prevent interruptions.
+
+---
+
+## 6. Next Steps
+
+- Learn to organize your imported links using [Collections & Tags Basics](/guides/getting-started/collections-and-tags-basics).
+- Explore preservation options with [Preserving Pages & Reader View](/guides/getting-started/preserving-and-reading-links).
+- Automate link saving with [Browser Extension & PWA Guide](/guides/automation-and-integrations/browser-extension-and-pwa).
+- Manage collaboration by inviting teammates with [Inviting Members & Permissions](/guides/collaboration-and-sharing/inviting-collaborators).
+
+---
+
+## Appendix: Importing Data Programmatically
+
+Here is an example of how Linkwarden processes an import from Pocket CSV data behind the scenes:
+
+```typescript
+importFromPocket(userId: number, rawData: string): Promise<{response: string; status: number }> {
+  // Parses CSV with headers, skipping empty lines
+  const data = Papa.parse(rawData, { header: true, skipEmptyLines: true }).data;
+
+  // Filters entries with valid URLs
+  const backup = data.filter(e => e.url);
+
+  // Check subscription limits
+  if (hasPassedLimit(userId, backup.length))
+    return { response: 'Your subscription has reached the maximum number of links allowed.', status: 400 };
+
+  // Create 'Imports' collection
+  const newCollection = await prisma.collection.create({ name: 'Imports', owner: userId, createdBy: userId });
+
+  createFolder(`archives/${newCollection.id}`);
+
+  // Create links, connect or create tags
+  for (const link of backup) {
+    if (link.url) {
+      try { new URL(link.url.trim()) } catch { continue; }
+    }
+
+    await prisma.link.create({
+      url: link.url.slice(0, 2047).trim(),
+      name: link.title?.slice(0, 254).trim() || '',
+      importDate: link.time_added ? new Date(Number(link.time_added) * 1000).toISOString() : null,
+      collectionId: newCollection.id,
+      tags: link.tags ? link.tags.split('|').map(tag => ({ name: tag.trim().slice(0, 50) })) : [],
+      createdBy: userId,
+    });
+  }
+
+  return { response: 'Success.', status: 200 };
+}
+```
+
+This example illustrates key validation and atomic creation of collections and links.
+
+---
