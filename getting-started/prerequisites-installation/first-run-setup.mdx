@@ -3,4 +3,168 @@ title: "Configuration & First Run"
 description: "Get Linkwarden up and running for the first time: configure essential environment variables, user authentication, and storage options. Guide includes initial app launch, setting up your first user account, and accessing the dashboard."
 ---
 
-*This page will automatically be generated from the codebase*
+# Configuration & First Run
+
+Welcome to Linkwarden! This guide walks you through the essential steps to configure Linkwarden for your first use, including setting environment variables, establishing user authentication, launching the application, and accessing your dashboard. You'll be able to start securing and organizing your important links with confidence.
+
+---
+
+## 1. Essential Configuration
+
+### 1.1 Set Up Environment Variables
+
+Configuration hinges on properly setting environment variables to enable authentication, subscription management, and storage.
+
+- **Authentication Providers**: Enable your preferred auth methods in your environment variables. Commonly configured providers include:
+  - Credentials (username/password)
+  - Email (verification links)
+  - OAuth Third-Party Providers (Google, GitHub, Apple, etc.)
+
+- **Subscription & Billing (Optional)**: Enable Stripe integration by configuring your Stripe keys to manage subscriptions and usage seats.
+
+- **Storage Options**: Ensure storage backend configuration (database, storage paths) is set as per your deployment environment.
+
+<Tip>
+Always use secure values for credentials and secrets, and avoid committing these values to version control.
+</Tip>
+
+### 1.2 Default Environment Variables to Configure
+
+| Variable Name                 | Purpose                                    | Required?                  |
+|------------------------------|--------------------------------------------|----------------------------|
+| `NEXT_PUBLIC_CREDENTIALS_ENABLED` | Enable username/password login               | Yes, if using credentials   |
+| `EMAIL_FROM`                  | Sender email for email verifications       | Required for email provider |
+| `EMAIL_SERVER`                | SMTP server details for sending emails     | Required for email provider |
+| `STRIPE_SECRET_KEY`           | Stripe secret API key for billing           | Required for subscriptions  |
+| OAuth Provider Variables      | Client IDs and secrets for OAuth providers | Based on providers used     |
+
+Refer to your deployment or local `.env` file setup guides for exact variable formats.
+
+---
+
+## 2. User Authentication Configuration
+
+### 2.1 Supported Authentication Methods
+
+Linkwarden supports a variety of authentication workflows tailored to your environment and user base:
+
+- **Credentials Provider**
+  - Enables username and password login.
+  - Passwords are securely hashed.
+
+- **Email Provider**
+  - Sends verification links for sign-in.
+  - Supports invitation requests.
+
+- **OAuth & SSO Providers**
+  - Supports many third-party providers such as Google, GitHub, Apple, Auth0, Azure AD, and more.
+  - Configure via environment variables.
+
+### 2.2 Invitation & Member Onboarding
+
+New users can be invited via email with invitation links that guide them through setting up their display name and password.
+
+The **Member Onboarding** screen prompts new users to:
+
+- Set their display name
+- Define a new password
+- Accept terms of service if applicable
+
+This process is required when users are part of a subscription team or invited by an admin.
+
+---
+
+## 3. Launching the Application
+
+### 3.1 Start Your Web or Mobile App
+
+- **Web Application**
+  - Ensure your environment variables are loaded.
+  - Start your server using the deployment or development command (e.g., `npm run start` or relevant production commands).
+  - Access the authentication page at `/login`.
+
+- **Mobile Application**
+  - Build or run the Expo-based mobile app.
+  - The app automatically redirects users to login or the dashboard depending on authentication state.
+
+### 3.2 Default User Setup (For Testing or First Run)
+
+If running in an automated or testing environment, you may seed a default user by setting `TEST_USERNAME` and `TEST_PASSWORD` environment variables and executing appropriate setup scripts.
+
+---
+
+## 4. Accessing and Using the Dashboard
+
+### 4.1 Post-Login Dashboard Access
+
+Upon successful authentication, Linkwarden redirects users to the `/dashboard` page.
+
+Here you will find:
+- Your saved links
+- Stats and recent activity
+- Pinned items
+
+### 4.2 Dashboard Configuration Updates
+
+Users can customize the dashboard layout. Changes are saved and synced with the backend.
+
+<Tip>
+If you encounter stale or missing dashboard content, refreshing the page or re-logging in resolves most issues.
+</Tip>
+
+### 4.3 Conditional Redirects Based on User State
+
+- Users without a completed profile (e.g., missing display name) are redirected to `/member-onboarding`.
+- Users with inactive subscriptions may be redirected to the subscription page.
+
+These flows ensure a smooth first-run experience aligned with your subscription and user setup policy.
+
+---
+
+## 5. Troubleshooting & Best Practices
+
+### 5.1 Common Issues
+
+- **Login fails due to bad credentials**
+  - Check your credentials provider setup.
+  - Verify database connectivity.
+
+- **Email invitations or verifications not received**
+  - Confirm SMTP server configuration.
+  - Ensure no rate limits or spam blocking.
+
+- **Dashboard does not load or shows empty**
+  - Verify data fetching is successful and user is correctly authenticated.
+
+- **Subscription seat limits blocking login**
+  - Check subscription status in Stripe or your billing portal.
+
+### 5.2 Best Practices
+
+- Use environment variable management tools to keep secrets secure.
+- Validate all authentication providers with test users before production.
+- Keep your app and dependencies up to date.
+- Monitor logs for errors related to auth, storage, or API calls.
+
+---
+
+## 6. Next Steps & Resources
+
+- Explore our [Quickstart guide to adding and preserving links]( /getting-started/initial-experience-validation/quickstart-adding-links).
+- Learn about [Managing users and API access]( /guides/advanced-tasks-and-best-practices/user-administration-tokens) for team environments.
+- Review [Troubleshooting common setup issues]( /getting-started/initial-experience-validation/troubleshooting-common-issues) if you run into problems.
+
+---
+
+### Related Documentation
+
+- [System Requirements]( /getting-started/prerequisites-installation/system-requirements)
+- [Installation Methods]( /getting-started/prerequisites-installation/installation-methods)
+- [Member Onboarding Guide]( /guides/collaboration-and-sharing/inviting-collaborators)
+- [Authentication Overview]( /security/auth-models-identity/auth-overview)
+
+---
+
+By carefully following these configuration and first-run steps, you will unlock Linkwarden’s core capabilities for secure, collaborative, and persistent link management right from your first login.
+
+Welcome aboard!
