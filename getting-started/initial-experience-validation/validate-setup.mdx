@@ -3,4 +3,137 @@ title: "Validating Your Setup"
 description: "Quickly verify Linkwarden is working as intended: check login, add a bookmark, review preserved content, and test core search. Provides a punch list of validation steps and where to find logs for deeper investigation."
 ---
 
-*This page will automatically be generated from the codebase*
+# Validating Your Setup
+
+Welcome to the critical final step in your Linkwarden journey: ensuring that everything you’ve installed and configured is working flawlessly. This guide walks you through verifying the core functionalities — logging in, adding bookmarks, reviewing preserved content, and testing search — so you can confidently confirm your system is ready to protect and organize your web knowledge.
+
+---
+
+## 1. Confirm Successful Login
+
+Your first goal is to ensure user authentication works smoothly.
+
+### Steps:
+
+1. Open your Linkwarden web or mobile application.
+2. Enter your username and password.
+3. Click or tap the **Login** button.
+
+### Success Criteria:
+- You land on your dashboard without errors.
+- The main dashboard container appears visibly.
+
+### Troubleshooting Tips:
+- If login fails, verify your user credentials and server connection.
+- Check your environment variables and authentication provider settings as described in the [First Run Setup](../prerequisites-installation/first-run-setup).
+- Review server and client logs for authentication errors.
+
+<Note>
+If you seeded a default user as part of setup (e.g., through the Playwright seed user script), ensure those credentials match what you use here.
+</Note>
+
+---
+
+## 2. Add a New Bookmark (Link)
+
+Test that bookmarking works and that your instance can capture new content.
+
+### Steps:
+
+1. Navigate to the link addition interface. In the web dashboard, find the 'Add Link' button or similar control.
+2. Enter a valid URL (e.g., https://example.com).
+3. Optionally, add a name, description, or tags.
+4. Submit to save the link.
+
+### Expected Outcome:
+- The new bookmark appears in your collection or main links list.
+- Automatic preservation (e.g., screenshot, PDF generation) begins in the background.
+
+### Verify Preservation:
+- Check the preserved content by opening the saved link details.
+- Confirm previews like screenshots or PDFs are available.
+
+### Troubleshooting Tips:
+- If the link does not save, check server logs for errors.
+- Ensure your preservation workers/services are running.
+- Confirm that environmental limits and dependencies are properly configured as per [First Run Setup](../prerequisites-installation/first-run-setup).
+
+---
+
+## 3. Validate Core Search Functionality
+
+Searching your saved links is essential for retrieval.
+
+### Steps:
+
+1. Locate the search input in the dashboard UI.
+2. Type a keyword or tag related to your saved bookmark.
+3. Execute the search.
+
+### Success Criteria:
+- Relevant bookmarks appear in the results.
+- Search is responsive without errors.
+
+### Troubleshooting Tips:
+- If no results appear, verify links were saved correctly.
+- Confirm the search index is up-to-date.
+- Refer to [Smart Tagging and Full-Text Search](../../guides/advanced-tasks-and-best-practices/ai-tagging-search) for indexing configurations.
+
+---
+
+## 4. Review Logs for Deep Insights
+
+If any step did not complete as expected, the logs provide the data you need to diagnose issues.
+
+### Where to Find Logs:
+
+- **Server Logs**: Check application logs where Linkwarden backend is running.
+- **Preservation Worker Logs**: Review logs for workers that handle screenshots, PDFs, and archiving.
+- **Client-Side Logs**: Use browser developer tools console or mobile app debug options.
+
+### Common Log Indicators:
+- Authentication failures
+- Network timeouts
+- Preservation service errors
+- Search indexing problems
+
+<Info>
+Enable debug or verbose logging during troubleshooting for detailed output.
+</Info>
+
+---
+
+## 5. Quick Validation Summary Checklist
+
+- [ ] Successful login to dashboard
+- [ ] Link added and visible in collection
+- [ ] Preservation content (e.g., screenshot) available
+- [ ] Search returns expected results
+- [ ] No critical errors in server or worker logs
+
+---
+
+## Next Steps
+
+Once you've validated your setup:
+
+- Explore adding collections and organizing links ([Collections & Tags Basics](../../guides/getting-started/collections-and-tags-basics)).
+- Test sharing and collaboration features if enabled ([Inviting Members and Setting Permissions](../../guides/collaboration-and-sharing/inviting-collaborators)).
+- Set up RSS feed subscriptions to automate link saving ([RSS Feed Subscription](../../guides/automation-and-integrations/rss-feed-subscription)).
+
+For any persistent issues, reference the full troubleshooting guide at [Troubleshooting & Common Setup Issues](../../getting-started/initial-experience-validation/troubleshooting-common-issues).
+
+---
+
+## Related Documentation
+
+- [First Run Setup](../prerequisites-installation/first-run-setup) — Details full initial configuration and environment tuning.
+- [Quickstart: Adding and Preserving Your First Link](../initial-experience-validation/quickstart-adding-links) — Step-by-step link addition walkthrough.
+- [Smart Tagging and Full-Text Search](../../guides/advanced-tasks-and-best-practices/ai-tagging-search) — Advanced search and tagging configuration.
+- [Troubleshooting & Common Setup Issues](../initial-experience-validation/troubleshooting-common-issues) — Diagnosis and solutions for frequent problems.
+
+---
+
+By completing this validation you confirm that your Linkwarden instance is ready to reliably preserve and organize your valuable web content. If you encounter any roadblocks, the logs and linked troubleshooting guides provide targeted paths to resolution.
+
+Welcome to a safer, smarter way to save the web.
