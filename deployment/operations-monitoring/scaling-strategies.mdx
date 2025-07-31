@@ -3,4 +3,222 @@ title: "Scaling Strategies"
 description: "Guidance on handling increased load: scaling the web server/API, background worker services, and database. Includes practical advice for using Docker Compose, container orchestrators, and preparing Linkwarden for team or enterprise usage."
 ---
 
-*This page will automatically be generated from the codebase*
+# Scaling Strategies for Linkwarden
+
+Scaling Linkwarden effectively ensures your instance can handle increased user demand, larger teams, and more extensive data while maintaining performance and reliability. This guide focuses on scaling the core components—web server/API, background worker services, and database—and provides actionable advice for various deployment environments including Docker Compose and container orchestrators. Whether you are expanding for a growing team or enterprise-wide usage, this document helps you prepare Linkwarden for scalability without compromising stability.
+
+---
+
+## 1. Understanding Linkwarden’s Scalable Components
+
+**Linkwarden is composed of several key services that can be scaled independently:**
+
+- **Web Server / API Layer:** Handles user requests, authentication, link management, and serves the frontend.
+- **Background Workers:** Manage asynchronous tasks such as link preservation (screenshots, PDFs), RSS feed polling, and AI tagging.
+- **Database:** Central data store for users, links, collections, and metadata.
+
+Scaling these components correctly ensures system responsiveness and throughput.
+
+---
+
+## 2. Scaling the Web Server and API
+
+### Horizontal Scaling
+
+Scaling the web server horizontally by running multiple instances behind a load balancer is the recommended approach to handle increased traffic and concurrent users.
+
+- **How to Scale:**
+  1. Deploy multiple web server instances with the same configuration.
+  2. Use a reverse proxy or load balancer (e.g., NGINX, HAProxy, or cloud-managed load balancers) to distribute incoming requests evenly.
+  3. Ensure all instances connect to the same centralized database and shared storage volumes, if applicable.
+
+### Benefits
+
+- Improved fault tolerance and high availability.
+- Ability to handle burst loads and peak traffic.
+
+### Important Considerations
+
+- Make sure session management uses stateless JWT tokens or a shared session store to avoid sticky sessions.
+- Maintain consistent environment variables and configurations across instances.
+
+
+## 3. Scaling Background Worker Services
+
+### Separate Worker Pools
+
+Background workers execute essential asynchronous tasks that can be resource-intensive, such as content preservation and feed polling.
+
+- **Scale by:**
+  - Running multiple worker instances in parallel to increase throughput.
+  - Configuring different worker pools specialized for certain tasks (e.g., one pool for RSS polling, another for archival processing).
+
+### Deployment
+
+- In Docker Compose, define separate worker services:
+  
+```yaml
+  workers:
+    image: ghcr.io/linkwarden/linkwarden:latest
+    command: npm run worker
+    depends_on:
+      - postgres
+      - meilisearch
+```
+
+- In container orchestrators (Kubernetes, Docker Swarm), use deployments or replication controllers to scale worker pods.
+
+### Best Practices
+
+- Monitor worker queue lengths to adjust scaling dynamically.
+- Isolate resource-heavy jobs to avoid saturating the entire system.
+
+---
+
+## 4. Database Scaling and Optimization
+
+PostgreSQL is the default database for Linkwarden. Proper scaling and tuning here are crucial.
+
+### Vertical Scaling
+
+- Increase CPU, RAM, and I/O capacity on the database server.
+- Use SSD storage for better performance.
+
+### Horizontal Scaling (Advanced)
+
+- Employ read replicas to offload read-heavy operations.
+- Use connection pooling (PgBouncer) to manage client connections efficiently.
+
+### Maintenance and Optimization
+
+- Regularly vacuum and analyze tables.
+- Index frequently queried columns to accelerate search and filtering.
+- Monitor query performance to detect bottlenecks.
+
+<Tip>
+For larger deployments, consider managed PostgreSQL services that offer replicas, backups, and automatic failover.
+</Tip>
+
+---
+
+## 5. Using Docker Compose for Scaling
+
+Docker Compose is convenient for local or small-scale deployments.
+
+### Scaling Containers
+
+- Use `docker-compose up --scale web=3 --scale workers=2` to run multiple replicas of web and worker services.
+
+### Shared Volumes and Networks
+
+- Ensure persistent storage is configured correctly for databases and data volumes.
+- Declare networks explicitly so services communicate over the same network.
+
+### Limitations
+
+- Docker Compose is less suited for large-scale, dynamic scaling compared to orchestration tools.
+
+---
+
+## 6. Scaling with Container Orchestrators
+
+For production environments with higher load and more complex requirements, Kubernetes or Docker Swarm are ideal.
+
+### Benefits
+
+- Automated rolling updates and health checks.
+- Horizontal Pod Autoscaling (HPA) based on CPU, memory, or custom metrics.
+- Declarative configuration allowing easy infrastructure management.
+
+### Recommendations
+
+- Deploy Web/API and Workers as separate Deployments.
+- Use StatefulSets or managed services for PostgreSQL.
+- Employ persistent volumes (PV) and storage classes appropriate for your cloud/on-prem environment.
+
+### Example: Kubernetes Horizontal Pod Autoscaling
+
+```yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: linkwarden-web-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: linkwarden-web
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+```
+
+---
+
+## 7. Preparing Linkwarden for Team and Enterprise Usage
+
+Scaling for teams introduces additional factors:
+
+- **User concurrency:** Anticipate peak simultaneous users.
+- **Data volume:** Larger collections and preserved content.
+- **Collaboration features:** Schedule indexing and background processes accordingly.
+
+### Tips
+
+- Monitor API rate limits and adjust limits/policies if necessary.
+- Use network segmentation, firewalls, and secure connections.
+- Plan backup schedules that do not interfere with peak working hours.
+
+---
+
+## 8. Practical Tips & Common Pitfalls
+
+### Tips
+
+- Start with vertical scaling (more resources per service) before horizontal scaling.
+- Always monitor system metrics (CPU, memory, I/O, response times) and logs.
+- Automate deployments and scaling wherever possible using CI/CD pipelines.
+- Keep consistent environment configurations across all instances to prevent unexpected behavior.
+- Test scaling scenarios under load before production rollout.
+
+### Common Pitfalls
+
+- Neglecting session management in horizontally scaled API instances.
+- Oversubscribing database connections leading to denied or stuck queries.
+- Ignoring background job queue backlogs.
+- Using ephemeral storage for data persistence—always use persistent volumes.
+
+---
+
+## 9. Troubleshooting Scaling Issues
+
+### Symptoms & Actions
+
+- **Slow response times under load:** Check web server logs and CPU/memory utilization; add more replicas.
+- **Workers falling behind on tasks:** Scale up worker instances; ensure queue system is healthy.
+- **Database timeouts or errors:** Monitor connection pool usage; optimize queries and indexes.
+- **Load balancer unevenly distributing traffic:** Verify load balancer configuration; check for sticky session misconfigurations.
+
+<Tip>
+Deploy monitoring tools such as Prometheus and Grafana alongside Linkwarden to visualize and alert on performance metrics.
+</Tip>
+
+---
+
+### Related Documentation
+
+- [System Requirements](https://linkwarden.app/getting-started/prerequisites-installation/system-requirements)
+- [Getting Started with Deployment](https://linkwarden.app/deployment/production-setup/deployment-getting-started)
+- [Deploying Web and Mobile Apps](https://linkwarden.app/deployment/production-setup/web-mobile-deployment)
+- [Environment Configuration](https://linkwarden.app/deployment/production-setup/environment-configuration)
+- [Monitoring and Logging](https://linkwarden.app/deployment/operations-monitoring/monitoring-logging)
+
+---
+
+Scaling Linkwarden smartly requires thoughtful preparation and continuous observation. By following the guidelines here, you can achieve a resilient, performant solution tailored to your organizational demands.
