@@ -1,0 +1,263 @@
+{
+  "background": {
+    "decoration": "gradient"
+  },
+  "colors": {
+    "dark": "#1E3A8A",
+    "light": "#60A5FA",
+    "primary": "#60A5FA"
+  },
+  "favicon": "/favicon.svg",
+  "fonts": {
+    "family": "Montserrat",
+    "format": "woff2",
+    "source": "https://fonts.gstatic.com/s/googlesansflex/v5/t5sJIQcYNIWbFgDgAAzZ34auoVyXkJCOvp3SFWJbN5hF8Ju1x6sKCyp0l9sI40swNJwGpVd4AZzz0v6lJ4qFXNZhGjLvDSkV4USKMo6qQzwliVdHAy9jxTDHg_ugnAakpwGc-cxgUqDCIUI.woff2"
+  },
+  "icons": {
+    "library": "fontawesome"
+  },
+  "logo": {
+    "dark": "./logo/logo.svg",
+    "light": "./logo/logo.svg"
+  },
+  "name": "Linkwarden",
+  "navigation": {
+    "tabs": [
+      {
+        "groups": [
+          {
+            "group": "Introduction \u0026 Value Proposition",
+            "pages": [
+              "overview/introduction-and-value/what-is-linkwarden",
+              "overview/introduction-and-value/product-value-prop",
+              "overview/introduction-and-value/target-audience-use-cases"
+            ]
+          },
+          {
+            "group": "Core Concepts \u0026 Architecture",
+            "pages": [
+              "overview/core-concepts-and-architecture/core-concepts-terminology",
+              "overview/core-concepts-and-architecture/architecture-overview",
+              "overview/core-concepts-and-architecture/feature-overview"
+            ]
+          },
+          {
+            "group": "Integrations \u0026 Extensibility",
+            "pages": [
+              "overview/integrations-and-extensibility/integrations"
+            ]
+          }
+        ],
+        "tab": "Overview"
+      },
+      {
+        "groups": [
+          {
+            "group": "Prerequisites \u0026 Installation",
+            "pages": [
+              "getting-started/prerequisites-installation/system-requirements",
+              "getting-started/prerequisites-installation/installation-methods",
+              "getting-started/prerequisites-installation/first-run-setup"
+            ]
+          },
+          {
+            "group": "Initial Experience \u0026 Validation",
+            "pages": [
+              "getting-started/initial-experience-validation/quickstart-adding-links",
+              "getting-started/initial-experience-validation/troubleshooting-common-issues",
+              "getting-started/initial-experience-validation/validate-setup"
+            ]
+          }
+        ],
+        "tab": "Getting Started"
+      },
+      {
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "guides/getting-started/quick-start-workflow",
+              "guides/getting-started/collections-and-tags-basics",
+              "guides/getting-started/preserving-and-reading-links"
+            ]
+          },
+          {
+            "group": "Collaboration and Sharing",
+            "pages": [
+              "guides/collaboration-and-sharing/inviting-collaborators",
+              "guides/collaboration-and-sharing/public-sharing"
+            ]
+          },
+          {
+            "group": "Automation and Integrations",
+            "pages": [
+              "guides/automation-and-integrations/rss-feed-subscription",
+              "guides/automation-and-integrations/browser-extension-and-pwa",
+              "guides/automation-and-integrations/bulk-import-export"
+            ]
+          },
+          {
+            "group": "Advanced Workflows and Best Practices",
+            "pages": [
+              "guides/advanced-tasks-and-best-practices/ai-tagging-search",
+              "guides/advanced-tasks-and-best-practices/bulk-actions",
+              "guides/advanced-tasks-and-best-practices/user-administration-tokens"
+            ]
+          }
+        ],
+        "tab": "Guides"
+      },
+      {
+        "groups": [
+          {
+            "group": "Core API Workflows",
+            "pages": [
+              "api-reference/core-workflows/authentication-and-authorization",
+              "api-reference/core-workflows/managing-links",
+              "api-reference/core-workflows/collections-api",
+              "api-reference/core-workflows/user-management"
+            ]
+          },
+          {
+            "group": "Advanced \u0026 Extended API Features",
+            "pages": [
+              "api-reference/advanced-features/search-api",
+              "api-reference/advanced-features/tags-and-metadata",
+              "api-reference/advanced-features/rss-feed-management",
+              "api-reference/advanced-features/archives-and-preservation",
+              "api-reference/advanced-features/api-tokens"
+            ]
+          },
+          {
+            "group": "Integration, SDKs \u0026 Error Handling",
+            "pages": [
+              "api-reference/integration-and-support/sdk-examples",
+              "api-reference/integration-and-support/error-handling",
+              "api-reference/integration-and-support/rate-limits-and-quotas"
+            ]
+          }
+        ],
+        "tab": "API Reference"
+      },
+      {
+        "groups": [
+          {
+            "group": "Production Deployment \u0026 Configuration",
+            "pages": [
+              "deployment/production-setup/deployment-getting-started",
+              "deployment/production-setup/environment-configuration",
+              "deployment/production-setup/web-mobile-deployment"
+            ]
+          },
+          {
+            "group": "Operations, Monitoring \u0026 Scaling",
+            "pages": [
+              "deployment/operations-monitoring/monitoring-logging",
+              "deployment/operations-monitoring/scaling-strategies"
+            ]
+          },
+          {
+            "group": "Security, Backup \u0026 Disaster Recovery",
+            "pages": [
+              "deployment/security-disaster-recovery/security-hardening",
+              "deployment/security-disaster-recovery/backup-and-recovery"
+            ]
+          }
+        ],
+        "tab": "Deployment"
+      },
+      {
+        "groups": [
+          {
+            "group": "Authentication \u0026 Authorization",
+            "pages": [
+              "security/auth-models-identity/auth-overview",
+              "security/auth-models-identity/sso-third-party",
+              "security/auth-models-identity/authorization-models",
+              "security/auth-models-identity/session-management"
+            ]
+          },
+          {
+            "group": "Data Protection \u0026 Privacy",
+            "pages": [
+              "security/data-privacy-protection/data-encryption",
+              "security/data-privacy-protection/api-keys-access-tokens",
+              "security/data-privacy-protection/privacy-sharing-controls"
+            ]
+          },
+          {
+            "group": "Best Practices \u0026 Compliance",
+            "pages": [
+              "security/security-management-guidelines/secure-deployment",
+              "security/security-management-guidelines/vulnerability-reporting",
+              "security/security-management-guidelines/compliance-policies"
+            ]
+          }
+        ],
+        "tab": "Security"
+      },
+      {
+        "groups": [
+          {
+            "group": "Release History \u0026 Highlights",
+            "pages": [
+              "changelog/release-history/version-timeline",
+              "changelog/release-history/feature-highlights"
+            ]
+          },
+          {
+            "group": "Breaking Changes \u0026 Upgrade Guides",
+            "pages": [
+              "changelog/breaking-changes-upgrading/breaking-changes",
+              "changelog/breaking-changes-upgrading/upgrade-migration-guide"
+            ]
+          },
+          {
+            "group": "Bug Fixes, Patches \u0026 Deprecation Notices",
+            "pages": [
+              "changelog/fixes-deprecations/bug-fixes-patches",
+              "changelog/fixes-deprecations/deprecation-notices"
+            ]
+          }
+        ],
+        "tab": "Changelog"
+      },
+      {
+        "groups": [
+          {
+            "group": "Getting Started \u0026 General Questions",
+            "pages": [
+              "faq/getting-started-and-general-faq/what-is-linkwarden",
+              "faq/getting-started-and-general-faq/who-can-use-linkwarden",
+              "faq/getting-started-and-general-faq/how-to-get-started",
+              "faq/getting-started-and-general-faq/where-to-find-features"
+            ]
+          },
+          {
+            "group": "Troubleshooting \u0026 Performance",
+            "pages": [
+              "faq/troubleshooting-and-performance/cant-login-or-authentication-problems",
+              "faq/troubleshooting-and-performance/missing-or-not-saving-links",
+              "faq/troubleshooting-and-performance/performance-tuning-tips",
+              "faq/troubleshooting-and-performance/self-hosting-problems"
+            ]
+          },
+          {
+            "group": "Integrations \u0026 Support Resources",
+            "pages": [
+              "faq/integrations-and-support/troubleshooting-rss-feeds-and-automation",
+              "faq/integrations-and-support/api-and-browser-extension",
+              "faq/integrations-and-support/where-to-get-support",
+              "faq/integrations-and-support/contributing-and-community-resources"
+            ]
+          }
+        ],
+        "tab": "FAQ"
+      }
+    ]
+  },
+  "styling": {
+    "codeblocks": "dark",
+    "eyebrows": "breadcrumbs"
+  }
+}
