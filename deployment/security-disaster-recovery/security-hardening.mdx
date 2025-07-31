@@ -3,4 +3,157 @@ title: "Security Hardening"
 description: "Iterate through key security practices for a production Linkwarden deployment: SSL/TLS configuration, secrets management, secure API key usage, and hardening the platform against common attacks."
 ---
 
-*This page will automatically be generated from the codebase*
+# Security Hardening Guide for Linkwarden Deployment
+
+Secure your Linkwarden production deployment by following expertly crafted security best practices. This guide covers critical areas including SSL/TLS setup, secrets management, API key usage, and defense strategies against common attack vectors. By implementing these recommendations, you ensure your deployment resists unauthorized access, data leaks, and service disruptions, thereby safeguarding your content and user trust.
+
+---
+
+## 1. SSL/TLS Configuration
+
+Transport layer security forms the foundation of secure communication in your deployment. Without strong and properly configured SSL/TLS, your users’ credentials, data, and tokens remain vulnerable.
+
+### Key Recommendations
+
+- **Enforce HTTPS for all connections:**
+  - Configure your web and API servers to redirect all HTTP traffic to HTTPS.
+  - Use HSTS headers to force browsers to always use HTTPS on subsequent requests.
+
+- **Obtain valid TLS certificates:**
+  - Use certificates from a trusted Certificate Authority like Let's Encrypt to avoid browser warnings.
+  - Automate renewal with tools like Certbot.
+
+- **Use modern TLS versions and strong ciphers:**
+  - TLS 1.2 minimum; TLS 1.3 preferred.
+  - Disable outdated protocols such as SSLv3 and TLS 1.0/1.1.
+
+- **Check for vulnerabilities regularly:**
+  - Use SSL Labs or similar tools to scan your server’s SSL/TLS configuration.
+  - Address any weaknesses such as weak cipher suites or improper certificate chains.
+
+<Tip>
+Always keep your TLS libraries and web server software up to date to mitigate newly discovered vulnerabilities.
+</Tip>
+
+---
+
+## 2. Secrets Management
+
+Your deployment utilizes multiple sensitive values like database URLs, authentication secrets, and API keys. Proper management is paramount.
+
+### Best Practices
+
+- **Use environment variables:**
+  - Store secrets in environment variables protected by your infrastructure's secret management system or container orchestration tooling.
+  - Do not hardcode secrets in source code or commit them to version control.
+
+- **Restrict access:**
+  - Limit who can view or update secret configurations to only trusted administrators.
+  - Use role-based access control (RBAC) on hosting and CI/CD platforms.
+
+- **Rotate secrets regularly:**
+  - Set and follow a policy to rotate keys, tokens, and passwords periodically.
+  - Update your deployment environments and revoke old credentials promptly.
+
+- **Secure backups:**
+  - Protect backups of secrets by encrypting them and restricting access.
+
+<Tip>
+Leverage secret management solutions like HashiCorp Vault, AWS Secrets Manager, or Kubernetes Secrets for enterprise deployments.
+</Tip>
+
+---
+
+## 3. Secure API Token Usage
+
+API tokens enable programmatic access. Mismanagement can expose your system to unauthorized control.
+
+### Secure Handling
+
+- **Generate tokens with minimal required permissions:**
+  - Follow the principle of least privilege for each API token.
+  - Avoid using admin-level tokens unnecessarily.
+
+- **Use token expiration:**
+  - Where possible, configure tokens to expire and require renewal.
+
+- **Store tokens securely:**
+  - Never expose tokens in client-side code, public repositories, or logs.
+  - Use encrypted storage mechanisms on client applications.
+
+- **Revoke compromised tokens immediately:**
+  - Periodically audit active tokens.
+  - Provide users with clear UI or API methods to revoke tokens.
+
+- **Implement rate limiting and monitoring:**
+  - Protect token endpoints from abuse by setting API rate limits.
+  - Monitor token usage logs for suspicious activity.
+
+<Callout title="Example: Disabling Token Deletion in Demo Mode">
+Notice that when running Linkwarden in demo mode, any destructive API calls like token deletion return an explicit error and prevent modification, protecting the demo environment from unintended changes.
+</Callout>
+
+---
+
+## 4. Hardening Against Common Attacks
+
+Securing your deployment means preparation against a range of attack types common on web applications.
+
+### Recommended Steps
+
+- **Authentication and Session Security:**
+  - Enforce strong password policies and enable multi-factor authentication where possible.
+  - Secure session tokens via HTTP-only, secure cookies.
+  - Set sensible session expiration and idle timeout values.
+
+- **Input Validation and Sanitization:**
+  - Protect backend API endpoints with rigorous input validation.
+  - Sanitize inputs to mitigate injection attacks.
+
+- **Cross-Origin Resource Sharing (CORS):**
+  - Configure CORS policies to allow only trusted origins.
+
+- **Cross-Site Request Forgery (CSRF) Protection:**
+  - Use anti-CSRF tokens in state-changing requests.
+
+- **Content Security Policy (CSP):**
+  - Implement CSP headers to restrict resource loading and script execution to trusted sources.
+
+- **Rate Limiting and Throttling:**
+  - Apply rate limits to authentication, token and key creation APIs to prevent brute-force and enumeration attacks.
+
+- **Logging and Monitoring:**
+  - Maintain detailed logs of authentication attempts, token usage, and API access.
+  - Configure alerts for anomalous behavior or repeated failures.
+
+- **Regular Updates and Patch Management:**
+  - Stay current with security patches for all software components.
+
+<Warning>
+Ignoring these security practices can result in data breaches, unauthorized access, and service downtime that harms users and your reputation.
+</Warning>
+
+---
+
+## 5. Practical Steps After Deployment
+
+To ensure ongoing security:
+
+- Perform quarterly security audits and penetration testing.
+- Keep an updated inventory of API tokens and active sessions.
+- Employ intrusion detection/prevention systems (IDS/IPS).
+- Educate and train your users and administrators on security best practices.
+
+---
+
+## Additional Resources and References
+
+- [Linkwarden Environment Configuration](../../deployment/production-setup/environment-configuration)
+- [API Tokens & Access Control Guide](../../api-reference/advanced-features/api-tokens)
+- [Authentication Overview](../../security/auth-models-identity/auth-overview)
+- [Error Handling in API](../../api-reference/integration-and-support/error-handling)
+- [Monitoring and Logging](../../deployment/operations-monitoring/monitoring-logging)
+
+---
+
+By following these expert security hardening guidelines, your Linkwarden deployment will provide a resilient, trustworthy environment for preserving important content while maintaining robust defenses against threats.
