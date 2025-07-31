@@ -3,4 +3,173 @@ title: "Preserving Pages: Archive & Reader View"
 description: "Explains how Linkwarden saves screenshots, PDFs, and readable views of webpages, why this matters, and how to access preserved or readable content. Helps users understand the value and limits of link preservation for revisiting or annotating pages."
 ---
 
-*This page will automatically be generated from the codebase*
+# Preserving Pages: Archive & Reader View
+
+Linkwarden's preservation features transform how you save and revisit web content. This guide walks you through how Linkwarden captures screenshots, PDFs, and reader-friendly versions of webpages, explains their value, and shows you how to access preserved content effortlessly.
+
+---
+
+## 1. Understanding Link Preservation in Linkwarden
+
+### What Does Preservation Mean?
+When you save a link, Linkwarden doesn’t just store the URL; it preserves the page content as it existed at the time of saving. This includes:
+
+- **Screenshots:** Visual snapshots that capture the exact look and feel of the page.
+- **PDFs:** Printable, archived copies retaining the page layout.
+- **Reader View (Readability):** Clean, distraction-free text extraction for focused reading.
+
+These preservation formats help you counteract link rot, content changes, or page removals, ensuring you retain access to your saved knowledge.
+
+### Why Preservation Matters
+
+Imagine returning weeks or months later to a saved article only to find it gone or changed. Preservation safeguards your curated content, enabling:
+
+- Consistent, reliable access to information.
+- Easier annotation and note-taking with clear readable text.
+- Sharing snapshots with collaborators that look the same as when saved.
+
+<Tip>
+Preserving links enhances long-term knowledge retention and helps fuel research, projects, and collaboration without losing critical context.
+</Tip>
+
+---
+
+## 2. How Linkwarden Saves and Updates Pages
+
+Linkwarden automates preservation based on your preferences and tags. Here’s how it works:
+
+1. **Archival Settings:** When you add or tag a link, Linkwarden determines preservation methods based on your user preferences and specific tags such as `archiveAsScreenshot` or `archiveAsReadable`.
+
+2. **Content-Type Detection:** The system checks the saved URL's content type (HTML page, PDF, image).
+
+3. **Preservation Execution:** Depending on the type and settings, Linkwarden:
+   - Captures screenshots or PDFs using a browser automation engine.
+   - Extracts readable content with Mozilla's Readability library.
+   - Stores archived files in designated folders tied to collections.
+
+4. **Automated Updates:** Preservation data updates when URLs change or when users trigger re-archive requests.
+
+<Note>
+Preservation can be disabled or limited if you save non-HTTP(S) links or have environment constraints.
+</Note>
+
+---
+
+## 3. Accessing Preserved Content
+
+Once preserved, Linkwarden provides several ways to access archived copies:
+
+- **Link Details Page:** View thumbnails, PDF previews, or readable text of saved links next to their metadata.
+- **Reader View:** Access clean, stripped-down article content optimized for distraction-free reading.
+- **Download Options:** Download preserved PDFs or screenshots directly for offline use.
+
+These features appear seamlessly as part of your link browsing experience.
+
+---
+
+## 4. Step-by-Step: Archiving and Viewing Link Preservation
+
+<Steps>
+<Step title="Save a New Link with Archival Tags or Preferences">
+Add a new link via the Linkwarden web or mobile interface.
+
+- Assign collections and relevant archival tags (e.g., `archiveAsPDF`, `archiveAsReadable`).
+- If you have default preservation preferences, the link will automatically queue for archiving.
+
+Expected Result: Link is added with preservation tasks scheduled.
+</Step>
+
+<Step title="Trigger Archiving or Re-Archiving of a Link">
+To manually re-archive or ensure preservation for a link:
+
+- Navigate to the link's archive settings or use the "Re-archive" action.
+- The system clears prior preserved files and queues the link for fresh processing.
+
+Expected Result: Link preservation data (screenshots, PDFs, readable content) begins updating.
+</Step>
+
+<Step title="View Preserved Content in Link Details">
+Open the link detail page.
+
+- Scroll to see preserved screenshots, PDF previews, or reader view content.
+- Use reader view to focus on the article text without page distractions.
+
+Expected Result: Accessible preserved files or readable content alongside link metadata.
+</Step>
+
+<Step title="Handle Preservation Errors or Unavailable Content">
+If a preservation file is unavailable or marked `unavailable`, you can:
+
+- Request re-archiving if you have the appropriate permissions.
+- Check your network or environment if automated archiving fails repeatedly.
+
+Expected Result: Recovery of archival content or clear error feedback.
+</Step>
+</Steps>
+
+---
+
+## 5. Practical Tips and Best Practices
+
+- **Use Archival Tags Strategically:** Only apply archival tags to links where preservation matters, to optimize resource usage.
+- **Monitor Archiving Status:** Regularly visit link details to verify preservation success and trigger re-archiving if needed.
+- **Keep URLs Valid:** Preservation relies on valid, accessible URLs. If a URL changes, update the link to refresh archives.
+- **Leverage Reader View:** For long-form articles, reader view improves readability and note-taking.
+
+<Tip>
+Permissions matter: Only collection owners and members with update rights can trigger archiving or view preserved content.
+</Tip>
+
+---
+
+## 6. Troubleshooting Common Preservation Issues
+
+<AccordionGroup title="Common Preservation Challenges">
+<Accordion title="Link Preservation Fails to Generate Files">
+- Ensure the URL is a valid HTTP or HTTPS address.
+- Check environment variables do not disable preservation.
+- Review logs for timeout errors — the browser has a maximum runtime limit.
+- Confirm you have permissions to archive the link.
+</Accordion>
+
+<Accordion title="Preserved Content Shows as 'Unavailable'">
+- This indicates preservation failed or was skipped.
+- Initiate manual re-archiving if you have permissions.
+- Persistent failures may require updating the URL or modifying tags.
+</Accordion>
+
+<Accordion title="Access Permissions Block Viewing Preserved Content">
+- Confirm you are collection owner or have member update permissions.
+- Contact your collection admin to update permissions if needed.
+</Accordion>
+</AccordionGroup>
+
+---
+
+## 7. Behind the Scenes (Optional Advanced Understanding)
+
+Linkwarden uses browser automation (Playwright) to load webpages and capture screenshots or PDFs while applying intelligent content extraction via Mozilla Readability.
+
+Preservation files are organized per collection and link ID, making retrieval efficient and manageable.
+
+Automated tagging with AI enriches metadata on preserved pages, improving search and discovery.
+
+---
+
+## 8. Next Steps
+
+- Explore how to organize your preserved links with [Collections & Tags Basics](/guides/getting-started/collections-and-tags-basics).
+- Learn how to share preserved links publicly in the [Sharing Collections or Links Publicly](/guides/collaboration-and-sharing/public-sharing) guide.
+- Get familiar with setting permissions to control who can archive or view preserved content in [Inviting Members and Setting Permissions](/guides/collaboration-and-sharing/inviting-collaborators).
+
+---
+
+### Additional Resources
+
+- [Core Concepts & Terminology](/overview/core-concepts-and-architecture/core-concepts-terminology) — Understand foundational elements related to links and preservation.
+- [Quickstart: Adding and Preserving Your First Link](/getting-started/initial-experience-validation/quickstart-adding-links) — Start preserving immediately with practical onboarding.
+- [Troubleshooting & Common Setup Issues](/getting-started/initial-experience-validation/troubleshooting-common-issues) — Fix common archival errors.
+
+---
+
+By following this guide, you confidently leverage Linkwarden’s powerful preservation capabilities for a reliable, resilient, and enriched web content experience.
