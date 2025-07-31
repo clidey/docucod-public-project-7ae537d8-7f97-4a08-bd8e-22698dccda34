@@ -3,4 +3,182 @@ title: "Deploying Web and Mobile Apps"
 description: "Step-by-step setup for deploying the web frontend, backend API, and official mobile app. Includes pointers for bundling assets, mobile build considerations, and integration with platform-specific services."
 ---
 
-*This page will automatically be generated from the codebase*
+# Deploying Web and Mobile Apps
+
+Deploying Linkwarden's full-stack solution involves setting up the web frontend, backend API, and the official mobile app. This guide walks you through the essential steps for each component, focusing on preparing assets for web and mobile environments, addressing platform-specific build considerations, and integrating with platform-native services for a seamless user experience.
+
+---
+
+## 1. Overview of Deployment Components
+
+Linkwarden consists of three key application components:
+
+- **Web Frontend:** A React-based web app served via Next.js that provides the primary user interface accessed via browsers.
+- **Backend API:** The REST API powering core workflows like link management, authentication, and collaboration.
+- **Mobile App:** A React Native application for iOS and Android, offering on-the-go access and features tailored to mobile environments.
+
+Each component requires tailored deployment steps, which together ensure full product functionality.
+
+---
+
+## 2. Preparing the Web Frontend
+
+### Key Objectives
+- Build optimized static assets and server-side rendered pages.
+- Configure environment variables to connect with the backend API.
+- Bundle assets correctly for web hosting platforms.
+
+### Deployment Steps
+
+1. **Install Dependencies and Build**
+   - Run `npm install` or `yarn` to install all project dependencies.
+   - Use the Next.js build command:
+
+   ```bash
+   npm run build
+   # or
+   yarn build
+   ```
+
+   This generates optimized `.next` static and dynamic files.
+
+2. **Set Environment Variables**
+   - Define API endpoint URLs and any feature toggles in `.env.production` or hosting environment variables, as detailed in the [Environment Configuration](deployment/production-setup/environment-configuration) guide.
+
+3. **Hosting Options**
+   - Deploy on platforms supporting Node.js servers (Vercel, AWS, DigitalOcean, etc.)
+   - Alternatively, export static pages using Next.js static export if dynamic API routes are handled separately.
+
+4. **Verify Deployment**
+   - Test user authentication, link browsing, and preservation functionality.
+   - Confirm API connectivity and CORS configuration.
+
+<Tip>
+Consider deploying the backend API and web frontend together on the same host or proxied URLs to simplify CORS and security setups.
+</Tip>
+
+---
+
+## 3. Deploying the Backend API
+
+Since this page focuses on the web and mobile apps, details for backend API deployment are minimal here but critical for full functionality.
+
+- The API serves endpoints like `/api/v1/links`, `/api/v1/public/links/:id`, handling authentication and link management.
+- Configure your backend server environment with proper environment variables and SSL certificates.
+- Ensure the API is accessible by both web frontend and mobile apps.
+
+For full backend deployment guidance, see the [Production Deployment & Configuration](deployment/production-setup/deployment-getting-started) and [Environment Configuration](deployment/production-setup/environment-configuration) documentation.
+
+---
+
+## 4. Mobile App Deployment
+
+### Context
+The Linkwarden mobile app is built with React Native, supporting both iOS and Android platforms. It integrates tightly with platform capabilities such as navigation, authentication, and native UI components.
+
+### Key Deployment Objectives
+- Build optimized iOS and Android packages.
+- Bundle JavaScript assets for offline use and performance.
+- Integrate platform-specific services like push notifications.
+
+### Build and Deployment Workflow
+
+1. **Set Up Development Environment**
+   - Install React Native CLI and dependencies for iOS (`Xcode`) and Android (`Android Studio`).
+   - Follow system prerequisites for building React Native apps.
+
+2. **Configure Environment Variables**
+   - Align API base URLs and authentication settings to your deployed backend.
+   - Adjust build configurations per platform for release builds.
+
+3. **Bundle JavaScript and Assets**
+   - Use React Native's bundler to generate asset bundles:
+
+   ```bash
+   npx react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios/main.jsbundle --assets-dest ios
+
+   npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/
+   ```
+
+4. **Build Native Packages**
+   - iOS: Open the `ios` folder in Xcode and archive your app for TestFlight or App Store deployment.
+   - Android: Use Gradle to generate signed APK or AAB files:
+
+   ```bash
+   cd android
+   ./gradlew assembleRelease
+   ```
+
+5. **Test Deployment**
+   - Install the app on target devices or simulators/emulators.
+   - Validate key features such as:
+     - Link listing and detail views.
+     - Actions like adding, editing, and deleting links.
+     - Authentication flows.
+     - Integration with native UI components and contextual menus.
+
+6. **Submit to App Stores**
+   - Follow Apple and Google submission guidelines.
+   - Monitor for review feedback and update as necessary.
+
+<Tip>
+Use Expo tooling if preferring managed workflow builds and over-the-air updates, aligning with React Navigation and Expo Router as seen in the app's routing structure.
+</Tip>
+
+---
+
+## 5. Platform-Specific Integration Considerations
+
+### Web Frontend
+- Ensure that static and API routes are synchronized.
+- Configure HTTPS and domain settings to secure API calls.
+
+### Mobile App
+- Utilize native modules for clipboard, context menus, and sheet actions as per the app components:
+  - Context menus integrated with `zeego/context-menu`.
+  - Action sheets managed by `react-native-actions-sheet`.
+- Handle platform differences in styles and keyboard insets, demonstrated by conditional styles in components like `LinksScreen`.
+
+### Asset Preservation
+- The mobile app loads archived previews (JPEG, PNG, PDF) from backend URLs secured by token-based authentication.
+- Confirm backend API supports appropriate authorization headers.
+
+---
+
+## 6. Summary of Key User Flows Supported after Deployment
+
+- **Web:** Users browse and manage bookmarks, collections, tags, and preserved content via browser.
+- **Mobile:** Users access, add, edit, and organize links with integrated UI components like contextual menus and sheets.
+- **API:** Backend processes link preservation, user authentication, and collaboration workflows.
+
+---
+
+## 7. Troubleshooting Deployment
+
+<AccordionGroup title="Common Issues and Solutions">
+<Accordion title="API Connectivity Failures">
+Check that backend API endpoints are reachable from both web and mobile apps. Validate environment variables and CORS settings.
+</Accordion>
+<Accordion title="Build Failures in Mobile Apps">
+Confirm that native build environments (Xcode, Android SDK) are properly installed and configured per React Native requirements.
+</Accordion>
+<Accordion title="Missing or Corrupt Asset Bundles">
+Ensure assets are properly bundled and paths configured correctly. Use caching bust strategies for JavaScript bundles.
+</Accordion>
+<Accordion title="Authentication Errors">
+Verify consistent usage of authentication tokens and configuration of environment variables for session management.
+</Accordion>
+</AccordionGroup>
+
+---
+
+## 8. Next Steps and References
+
+- Review [Environment Configuration](deployment/production-setup/environment-configuration) to secure and tune deployment.
+- Consult [Production Deployment & Configuration](deployment/production-setup/deployment-getting-started) for full deployment scenarios.
+- For mobile app development optimization, explore React Native official docs.
+- Monitor deployments with [Monitoring and Logging](deployment/operations-monitoring/monitoring-logging) and scale via [Scaling Strategies](deployment/operations-monitoring/scaling-strategies).
+
+---
+
+By following this guide, users will achieve a robust deployment of their Linkwarden web and mobile applications, providing seamless access and management capabilities for preserved web content across multiple platforms.
