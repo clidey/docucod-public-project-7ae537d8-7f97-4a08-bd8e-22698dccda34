@@ -3,4 +3,175 @@ title: "Integrations & API Access"
 description: "Learn how Linkwarden integrates with browser extensions, RSS feeds, SSO solutions, and third-party apps. Get a high-level survey of available API endpoints, supported automation, and options for importing or exporting bookmarks from other platforms."
 ---
 
-*This page will automatically be generated from the codebase*
+# Integrations & API Access
+
+Unlock the full potential of Linkwarden by seamlessly connecting it with your favorite tools and workflows. This page gives you a comprehensive overview of how Linkwarden integrates with browser extensions, RSS feeds, single sign-on (SSO) providers, and third-party applications. You'll also find a high-level survey of the available API endpoints, enabling automation and data exchange with external platforms, as well as guidance on importing and exporting your bookmarks and collections.
+
+---
+
+## Why Integrate Linkwarden?
+
+In today’s digital world, your valuable links and knowledge should flow effortlessly across your ecosystem. Integrations and APIs allow you to maintain continuity, automate repetitive tasks, collaborate with your teams, and import data from existing platforms without interruption.
+
+Imagine instantly saving an intriguing article from your browser extension, subscribing to curated RSS feeds that automatically enrich your collections, or logging in securely with corporate SSO credentials—all while having the freedom to connect your data with custom scripts or applications via the API.
+
+This page empowers you to achieve that seamless experience.
+
+---
+
+## Supported Integrations Overview
+
+### 1. Browser Extensions
+
+Linkwarden supports browser extensions that let you save, tag, and organize links directly from your web browser, minimizing friction in your workflow.
+
+- **Benefit:** Instantly capture links without leaving your current tab.
+- **Typical Use Case:** While researching or reading, quickly save interesting content with a single click.
+
+> _Tip:_ Use the extension’s tagging and collection assignment features to keep your saved links organized from the start.
+
+### 2. RSS Feed Subscription
+
+Subscribe to RSS feeds to automatically pull in articles, blog posts, or news updates to your collections.
+
+- **Benefit:** Automate content aggregation and stay updated on your topics of interest.
+- **Typical Use Case:** Follow multiple research journals or news outlets to keep all relevant content in one place without manual effort.
+
+### 3. Single Sign-On (SSO) Providers
+
+Linkwarden supports a wide array of SSO providers, enabling secure and streamlined authentication.
+
+- **Examples Include:** Google, Apple, Auth0, Microsoft Azure AD, GitHub, Keycloak, and many others.
+- **Benefit:** Simplify user access management, enabling centralized control and enhancing security.
+
+> _Best Practice:_ Check with your organizational policy to configure the appropriate SSO provider and disable new SSO registrations if needed.
+
+### 4. Third-Party Application Integration via API
+
+Linkwarden exposes API endpoints enabling you to integrate programmatically with other systems, such as automation scripts, custom applications, or other data sources.
+
+- **Benefit:** Empower developers and power users to automate workflows, synchronize data, and extend the platform.
+- **Supported API Workflows:** Authentication, managing links and collections, user administration, and subscription management.
+
+> _Note:_ API access requires proper authentication tokens and respects user permissions and rate limits.
+
+### 5. Bookmark Import & Export
+
+Easily migrate your data into and out of Linkwarden with import/export functionality supporting popular formats.
+
+- **Benefit:** Protect existing investments in link organization and enable bulk migration.
+- **Supported Formats:** Linkwarden native format, HTML bookmarks, Wallabag, Pocket, Omnivore, and others.
+
+---
+
+## High-Level API Endpoints Survey
+
+Here’s a simplified user-focused overview of key API capabilities available to integrate and automate your Linkwarden usage:
+
+| Endpoint                     | Purpose                                   | User Benefit                            |
+|------------------------------|-------------------------------------------|----------------------------------------|
+| `/api/v1/auth`               | Authenticate users, including social login providers (SSO) | Securely sign in and manage sessions  |
+| `/api/v1/links`              | Create, update, delete, fetch saved links | Automate link management workflows     |
+| `/api/v1/collections`        | Manage collections and their members       | Programmatic organization and collaboration |
+| `/api/v1/tags`               | Create and update tags                      | Streamline categorization via automation |
+| `/api/v1/rss-subscriptions` | Subscribe/unsubscribe from RSS feeds       | Automate content feed management       |
+| `/api/v1/users`              | Manage users and permissions                | Administer multi-user teams             |
+
+> _Example:_ To programmatically add a new link to a collection, POST the link details to `/api/v1/links` with authentication headers.
+
+---
+
+## Secure Authentication & SSO Integration Details
+
+Linkwarden supports extensive OAuth 2.0-based SSO providers out of the box. Environment variables enable or disable providers, including Configurable OAuth providers such as Google, Auth0, GitHub, Azure AD, Keycloak, Apple, and many others.
+
+- During sign-in, user accounts are linked to their social identities for streamlined access.
+- Admins can disable new registrations via SSO to control access.
+- Email verification workflows integrate with underlying email infrastructure to secure accounts.
+
+This flexible architecture supports organizational policies and improves user onboarding experience while maintaining high security standards.
+
+---
+
+## Importing & Exporting Bookmarks
+
+### Importing
+
+- Import bookmarks and link collections from supported external platforms via file upload or API.
+- Supported formats include:
+  - Linkwarden's native export format
+  - HTML bookmark files from browsers
+  - Wallabag and Pocket exports
+- The system automatically maps imported links to collections, tags, and metadata.
+
+### Exporting
+
+- Export your Linkwarden data for backup or migration.
+- Select formats that best suit your target platform.
+
+> _Best Practice:_ Regularly export your data to ensure you have a backup outside the platform and to facilitate migration if needed.
+
+---
+
+## Practical Integration Scenarios
+
+1. **Seamless Login with Corporate Credentials:** Users join using their Google or Azure AD accounts, eliminating password hassles and integrating with existing IT policies.
+
+2. **Automated Research Feed Aggregation:** Researchers subscribe to topic-specific RSS feeds, automatically populating collections with up-to-date articles.
+
+3. **Browser Extension Workflow:** Content creators quickly save links and add tags as they browse, reducing friction and improving recall.
+
+4. **Custom Sync from External Tools:** Developers integrate Linkwarden with internal knowledge management systems via the API to keep link databases synchronized.
+
+5. **Bulk Import for New Team Onboarding:** Admins import existing bookmarks in bulk to get new members started quickly.
+
+---
+
+## Troubleshooting & Tips
+
+- **SSO Registration Disabled:** If you’re unable to register with an SSO provider, check if your administrator has disabled new SSO user registrations.
+- **Email Integration Issues:** Verify that environment variables for email sending are correctly configured for verification email flows.
+- **API Access Denied:** Ensure you have valid API tokens and appropriate permissions to perform requested operations.
+- **Too Many Verification Request Errors:** Email providers limit rapid verification attempts. Wait at least 5 minutes before retrying.
+- **Missing External Provider:** Confirm environment variables are set and the provider is enabled in the deployment settings.
+
+---
+
+## Getting Started with Integrations
+
+<Steps>
+<Step title="Configure Environment Variables and Enable Providers">
+Set up environment variables specifying which SSO providers and email services are active. Follow your deployment documentation to configure these securely.
+</Step>
+<Step title="Install Browser Extensions">
+Download and install official Linkwarden browser extensions from your browser’s web store to enable one-click bookmarking.
+</Step>
+<Step title="Subscribe to RSS Feeds">
+Use the UI or API to add RSS feed URLs, specifying which collection they should populate.
+</Step>
+<Step title="Use the API">
+Get an API token from your account settings and start calling API endpoints to automate workflows or integrate with other apps.
+</Step>
+<Step title="Import Existing Bookmarks">
+Leverage the import feature to bring in bookmarks from other services or exported HTML files.
+</Step>
+</Steps>
+
+---
+
+## Additional Resources & Next Steps
+
+- [Authentication Overview](/security/auth-models-identity/auth-overview) — Understand authentication flows and SSO details.
+- [Inviting Members and Setting Permissions](/guides/collaboration-and-sharing/inviting-collaborators) — Learn how to add collaborators post SSO setup.
+- [Subscribing and Automating with RSS Feeds](/guides/automation-and-integrations/rss-feed-subscription) — Deep dive into RSS integration workflows.
+- [Managing Users and API Access](/guides/advanced-tasks-and-best-practices/user-administration-tokens) — Explore advanced API usage and user management.
+- [Browser Extension and PWA Usage](/guides/automation-and-integrations/browser-extension-and-pwa) — Get started with browser tools.
+
+---
+
+This integration landscape ensures your Linkwarden instance adapts gracefully across workflows, empowering you to capture, organize, and preserve links exactly where you work and collaborate.
+
+
+<Info>
+Note: For detailed API usage, authentication scopes, request/response schemas, and sample code snippets, refer to the [API Reference]( /api-reference/core-workflows/ authentication-and-authorization) and related API documentation pages.
+</Info>
