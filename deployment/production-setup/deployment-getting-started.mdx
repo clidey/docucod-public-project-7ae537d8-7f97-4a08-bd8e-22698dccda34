@@ -3,4 +3,163 @@ title: "Getting Started with Deployment"
 description: "An introduction to the key steps in deploying Linkwarden, outlining supported environments, typical deployment scenarios (self-hosted, cloud, or containerized), and what to expect from a successful launch."
 ---
 
-*This page will automatically be generated from the codebase*
+# Getting Started with Deployment
+
+Deploying Linkwarden is your first critical step towards securing persistent, collaborative access to your important web content. This guide introduces the fundamental steps and scenarios for deploying Linkwarden across supported environments, helping you select the best path for your needs and ensuring a smooth, successful launch.
+
+---
+
+## Supported Deployment Environments
+
+Linkwarden offers flexible deployment options designed to fit diverse operational preferences and infrastructure setups:
+
+- **Self-Hosted Deployment**: Perfect if you want full control over your data and environment. Ideal for organizations or individuals managing their own servers.
+- **Cloud Deployment**: Use managed cloud providers or container platforms to run Linkwarden with minimal infrastructure overhead.
+- **Containerized Deployment (Docker)**: For both local and cloud servers, using Docker and Docker Compose simplifies setup and portability.
+
+Each environment supports production-ready reliability with configurations for persistent storage, database management, and automated service restarts.
+
+## Typical Deployment Scenarios
+
+### 1. Self-Hosted on a Virtual Private Server (VPS)
+
+Many users choose to run Linkwarden on a VPS to maintain full ownership and sovereignty of their data:
+
+- Install PostgreSQL as your database.
+- Configure environment variables, including sensitive credentials like database URLs and secrets.
+- Deploy the Linkwarden application and its dependencies, such as MeiliSearch for full-text search.
+- Optionally run Linkwarden as a background service with systemd or similar process managers.
+
+### 2. Containerized Deployment Using Docker
+
+Docker Compose can orchestrate all required services with minimal manual configuration.
+
+- Use the provided `docker-compose.yml` file to manage Linkwarden, PostgreSQL, and MeiliSearch containers.
+- Mount persistent volumes for database and search engine data.
+- Configure environment settings through a `.env` file.
+- Expose service ports for web and API access.
+
+This scenario supports local testing, development, and production deployments with a consistent environment.
+
+### 3. Cloud Provider Deployment
+
+Deploy Linkwarden to popular cloud platforms such as AWS, Azure, or DigitalOcean:
+
+- Use container services like AWS ECS, Azure Container Instances, or Kubernetes.
+- Ensure all environment variables and persistent storage options are correctly set.
+- Utilize managed database services (e.g., Amazon RDS) to offload database maintenance.
+
+Cloud deployments enable scalability and easier maintenance while leveraging cloud provider features.
+
+## What to Expect from a Successful Deployment
+
+When you have deployed Linkwarden correctly, you will observe the following:
+
+- The server and all dependencies (PostgreSQL, MeiliSearch) start reliably and restart automatically on failure.
+- Network ports are open and accessible, typically HTTP port 3000 for the web UI.
+- Environment variables such as `DATABASE_URL` and `NEXTAUTH_SECRET` are correctly configured, securing authentication and connectivity.
+- The web or mobile app launches without errors and connects seamlessly to the backend.
+- You can log in, add your first links, and see preserved content with automated screenshot or PDF capture functioning.
+- Search indexing operates smoothly via MeiliSearch, enabling robust link retrieval.
+
+<Tip>
+To confirm a healthy deployment, visit your Linkwarden instance in the browser and perform a complete validation using the [Validating Your Setup](https://docs.linkwarden.com/getting-started/initial-experience-validation/validate-setup) guide.
+</Tip>
+
+## Step-by-Step Deployment Overview
+
+<Steps>
+<Step title="Prepare Your Environment">
+Verify your server meets the [System Requirements](https://docs.linkwarden.com/getting-started/prerequisites-installation/system-requirements) including OS, hardware specs, and software dependencies.
+
+Check network connectivity and firewall settings to allow necessary ports.
+
+Gather credentials and configuration values (database URLs, secrets).
+</Step>
+
+<Step title="Configure Environment Variables">
+Create your `.env` file based on `.env.sample` provided.
+
+Set critical variables like `DATABASE_URL`, `NEXTAUTH_SECRET`, and optionally AWS or SMTP credentials if used.
+
+Ensure variables are kept secure and not committed to public repositories.
+</Step>
+
+<Step title="Deploy Dependencies">
+Install and start PostgreSQL with persistent data storage.
+
+Start MeiliSearch service for full-text search capabilities.
+
+Configure these services to automatically restart.
+</Step>
+
+<Step title="Launch Linkwarden Application">
+Use the provided Docker Compose configuration to start all services together:
+
+```bash
+docker-compose up -d
+```
+
+Alternatively, build and deploy Linkwarden from source if customization is needed.
+
+Monitor logs for any startup errors.
+</Step>
+
+<Step title="Verify Deployment">
+Access the web UI at `http://<your-server-ip>:3000`.
+
+Log in or register a new user.
+
+Add a test link and confirm preservation (screenshots, PDFs).
+
+Check search functionality.
+</Step>
+</Steps>
+
+## Best Practices and Tips
+
+- **Secure Secrets**: Never expose your `.env` file or secrets publicly. Use secret managers or environment-specific configurations.
+- **Persist Data**: Use volume mounts in Docker to prevent data loss on container restarts.
+- **Update Regularly**: Keep Linkwarden and dependencies up to date for security patches and new features.
+- **Monitor Resources**: Track CPU, memory, and storage to scale effectively.
+- **Backup Data**: Regularly backup PostgreSQL and MeiliSearch data for disaster recovery.
+
+## Common Pitfalls and How to Avoid Them
+
+<AccordionGroup title="Troubleshooting Common Deployment Issues">
+<Accordion title="Application Fails to Start or Crashes">
+Check logs for misconfigured environment variables.
+Verify dependencies like the database and search engine are running and accessible.
+</Accordion>
+
+<Accordion title="Cannot Connect to Database">
+Ensure `DATABASE_URL` uses correct credentials and hostname.
+Confirm network accessibility between containers or services.
+Check Postgres user permissions.
+</Accordion>
+
+<Accordion title="Preservation Features Not Working">
+Verify that automated workers and polling processes are running as expected.
+Look for errors in logs related to archive processing.
+Ensure sufficient file storage permissions.
+</Accordion>
+
+<Accordion title="Port Conflicts or Access Issues">
+Confirm no other services are blocking port 3000.
+Check firewall and proxy settings.
+</Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+After successfully deploying Linkwarden, broaden your operational knowledge by reviewing:
+
+- [Environment Configuration](https://docs.linkwarden.com/deployment/production-setup/environment-configuration) — customize your deployment environment for security and performance.
+- [Deploying Web and Mobile Apps](https://docs.linkwarden.com/deployment/production-setup/web-mobile-deployment) — launch user-facing clients.
+- [Monitoring and Logging](https://docs.linkwarden.com/deployment/operations-monitoring/monitoring-logging) — set up observability to maintain reliability.
+
+Harness Linkwarden’s capabilities to the fullest by integrating with your workflows securely and efficiently.
+
+---
+
+_This guide is your starting point for confidently deploying Linkwarden, tailored for practical application and clarity to accelerate your success._
