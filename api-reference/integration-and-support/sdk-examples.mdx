@@ -3,4 +3,266 @@ title: "SDK Usage & Code Snippets"
 description: "Hands-on examples for common workflows—such as adding a link or fetching user collections—using CLI tools, cURL, and provided client SDKs. Includes code snippets for JavaScript, Python, and shell scripts."
 ---
 
-*This page will automatically be generated from the codebase*
+# SDK Usage & Code Snippets
+
+Unlock the full power of Linkwarden's API with clear, hands-on examples designed for rapid integration and effortless automation. This page delivers practical workflows to swiftly add links, fetch user collections, and streamline your interactions using the command-line interface (CLI), cURL commands, and official client SDKs in JavaScript and Python.
+
+Whether you're scripting routine tasks or building advanced integrations, these ready-made code snippets help you move from concept to execution with confidence.
+
+---
+
+## Getting Started with SDKs and CLI
+
+Linkwarden supports several convenient methods to interact programmatically:
+
+- **CLI Tools**: Quick commands for common tasks directly from your terminal.
+- **cURL Requests**: Raw HTTP commands ideal for scripting and quick tests.
+- **Client SDKs**: JavaScript and Python libraries that simplify API calls and error handling.
+
+Each approach complements different user needs — pick whichever fits your workflow best.
+
+---
+
+## Prerequisites
+
+Before diving in, ensure you have:
+
+- An active Linkwarden account with API access.
+- An API token or session for authentication.
+- Installed CLI tools or SDK packages as needed.
+
+Refer to [Authentication & Authorization](/api-reference/core-workflows/authentication-and-authorization) for details on obtaining tokens.
+
+---
+
+## Common Workflows
+
+### 1. Adding a Link to Your Collection
+
+Easily save new links to your account using any method below.
+
+#### Using CLI
+```bash
+linkwarden add-link --url "https://example.com/article" --collection "Research"
+```
+This command adds the specified URL to your "Research" collection.
+
+#### Using cURL
+```bash
+curl -X POST https://api.linkwarden.com/links \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "url": "https://example.com/article",
+        "collectionName": "Research"
+      }'
+```
+
+#### JavaScript SDK
+```javascript
+import LinkwardenClient from '@linkwarden/sdk';
+
+const client = new LinkwardenClient({ apiToken: 'YOUR_API_TOKEN' });
+
+async function addLink() {
+  try {
+    const link = await client.links.create({
+      url: 'https://example.com/article',
+      collectionName: 'Research',
+    });
+    console.log('Link added:', link);
+  } catch (error) {
+    console.error('Failed to add link:', error);
+  }
+}
+
+addLink();
+```
+
+#### Python SDK
+```python
+from linkwarden_sdk import LinkwardenClient
+
+client = LinkwardenClient(api_token='YOUR_API_TOKEN')
+
+def add_link():
+    try:
+        link = client.links.create(url='https://example.com/article', collection_name='Research')
+        print('Link added:', link)
+    except Exception as ex:
+        print(f'Failed to add link: {ex}')
+
+add_link()
+```
+
+---
+
+### 2. Fetching User Collections
+
+Retrieve collections easily to organize or display your saved links.
+
+#### Using CLI
+```bash
+linkwarden list-collections
+```
+Lists all collections available to your user.
+
+#### Using cURL
+```bash
+curl -X GET https://api.linkwarden.com/collections \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+#### JavaScript SDK
+```javascript
+async function getCollections() {
+  try {
+    const collections = await client.collections.list();
+    console.log('Collections:', collections);
+  } catch (error) {
+    console.error('Failed to fetch collections:', error);
+  }
+}
+
+getCollections();
+```
+
+#### Python SDK
+```python
+def list_collections():
+    try:
+        collections = client.collections.list()
+        print('Collections:', collections)
+    except Exception as ex:
+        print(f'Failed to fetch collections: {ex}')
+
+list_collections()
+```
+
+---
+
+### 3. Searching Links with Filters
+
+Powerfully search and filter links using the API to find exactly what you need.
+
+#### cURL Example with Query
+```bash
+curl -X GET "https://api.linkwarden.com/links?search=tag:wellness%20before:2023-01-01" \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+Fetches links tagged 'wellness' created before January 1, 2023.
+
+#### JavaScript SDK
+```javascript
+async function searchLinks() {
+  try {
+    const results = await client.links.search({
+      filters: ['tag:wellness', 'before:2023-01-01'],
+    });
+    console.log('Search results:', results);
+  } catch (error) {
+    console.error('Search failed:', error);
+  }
+}
+
+searchLinks();
+```
+
+---
+
+## Authentication with SDKs and CLI
+
+All API interactions require proper authentication.
+
+- **API Tokens**: Securely generated tokens are passed in the `Authorization` header.
+- **Session Cookies**: For CLI tools integrated with sessions.
+
+Tokens must be kept private and regularly rotated. See [Authentication & Authorization](/api-reference/core-workflows/authentication-and-authorization) for token management.
+
+---
+
+## Installation & Setup
+
+### JavaScript SDK
+Install via NPM:
+```bash
+npm install @linkwarden/sdk
+```
+
+### Python SDK
+Install via pip:
+```bash
+pip install linkwarden-sdk
+```
+
+### CLI Tool
+Available via npm or binary releases:
+```bash
+npm install -g linkwarden-cli
+```
+
+Configure your API token by setting environment variables or using the CLI config commands.
+
+---
+
+## Best Practices
+
+- **Secure your API tokens:** never expose tokens in public repos or client-side code.
+- **Use environment variables:** for storing secrets in local or deployment environments.
+- **Handle errors gracefully:** SDKs provide structured exceptions to catch common failures.
+- **Batch operations:** when adding or updating multiple links, use bulk endpoints to improve performance.
+
+---
+
+## Troubleshooting
+
+- **Authentication failures:** Check your token validity and permissions.
+- **Rate limits:** If receiving rate-limit errors, implement retries with backoff.
+- **API endpoint errors:** Validate request payloads and required parameters.
+- **Network errors:** Ensure your network settings allow access to Linkwarden’s API endpoints.
+
+For more troubleshooting guidance, see [Error Handling & Status Codes](/api-reference/integration-and-support/error-handling).
+
+---
+
+## Additional Resources
+
+- [Authentication & Authorization](/api-reference/core-workflows/authentication-and-authorization)
+- [Managing Links API Reference](/api-reference/core-workflows/managing-links)
+- [Collections API](/api-reference/core-workflows/collections-api)
+- [User & Session Management](/api-reference/core-workflows/user-management)
+- [Rate Limits & Usage Quotas](/api-reference/integration-and-support/rate-limits-and-quotas)
+
+Explore these to deepen your integration capabilities.
+
+---
+
+## Summary
+
+This page offers direct code examples and CLI commands that demonstrate how to add links, fetch collections, and search content programmatically using Linkwarden. Start from simple operations and grow into advanced custom workflows leveraging our SDKs in JavaScript and Python.
+
+Keep your API tokens secure, follow recommended error handling, and refer to related guides to maximize your developer experience and efficiency while working with Linkwarden's API.
+
+
+---
+
+If you want, here is a **code snippet example** for fetching and printing all collections in JavaScript:
+
+```javascript
+import LinkwardenClient from '@linkwarden/sdk';
+
+const client = new LinkwardenClient({ apiToken: process.env.LINKWARDEN_API_TOKEN });
+
+async function showCollections() {
+  try {
+    const collections = await client.collections.list();
+    collections.forEach(c => console.log(`${c.id}: ${c.name}`));
+  } catch (error) {
+    console.error('Error fetching collections:', error);
+  }
+}
+
+showCollections();
+```
+
+This example can be adapted for other workflows as well.
