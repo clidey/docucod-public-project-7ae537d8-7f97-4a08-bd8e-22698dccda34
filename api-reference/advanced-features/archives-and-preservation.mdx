@@ -1,0 +1,266 @@
+---
+title: "Archives & Webpage Preservation"
+description: "Learn how to interact with the API to fetch, manage, and consume preserved formats (Screenshot, PDF, HTML, and Wayback Machine) for any link. Understand preservation triggers, formats available, and how to access readable views."
+---
+
+# Archives & Webpage Preservation API Reference
+
+Explore how to interact with the Linkwarden API to fetch, manage, and consume preserved content formats such as Screenshots, PDFs, HTML archives, and Wayback Machine snapshots for your saved links. This reference guides you through preservation triggers, accessing different archival formats, managing preservation state, and retrieving readable views programmatically.
+
+---
+
+## 1. Preservation Overview
+
+Linkwarden automatically archives saved links to ensure persistent access and protect against link rot. The system supports multiple preservation formats:
+
+- **Screenshot:** Full-page JPEG images capturing the visual state of a page.
+- **PDF:** Printable document versions of web pages.
+- **HTML Monolith:** Self-contained HTML snapshots via the Monolith tool.
+- **Readability:** Cleaned, reader-friendly HTML content via Mozilla Readability.
+- **Wayback Machine:** External archival via Internet Archive snapshots.
+- **Preview:** Thumbnail previews for quick identification.
+
+Preservations are triggered automatically based on user preferences or tags assigned to links/collections, or via explicit API requests.
+
+### Preservation Triggers and Settings
+
+- Preservation behavior depends on user settings and archival tags applied to the saved link.
+- Tags control which archival formats are enabled per link.
+- Preservation runs asynchronously in the background using headless browser automation.
+
+## 2. Accessing Archived Content
+
+Each preserved format is accessible via the API as part of the link resource or through dedicated endpoints:
+
+| Preservation Format | API Property         | Description                           |
+|---------------------|----------------------|-------------------------------------|
+| Screenshot          | `image`              | URL to stored JPEG screenshot file. |
+| PDF                 | `pdf`                | URL to stored PDF file.               |
+| HTML Monolith       | `monolith`           | URL to archived full HTML snapshot. |
+| Readability         | `readable`           | URL to JSON containing article content. |
+| Preview             | `preview`            | URL to preview thumbnail image.     |
+| Wayback Machine     | External             | Archival at Internet Archive.      |
+
+All archived files are stored under `archives/<collectionId>/` within the storage system.
+
+### Retrieving Preservation URLs
+
+When fetching a link via the Links API, the preservation properties such as `image`, `pdf`, `monolith`, `readable`, and `preview` hold relative URLs or status values:
+
+- A valid URL string when preserved.
+- The string `'unavailable'` if preservation failed or is missing.
+- `null` if preservation is not set or not attempted.
+
+Use these URLs by prepending your storage or server base URL to access archived content.
+
+
+## 3. Preservation Management API
+
+Manage preserved content state and trigger archive operations through the `/api/v1/links/archive` endpoint.
+
+### DELETE /api/v1/links/archive
+
+This endpoint supports multiple actions for preservation management, including deleting or regenerating archives.
+
+#### Parameters (in JSON body)
+
+| Field    | Type     | Description                                                                                      |
+|----------|----------|------------------------------------------------------------------------------------------------|
+| `action` | string   | Specifies the preservation operation. Valid values:
+- `allAndIgnore`: Delete all preservations and mark as unavailable (admin only).
+- `allAndRePreserve`: Delete all preservations and trigger re-archival (admin only).
+- `allBroken`: Regenerate broken or unavailable preservations (admin only).
+| `linkIds`| integer[] (optional) | List of specific link IDs to delete preservation files (user scoped). If omitted, action applies globally.
+
+
+#### Usage Examples
+
+##### Delete Preservation for Specific Links
+
+```http
+DELETE /api/v1/links/archive
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "linkIds": [123, 456]
+}
+```
+
+Deletes all preservation files (screenshots, PDFs, etc.) for the given link IDs if the authenticated user owns or has deletion rights.
+
+---
+
+##### Delete All Preservations and Ignore (Admin Only)
+
+```http
+DELETE /api/v1/links/archive
+Content-Type: application/json
+Authorization: Bearer <admin-token>
+
+{
+  "action": "allAndIgnore"
+}
+```
+
+Removes all preserved content across the system and marks them unavailable permanently.
+
+---
+
+##### Delete All and Re-Preserve (Admin Only)
+
+```http
+DELETE /api/v1/links/archive
+Content-Type: application/json
+Authorization: Bearer <admin-token>
+
+{
+  "action": "allAndRePreserve"
+}
+```
+
+Triggers a fresh archival process by clearing all existing preserved files.
+
+---
+
+##### Regenerate Broken Preservations (Admin Only)
+
+```http
+DELETE /api/v1/links/archive
+Content-Type: application/json
+Authorization: Bearer <admin-token>
+
+{
+  "action": "allBroken"
+}
+```
+
+Attempts to re-archive links where preservation formats are marked `'unavailable'`.
+
+---
+
+### Permission Model
+
+- Regular users can delete preservations only for links they own or have permission to delete.
+- System administrators (typically user ID 1) can perform global preservation management operations.
+
+### Status Responses
+
+- `200 OK` with `{ "response": "Success." }` on successful operations.
+- `400 Bad Request` for invalid payloads.
+- `401 Unauthorized` if the authenticated user lacks permissions.
+
+## 4. Common Preservation Formats & How to Consume
+
+### Screenshot
+
+- Stored as full-page JPEG images.
+- Accessed via the link's `image` field.
+- Ideal for quick visual reference or thumbnails.
+
+### PDF
+
+- Generated using headless browser PDF rendering.
+- Stored as PDF files under the collection archive.
+- Accessible via the `pdf` field.
+- Useful for offline reading, printing, or archival.
+
+### HTML Monolith
+
+- Self-contained HTML snapshot capturing all page assets.
+- Generated via the Monolith command-line tool.
+- Accessible via the `monolith` field.
+- Enables browsing preserved content offline with full fidelity.
+
+### Readability (Clean Article Content)
+
+- Extracted using Mozilla Readability.
+- Stored as JSON specifying parsed article content.
+- Accessible via the `readable` field.
+- Enables displaying a clutter-free reader mode view.
+
+### Wayback Machine
+
+- External archival integration.
+- Submitted asynchronously to Internet Archive.
+- Accessible via external Wayback URL (not stored internally).
+
+### Link Preview
+
+- Smaller-sized JPEG preview thumbnails.
+- Accessible via the `preview` field.
+- Used for UI previews and search result thumbnails.
+
+## 5. Example: Fetching a Link with Preservation Data
+
+Requesting the link details returns preservation status and URLs:
+
+```http
+GET /api/v1/links/123
+Authorization: Bearer <token>
+```
+
+Sample response snippet:
+
+```json
+{
+  "id": 123,
+  "url": "https://example.com/article",
+  "image": "archives/10/123.jpeg",
+  "pdf": "archives/10/123.pdf",
+  "monolith": "archives/10/123.html",
+  "readable": "archives/10/123_readability.json",
+  "preview": "archives/preview/10/123.jpeg",
+  "lastPreserved": "2024-06-01T12:34:56Z"
+}
+```
+
+Use your server's base URL or storage base path to access each file directly, e.g.:  
+`https://your.linkwarden.instance/archives/10/123.pdf`
+
+## 6. Preservation Lifecycle & Best Practices
+
+### Preservation Refresh
+
+- Preservation data is updated when a link is newly saved or explicitly re-archived.
+- Background job workers handle processing asynchronously and update preservation URLs on completion.
+- Preservation fields are set to `'unavailable'` if archiving fails or size limits exceed.
+
+### Validating Preservation State
+
+- Check `lastPreserved` timestamp to confirm freshness.
+- The API's preservation fields indicate presence or absence.
+
+### Size Limits & Failure Handling
+
+- Archives have configurable buffer size limits (e.g., 100 MB default).
+- If a preservation format exceeds size limits, it is marked as `'unavailable'`.
+- Failed preservation attempts are logged.
+
+### Triggering Manual Re-Preservation
+
+Use the DELETE endpoint with appropriate actions (such as `allAndRePreserve` or `allBroken`) to force re-archival when necessary.
+
+## 7. Troubleshooting Preservation Issues
+
+<Tip>
+If you notice preservation fields returning `'unavailable'`, consider:
+- Checking system logs for archiving errors.
+- Reviewing environment variable limits like `PDF_MAX_BUFFER` or `SCREENSHOT_MAX_BUFFER`.
+- Triggering re-preservation via the API or UI.
+- Confirming user permissions and API tokens for archival requests.
+</Tip>
+
+## 8. Related Documentation & Next Steps
+
+- [Integrations & API Access](/overview/integrations-and-extensibility/integrations) – How to connect with browser extensions and third-party apps.
+- [User & Session Management API](/api-reference/core-workflows/user-management) – Manage user access impacting archival permissions.
+- [RSS Feed Subscription Management API](/api-reference/advanced-features/rss-feed-management) – Automate saving preserving web content from feeds.
+- [Authentication & Authorization](/api-reference/core-workflows/authentication-and-authorization) – Securing your API calls.
+- [Preserving Pages: Archive & Reader View Guide](/guides/getting-started/preserving-and-reading-links) – User-facing perspective on preservation.
+
+---
+
+This page empowers developers and advanced users to fully leverage Linkwarden's powerful preservation features through the API, enabling persistent, reliable access to valuable web content in multiple archival formats.
+
+---

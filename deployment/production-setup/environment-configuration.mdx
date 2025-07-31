@@ -1,0 +1,178 @@
+---
+title: "Environment Configuration"
+description: "Covers configuration of essential environment variables, secrets management, and options that influence Linkwarden’s operational modes—providing practical guidance for both default and advanced configurations."
+---
+
+# Environment Configuration
+
+Configuring environment variables properly is critical for running Linkwarden securely and reliably. This guide walks you through the essential variables that control core features, operational modes, and integrations, enabling a tailored and stable deployment whether you are using default setups or advanced configurations.
+
+---
+
+## 1. Understanding Environment Variables
+
+Environment variables in Linkwarden determine fundamental behavior such as user registration policy, administrative user settings, feature toggles, service providers, and resource limits. They allow you to customize Linkwarden to match your organizational policies, infrastructure capacity, and integration preferences.
+
+At runtime, Linkwarden exposes these variables through its public API endpoint `/api/v1/config`, making them available to the web and mobile apps. This dynamic configuration access ensures your apps adjust seamlessly to your environment settings.
+
+---
+
+## 2. Core Environment Variables Explained
+
+The following are the primary environment variables that control Linkwarden's behavior:
+
+| Variable Name                       | Type          | Description                                                                                   | Example / Notes                                         |
+| ---------------------------------- | ------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `NEXT_PUBLIC_DISABLE_REGISTRATION` | Boolean (str) | When set to `'true'`, disables new user registrations globally.                              | `'true'` or `'false'`                                   |
+| `NEXT_PUBLIC_ADMIN`                 | Number        | Numeric user ID assigned as the global administrator.                                        | e.g., `1`                                              |
+| `NEXT_PUBLIC_RSS_POLLING_INTERVAL_MINUTES` | Number        | Interval, in minutes, defining how often the background task polls subscribed RSS feeds.    | e.g., `15`                                            |
+| `NEXT_PUBLIC_EMAIL_PROVIDER`       | Boolean (str) | Enables or disables email provider support for notifications and user interactions.          | `'true'` or `'false'`                                   |
+| `NEXT_PUBLIC_MAX_FILE_BUFFER`      | Number        | Maximum buffer size allowed for file uploads or handling.                                   | e.g., `10485760` (10 MB)                               |
+| `OPENAI_API_KEY`, `AZURE_API_KEY`, `ANTHROPIC_API_KEY`, `OPENROUTER_API_KEY`, `NEXT_PUBLIC_OLLAMA_ENDPOINT_URL` | String API Keys | API keys or endpoints to enable AI-powered features such as smart tagging.                   | Provide respective keys to enable AI functionality     |
+
+Additional environment variables include `version` for instance versioning and other internal configurations.
+
+---
+
+## 3. Setting Environment Variables
+
+### 3.1 Using `.env` Files
+
+Linkwarden supports typical `.env` style environment files where variables are declared in `KEY=VALUE` format. For example:
+
+```shell
+NEXT_PUBLIC_DISABLE_REGISTRATION=true
+NEXT_PUBLIC_ADMIN=1
+NEXT_PUBLIC_RSS_POLLING_INTERVAL_MINUTES=20
+NEXT_PUBLIC_EMAIL_PROVIDER=true
+NEXT_PUBLIC_MAX_FILE_BUFFER=10485760
+OPENAI_API_KEY=sk-xxxxxx
+```
+
+Load these in your deployment environment according to your server or container runtime conventions.
+
+### 3.2 Docker and Container Deployments
+
+When deploying within Docker, pass environment variables in your `docker-compose.yml` or container orchestration setup. Make sure to exclude sensitive `.env` files from source control and use secrets management where possible.
+
+### 3.3 Mobile and Web Apps
+
+- For mobile apps, environment specific variables are embedded during build time or configured via CI/CD pipelines targeting platforms like Expo.
+- The web frontend retrieves the latest variable values dynamically via the `/api/v1/config` API endpoint during runtime.
+
+---
+
+## 4. Managing Secrets and Sensitive Data
+
+Keep API keys and sensitive variables secure by following these best practices:
+
+- Never hardcode secrets directly in source code.
+- Use environment variable injection or secrets managers (e.g., Vault, AWS Secrets Manager).
+- Use `.gitignore` to prevent committing `.env` files or similar credentials.
+- Rotate API keys regularly and audit usage.
+
+---
+
+## 5. Advanced Configuration Options
+
+### 5.1 Controlling User Registration
+
+By setting `NEXT_PUBLIC_DISABLE_REGISTRATION=true`, you disable open registration, forcing new users to be added by an administrator. This is essential for private or enterprise environments.
+
+### 5.2 Administrator User Setup
+
+Specifying a numeric `NEXT_PUBLIC_ADMIN` sets the user ID with elevated privileges necessary to perform administrative tasks such as user management, API token control, and system configurations.
+
+### 5.3 RSS Polling Interval
+
+`NEXT_PUBLIC_RSS_POLLING_INTERVAL_MINUTES` determines how frequently the background process fetches new content from subscribed RSS feeds. Adjusting this value balances freshness of data and system resource usage.
+
+### 5.4 Enabling Email Provider Support
+
+Set `NEXT_PUBLIC_EMAIL_PROVIDER=true` to allow notifications and email interactions, improving collaboration and user engagement.
+
+### 5.5 AI Features Toggle
+
+Providing one or more AI service keys activates AI-powered capabilities like smart tagging. Without these keys, AI features remain disabled.
+
+### 5.6 File Upload Buffer Limits
+
+Configure `NEXT_PUBLIC_MAX_FILE_BUFFER` to limit the size of files processed by the service, protecting system memory and performance.
+
+---
+
+## 6. Validation and Testing
+
+After setting environment variables:
+
+- Restart all application components to apply changes.
+- Access the `/api/v1/config` endpoint (e.g., via browser or API client) to confirm values are exposed as expected.
+- Verify that features disabled or enabled via these variables behave accordingly in the UI and API.
+
+---
+
+## 7. Troubleshooting Common Issues
+
+<AccordionGroup title="Common Problems and Solutions">
+<Accordion title="Environment Variables Not Loaded">
+
+- **Problem:** Variables are not reflected in the app after deployment.
+- **Solution:** Ensure your environment variables are loaded before starting the application process. For containerized setups, confirm variables are passed in the runtime environment and not only build time.
+</Accordion>
+
+<Accordion title="API Keys Not Enabling AI Features">
+
+- **Problem:** AI tagging or AI-related features remain inactive despite setting keys.
+- **Solution:** Double-check API keys for correctness and validity. Confirm variables are named exactly as required, without additional spaces or syntax errors.
+</Accordion>
+
+<Accordion title="Disabling User Registration Not Working">
+
+- **Problem:** Users can still register despite setting the disable registration flag.
+- **Solution:** Verify `NEXT_PUBLIC_DISABLE_REGISTRATION` is set to the string `'true'` exactly. The system interprets this setting strictly.
+</Accordion>
+</AccordionGroup>
+
+---
+
+## 8. Summary
+
+Proper environment configuration is fundamental to securing and customizing your Linkwarden deployment. By clearly defining administrative access, toggling features such as AI and email, and setting sensible resource limits, you ensure a robust and tailored experience. Always test changes in a controlled environment before production rollout.
+
+For further details on related deployment procedures, system requirements, and operational monitoring, please explore the following documentation pages:
+
+- [Getting Started with Deployment](/deployment/production-setup/deployment-getting-started)
+- [System Requirements](/getting-started/prerequisites-installation/system-requirements)
+- [Monitoring and Logging Setup](/deployment/operations-monitoring/monitoring-logging)
+
+
+---
+
+## Appendix: Sample Environment Configuration Snippet
+
+```shell
+# Disable open user registration
+NEXT_PUBLIC_DISABLE_REGISTRATION=true
+
+# Global administrator user ID
+NEXT_PUBLIC_ADMIN=1
+
+# Poll RSS feeds every 15 minutes
+NEXT_PUBLIC_RSS_POLLING_INTERVAL_MINUTES=15
+
+# Enable email notifications
+NEXT_PUBLIC_EMAIL_PROVIDER=true
+
+# Max file buffer size: 10MB
+NEXT_PUBLIC_MAX_FILE_BUFFER=10485760
+
+# Enable AI provider (e.g. OpenAI)
+OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxx
+
+# Application version info
+version=1.2.3
+```
+
+---
+
+This completes your essential guide to configuring the Linkwarden environment variables effectively for production and advanced setups.

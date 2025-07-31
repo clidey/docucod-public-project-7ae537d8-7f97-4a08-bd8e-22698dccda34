@@ -1,0 +1,190 @@
+---
+title: "Troubleshooting & Common Setup Issues"
+description: "Solve the most frequently encountered startup problems: authentication issues, missing dependencies, configuration errors, or database connection problems. Includes practical checks and recovery steps."
+---
+
+# Troubleshooting & Common Setup Issues
+
+Welcome to the Troubleshooting & Common Setup Issues guide for Linkwarden. This page empowers you to swiftly identify and resolve the most frequent startup problems, including authentication difficulties, missing dependencies, configuration errors, or database connection problems. By following this practical guide, you'll restore your Linkwarden instance to smooth operation and regain your productivity.
+
+---
+
+## 1. Authentication Problems
+
+Authentication is the gateway to your saved links and collections. When you encounter login issues, follow these steps to troubleshoot and recover access.
+
+### 1.1 Unable to Log In / Invalid Credentials
+
+**Symptoms:** System displays 'Invalid credentials.' message or refuses login.
+
+**Action Steps:**
+
+- **Verify Credentials:** Ensure you've entered the correct username or email and password. Both fields are case-sensitive.
+- **Password Reset:** If unsure about your password, use the 'Forgot Password?' link on the login screen to receive a reset link via email.
+- **Check Email Verification:** If registration was recent, ensure you have verified your email address by clicking the link sent to you. Check spam or junk folders.
+- **Try Resending Verification:** Use the 'Resend Email' option if you didn't receive the verification promptly.
+
+<Note>
+If you are running a self-hosted instance with external authentication (SSO or OAuth), confirm that the provider is reachable and configured correctly in your environment variables.
+</Note>
+
+### 1.2 Authentication Email Not Received
+
+**Symptoms:** Verification or password reset emails are not arriving.
+
+**Recovery Steps:**
+
+- Check your spam or junk mail folder.
+- Confirm your mail server configuration (if self-hosted). Ensure SMTP settings are correctly set in your environment.
+- Verify that your email address was entered correctly during signup.
+- If using a third-party email provider, review relevant API keys and permissions.
+
+<Tip>
+Setting up a reliable SMTP service like SendGrid, Mailgun, or similar greatly improves email delivery success.
+</Tip>
+
+---
+
+## 2. Missing Dependencies and Configuration Errors
+
+Linkwarden requires certain environment settings and dependencies to be correctly installed and configured. Problems here typically prevent the service from starting or functioning properly.
+
+### 2.1 Environment Variables Check
+
+**Make sure these key environment variables are set correctly:**
+
+- `DATABASE_URL`: Valid connection string to your PostgreSQL database.
+- `JWT_SECRET`: A secure random string used for session security.
+- `MAIL_*` variables: SMTP configuration for outgoing emails.
+
+Incorrect or missing values here may cause connection failures or silent errors.
+
+### 2.2 Dependency Versions & Installation
+
+- Confirm Node.js version compatibility with the current Linkwarden release, consult [System Requirements](../prerequisites-installation/system-requirements).
+- Ensure PostgreSQL is running, accessible, and matches the required version.
+
+<Warning>
+Running with an unsupported database version or outdated Node.js runtime can cause subtle and unpredictable errors.
+</Warning>
+
+### 2.3 Configuration File Errors
+
+If you utilize configuration files (e.g., `.env`), check for:
+- Syntax errors (extra spaces, missing values)
+- Correct naming as per official documentation
+- No multiple conflicting definitions
+
+---
+
+## 3. Database Connection Issues
+
+Your PostgreSQL database is critical for Linkwarden operations. Problems communicating with it will halt the app.
+
+### 3.1 Unable to Connect to Database
+
+**Check the following:**
+- Database service is running and listening on the expected port
+- Network or firewall settings allow connection from Linkwarden host
+- Credentials and database host in `DATABASE_URL` are correct
+- SSL requirements are properly configured or disabled as appropriate
+
+<Info>
+You can test connectivity separately using `psql` or equivalent tools to confirm database accessibility.
+</Info>
+
+### 3.2 Database Migration Failures
+
+During startup or upgrades, migration errors often stem from:
+- Partial upgrades or interrupted processes
+- Version mismatch between application and database schema
+
+**Remediations:**
+- Review logs for migration error details
+- Re-run migrations manually if needed
+- Backup database before performing operations
+
+---
+
+## 4. Application Startup & Runtime Errors
+
+### 4.1 Server Fails to Start
+
+Common reasons include:
+- Port conflicts: Ensure no other app uses the Linkwarden port (default 3000).
+- Missing environment variables
+- Incorrect file permissions or missing files
+
+Check logs immediately after starting to locate precise errors.
+
+### 4.2 Interface Not Loading or Showing Errors
+
+- Clear browser cache and cookies
+- Confirm backend API is running and reachable
+- Ensure correct URLs and ports in your environment
+
+---
+
+## 5. Practical Checks & Recovery Steps
+
+Follow this checklist to isolate and fix common startup problems:
+
+1. **Confirm environment variables:** Run `printenv | grep LINKWARDEN` or review `.env`.
+2. **Check database status:** Use `systemctl status postgresql` or equivalent.
+3. **Test database access:** Attempt connection via CLI or a DB client.
+4. **Inspect application logs:** Look for errors at startup or runtime.
+5. **Validate email service:** Send a test email (via the configured SMTP).
+6. **Review network/firewall settings:** Ensure ports and origins are accessible.
+7. **Restart services:** Restart database and Linkwarden server after changes.
+
+---
+
+## 6. Troubleshooting Example: Authentication Failure
+
+<Steps>
+<Step title="Step 1: Verify Credentials">
+Double-check your username/email and password entry at login.
+</Step>
+<Step title="Step 2: Reset Password">
+If credentials fail, use 'Forgot Password?' to request a password reset email.
+</Step>
+<Step title="Step 3: Check Email Delivery">
+Look in spam/junk folder. Confirm email setup if running self-hosted.
+</Step>
+<Step title="Step 4: Review Application Logs">
+Search server logs for authentication errors or exceptions.
+</Step>
+<Step title="Step 5: Contact Support">
+If unresolved, reach out to support@linkwarden.app with log excerpts and error details.
+</Step>
+</Steps>
+
+---
+
+## 7. When to Get Help
+
+If the issue persists after following this guide:
+
+- Consult the [Validating Your Setup](../initial-experience-validation/validate-setup) page.
+- Check the [FAQ on Authentication Issues](../../faq/troubleshooting-and-performance/cant-login-or-authentication-problems).
+- Engage with community forums or submit an issue on GitHub.
+- Contact Linkwarden support at support@linkwarden.app.
+
+---
+
+## 8. Additional Resources
+
+- [First Run Setup](../prerequisites-installation/first-run-setup)
+- [System Requirements](../prerequisites-installation/system-requirements)
+- [Installation Methods](../prerequisites-installation/installation-methods)
+- [Quickstart: Adding Links](../initial-experience-validation/quickstart-adding-links)
+
+---
+
+By systematically addressing these common setup issues, you can quickly recover a stable Linkwarden environment and continue enjoying seamless bookmarking, preservation, and collaboration.
+
+Thank you for choosing Linkwarden.
+
+---
+
+*This document corresponds to the [Troubleshooting & Common Setup Issues](https://github.com/linkwarden/linkwarden) page in the Getting Started guide.*

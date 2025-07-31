@@ -1,0 +1,172 @@
+---
+title: "Monitoring and Logging"
+description: "Learn how to collect, store, and review logs from production services, set up health checks, and integrate with standard monitoring tools to gain visibility into your deployment’s status and performance."
+---
+
+# Monitoring and Logging
+
+Gain comprehensive visibility into your Linkwarden deployment by effectively collecting, storing, and reviewing logs from all production components. This guide empowers you to proactively monitor health, detect issues early, and maintain optimal system performance through integration with industry-standard monitoring tools.
+
+---
+
+## 1. Introduction
+
+Monitoring and logging are crucial pillars for a reliable and maintainable Linkwarden environment. They provide you insights into system health, performance, and unexpected behavior. This guide helps you establish a robust monitoring setup tailored to Linkwarden's architecture and workflows.
+
+By following this guide, you will be able to:
+- Collect logs from backend services, workers, and frontend applications.
+- Set up health checks that continuously verify service availability.
+- Integrate with monitoring platforms such as Prometheus, Grafana, or ELK stack.
+- Troubleshoot common issues with targeted log analysis.
+
+---
+
+## 2. What to Monitor
+
+Focus your monitoring efforts on key Linkwarden components to capture meaningful data and ensure uptime:
+
+### Backend API Server
+- **Request logs:** Track incoming API requests, response status codes, and latency.
+- **Error logs:** Capture application errors, exceptions, and database connectivity issues.
+- **Metrics:** Monitor request throughput, error rates, and resource utilization.
+
+### Worker Services
+- **Processing logs:** Record progress and completion of background tasks like link processing, indexing, and RSS polling.
+- **Failures:** Detect failed jobs, retries, and worker restarts.
+
+### Frontend (Web and Mobile Apps)
+- **Client logs:** Track user errors, app crashes, and performance metrics.
+- **Network calls:** Monitor API call times and failures.
+
+### Database and Search
+- Track database query performance and failures.
+- Monitor search indexing times and error rates.
+
+---
+
+## 3. Setting Up Logging
+
+### 3.1 Log Collection
+
+Linkwarden components output logs to STDOUT/STDERR by default to simplify containerization and cloud deployments:
+
+- For backend and worker processes, enable structured JSON logging where possible.
+- App logs should include timestamp, log level (INFO, WARN, ERROR), component source, and message.
+
+### 3.2 Centralized Log Storage
+
+To effectively analyze logs, centralize them using one of the following approaches:
+
+- **ELK Stack (Elasticsearch, Logstash, Kibana):** Collect, parse, and visualize logs.
+- **Cloud Logging Solutions:** Use services like AWS CloudWatch, Google Cloud Logging, or Azure Monitor.
+- **Hosted Log Aggregators:** Services such as Datadog, Splunk, or Papertrail.
+
+Configure your environment to forward STDOUT and STDERR streams from containers or processes to your chosen aggregator.
+
+### 3.3 Log Retention and Rotation
+
+Plan log retention according to your compliance and storage limits. Implement rotation policies to avoid disk saturation, particularly for self-hosted deployments.
+
+---
+
+## 4. Health Checks
+
+Automate regular health checks to verify the availability and responsiveness of your Linkwarden deployment:
+
+### 4.1 API Health Endpoint
+
+Configure monitoring tools or load balancers to periodically query the backend API’s health endpoint (typically `/health` or `/status`). This endpoint returns status indicating if the API and connected services are operational.
+
+### 4.2 Worker Health
+
+Monitor worker logs for:
+- Regular heartbeat signals.
+- Expected progress in background processing.
+- Restart events triggered on failure.
+
+### 4.3 Frontend Monitoring
+
+Use synthetic monitoring tools to simulate user interactions and alert when the web or mobile apps are unresponsive or return errors.
+
+---
+
+## 5. Integration with Monitoring Tools
+
+### 5.1 Prometheus and Grafana
+
+Integrate Linkwarden backend and workers with Prometheus exporters to gather custom metrics such as:
+- API request counts and latency
+- Database query times
+- Worker job success/failure rates
+
+Visualize these metrics in Grafana dashboards customized for your deployment.
+
+### 5.2 Alerting
+
+Set up alerts for critical events:
+- High error rates
+- Service downtime
+- Resource exhaustion (CPU, memory, disk space)
+
+Use alerting channels such as email, Slack, PagerDuty, or SMS for immediate response.
+
+---
+
+## 6. Troubleshooting Common Issues
+
+### 6.1 Missing or Incomplete Logs
+
+- Verify the logging configuration in environment variables.
+- Ensure containers or services are not suppressing logs.
+- Confirm log forwarding agents (e.g., Fluentd, Filebeat) are running and properly configured.
+
+### 6.2 Worker Not Processing Jobs
+
+- Check worker logs for errors or crashes.
+- Confirm correct interval configuration (`ARCHIVE_SCRIPT_INTERVAL` environment variable).
+- Restart workers and verify logs show task execution.
+
+### 6.3 Health Checks Failing
+
+- Validate the API health endpoint is reachable.
+- Examine backend and worker logs for resource exhaustion or connectivity problems.
+- Check network/firewall settings between monitoring systems and Linkwarden services.
+
+---
+
+## 7. Best Practices
+
+- Enable debug-level logging temporarily only when diagnosing issues to avoid log flooding.
+- Correlate different logs (frontend, backend, workers) using timestamps and request identifiers.
+- Archive logs securely for auditing and compliance.
+- Automate monitoring and alert escalation to reduce downtime.
+
+---
+
+## 8. Summary
+
+Monitoring and logging are essential to maintain a healthy, performant, and secure Linkwarden deployment. Systematically collecting logs, running proactive health checks, and integrating with modern observability tools will enable you to catch problems early and keep your environment running smoothly.
+
+
+---
+
+For a successful operational deployment, complement this monitoring guide with the following key documentation:
+
+- [Deployment: Getting Started with Deployment](../deployment/production-setup/deployment-getting-started)
+- [Deployment: Environment Configuration](../deployment/production-setup/environment-configuration)
+- [Scaling Strategies](../deployment/operations-monitoring/scaling-strategies)
+- [Backup and Disaster Recovery](../deployment/security-disaster-recovery/backup-and-recovery)
+
+
+---
+
+## References
+
+- Worker process initialization and interval handling: [apps/worker/worker.ts](https://github.com/linkwarden/linkwarden/blob/main/apps/worker/worker.ts)
+- Environment variable guides for configuring service behavior
+- Integration examples for Prometheus / Grafana monitoring
+
+
+---
+
+This documentation is part of the [Deployment Documentation](../deployment/index.md) suite, designed to help you operate Linkwarden in production with confidence and excellence.

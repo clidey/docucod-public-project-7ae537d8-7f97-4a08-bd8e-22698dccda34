@@ -1,0 +1,169 @@
+---
+title: "System Requirements"
+description: "Understand the minimum and recommended system requirements for running Linkwarden, whether on your own hardware, in the cloud, or as a mobile app. Learn about supported platforms, required dependencies, and environmental variables."
+---
+
+# System Requirements for Linkwarden
+
+Understanding the system requirements is crucial for running Linkwarden smoothly—whether you plan to self-host on your own hardware, deploy in the cloud, or use the mobile app. This page guides you through the minimum and recommended specifications, supported platforms, dependencies, and environment variables necessary for a seamless experience.
+
+---
+
+## 1. Supported Platforms
+
+Linkwarden is designed to run reliably across multiple environments:
+
+- **Self-hosted Web Server:** Linux and macOS are the primary supported operating systems. Windows support is experimental and not recommended for production.
+- **Cloud Hosting:** Fully compatible with containerized deployments such as Docker on popular cloud providers (AWS, DigitalOcean, Azure, etc.).
+- **Mobile Applications:** Native iOS and Android apps built with React Native and managed via Expo.
+
+### Platform Notes:
+
+- The web and worker components require a server environment with Node.js and PostgreSQL (or compatible) database support.
+- Mobile apps require Android 7+ or iOS 13+ devices.
+
+---
+
+## 2. Minimum System Specifications
+
+| Component           | Minimum Requirement                    | Recommended              |
+|---------------------|--------------------------------------|-------------------------|
+| **CPU**             | 1 CPU Core                           | 2+ CPU Cores           |
+| **Memory (RAM)**    | 1 GB                                | 4 GB+                   |
+| **Disk Space**      | 5 GB (for base app and data storage) | 20 GB+ (if storing many archives)
+| **Network**        | Stable internet connection           | Broadband with low latency |
+
+### Additional Notes:
+
+- Storage requirements will vary based on the number and size of saved links and archived content.
+- For large teams or heavy usage, scale resources accordingly.
+
+---
+
+## 3. Required Software Dependencies
+
+To run Linkwarden’s web components and backend:
+
+- **Node.js:** Version 16.x or later
+- **PostgreSQL:** Version 12 or higher
+- **Docker:** Recommended for containerized deployments
+- **Additional Tools:**
+  - Git (for cloning and updating source code)
+  - `pnpm` or `npm` for package management
+
+### Mobile App Build Dependencies
+
+For Android builds, Gradle with JVM settings configured for at least 2GB heap space (see `apps/mobile/android/gradle.properties`) is required. iOS builds require Xcode 13+.
+
+---
+
+## 4. Environment Variables and Configuration
+
+Configuration primarily relies on environment variables defined in `.env` files or injected in deployment systems.
+
+### Essential Variables to Configure:
+
+| Variable                | Description                                         | Example Value                              |
+|-------------------------|-----------------------------------------------------|--------------------------------------------|
+| `DATABASE_URL`          | Connection string for PostgreSQL database           | `postgresql://user:password@localhost:5432/linkwarden` |
+| `NEXTAUTH_URL`          | Base URL for authentication callbacks and redirects | `http://localhost:3000/api/v1/auth`         |
+| `NEXTAUTH_SECRET`       | Secret key for session encryption and security      | (a random secure string)                     |
+| `POSTGRES_PASSWORD`     | Password for PostgreSQL service (Docker setups)     | (strong, secure password)                     |
+
+### Optional but Recommended:
+
+- `MAX_WORKERS` to control concurrent processes
+- `STORAGE_FOLDER` to define file storage path
+- Authentication SSO keys (GitHub, Google, Auth0, etc.) if used
+
+Refer to the provided `.env.sample` for the complete list of configurable variables and their purposes.
+
+<Info>
+Avoid committing real secrets to version control. Use environment-specific secure storage for production settings.
+</Info>
+
+---
+
+## 5. Using Docker and Containerization
+
+Linkwarden supports Docker deployments out of the box. The typical `.dockerignore` file excludes unnecessary files like `node_modules`, `.env`, and build artifacts to optimize the container context.
+
+### Benefits of Docker:
+
+- Simplifies installation and dependencies handling
+- Supports consistent runtime environments
+- Easily deployable on cloud infrastructure
+
+<Tip>
+If you plan to deploy with Docker, ensure your environment variables are correctly mapped in your container orchestration or `.env` files.
+</Tip>
+
+---
+
+## 6. Mobile App Requirements
+
+Linkwarden’s mobile app is built with React Native and Expo. Your device and build environment should meet these criteria:
+
+- Android devices: API level 24+ (Android 7.0) with supported CPU architectures (`armeabi-v7a`, `arm64-v8a`, `x86`, `x86_64`)
+- iOS devices: iOS 13 or later
+- Development environment requires: Android Studio (with Gradle configuration as noted), Xcode for iOS, and Internet access
+
+### Mobile App Configuration Highlights:
+
+- Hermes JavaScript engine enabled for better performance
+- Support for PNG, WebP, and GIF images
+
+Refer to `apps/mobile/app.json` and `apps/mobile/android/gradle.properties` for detailed build settings.
+
+---
+
+## 7. Common Pitfalls & Troubleshooting Tips
+
+- **Insufficient memory causes slow performance or crashes:** Increase RAM or optimize usage.
+- **Incorrect environment variables cause authentication or database connection failures:** Double-check `.env` values.
+- **Docker-related permissions issues:** Ensure file ownership and Docker user permissions align.
+- **Mobile app build errors:** Confirm Gradle and SDK versions match requirements.
+
+<Warning>
+Always test your deployment in a staging environment before production to catch configuration issues early.
+</Warning>
+
+---
+
+## 8. Summary
+
+By ensuring your hardware meets the minimum specs, installing the required dependencies, configuring environment variables properly, and selecting the supported platform that fits your needs, you set a strong foundation to run Linkwarden effectively.
+
+For detailed installation instructions, deployment guides, configuration settings, and further troubleshooting, refer to the [Installation Methods](../prerequisites-installation/installation-methods) and [First Run Setup](../prerequisites-installation/first-run-setup) pages.
+
+---
+
+## See Also
+
+- [Installation Methods](../prerequisites-installation/installation-methods) — Step-by-step installation options for various environments
+- [Configuration & First Run](../prerequisites-installation/first-run-setup) — Set up environment variables and first launch walkthrough
+- [Troubleshooting & Common Setup Issues](../../getting-started/initial-experience-validation/troubleshooting-common-issues) — Solve frequent problems encountered during setup
+- [Mobile App Build Configuration](../../deployment/production-setup/web-mobile-deployment) — Details on building and deploying mobile apps
+
+---
+
+## Additional Resources
+
+Access the sample environment file and core configuration references:
+
+```bash
+# Example environment setup snippet from .env.sample
+NEXTAUTH_URL=http://localhost:3000/api/v1/auth
+DATABASE_URL=postgresql://user:password@localhost:5432/linkwarden
+POSTGRES_PASSWORD=your_postgres_password
+NEXTAUTH_SECRET=your_secret_key
+```
+
+Use this as a template to configure your environment securely.
+
+
+---
+
+*This documentation empowers you to prepare your system for a reliable and secure Linkwarden experience.*
+
+---

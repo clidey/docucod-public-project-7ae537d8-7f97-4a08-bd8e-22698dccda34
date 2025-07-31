@@ -1,0 +1,198 @@
+---
+title: "Inviting Members and Setting Permissions"
+description: "Step-by-step guide to inviting collaborators into Linkwarden, assigning collection-level permissions, and best practices for secure and productive teamwork."
+---
+
+# Inviting Members and Setting Permissions
+
+Welcome to the collaborative heart of Linkwarden. This guide empowers you to invite teammates and colleagues to your Linkwarden workspace, assign precise permissions at the collection level, and establish secure, productive workflows. Whether you’re working in a small group or managing a thriving team, this guide ensures your collaboration starts smoothly and stays organized.
+
+---
+
+## 1. Workflow Overview
+
+### Purpose
+Learn how to invite members to your Linkwarden account and control their access by setting permissions on collections. This workflow ensures that collaborators have the right level of access to shared links, maintaining security and efficient teamwork.
+
+### Prerequisites
+- You must have an active Linkwarden account with owner or admin privileges on a collection.
+- Invitation feature enabled by your admin or subscription plan.
+- For email invitations, an email provider must be configured (email invitations depend on `NEXT_PUBLIC_EMAIL_PROVIDER` setting).
+
+### Expected Outcome
+- Successfully invite users via username or email.
+- Assign or verify collection-level permissions (view, update rights).
+- Collaborators receive invitations and gain access as intended.
+
+### Estimated Time
+5–10 minutes to invite collaborators and assign permissions.
+
+### Difficulty Level
+Beginner to Intermediate
+
+---
+
+## 2. Step-by-Step Instructions
+
+### Step 1: Access Invite Members Modal
+1. Navigate to your Linkwarden dashboard.
+2. Select the collection or team workspace you want to share.
+3. Click the “Invite Members” or equivalent button to open the invitation modal.
+
+### Step 2: Enter Invitation Details
+- **With Email Provider Enabled** (`NEXT_PUBLIC_EMAIL_PROVIDER=true`):
+  - Enter the collaborator’s **email address** in the input field.
+- **Without Email Provider:**
+  - Enter the collaborator’s **username**.
+
+<Tip>
+If your Linkwarden instance supports email invitations, using email is the preferred and more secure method.
+</Tip>
+
+### Step 3: Review Invitation Note
+Within the modal, you’ll see a note about invitation seats and billing implications. Understand that each invited user may affect your subscription license seats.
+
+### Step 4: Send the Invitation
+- Click the **Send Invitation** button.
+- Upon successful submission, the user receives an invitation email (if applicable).
+- The modal closes automatically, confirming that the invitation was sent.
+
+### Step 5: Confirm Invitation Acceptance
+- Invited users must accept their invitation via the emailed link or sign-in prompt.
+- Once accepted, they are added as members with the assigned permissions.
+
+### Step 6: Assign or Adjust Permissions
+1. In the collections management area, select the collection you shared.
+2. Go to the **Permissions** or **Members** tab.
+3. For each invited member, specify their access level:
+   - **View Only:** Can see and read links but not edit.
+   - **Update / Edit:** Can add, edit, or delete links.
+
+<Tip>
+Regularly review permissions to ensure collaborators have appropriate access, especially when team roles change.
+</Tip>
+
+### Step 7: Save Permission Changes
+- Ensure any changes to permissions are saved and applied.
+- Collaborators will see updates immediately on next login or refresh.
+
+---
+
+## 3. Practical Tips and Best Practices
+
+- **Use Email Invitations When Possible:** This reduces manual errors and helps track invite status.
+- **Manage Seats Carefully:** Invitations may count against your subscription seats. Monitor seat usage to avoid interruptions.
+- **Set Minimum Necessary Permissions:** Follow least privilege principle for added security.
+- **Regularly Audit Members:** Remove or downgrade access for inactive or departing team members.
+- **Communicate Expectations:** Inform invited members of their responsibilities and collection use policies.
+
+---
+
+## 4. Troubleshooting & Common Issues
+
+### Problem: Invitation Email Not Received
+- Check spam or junk folders.
+- Confirm the correct email was entered.
+- Verify the email server is configured and operational.
+
+### Problem: Invitation Fails to Send
+- Confirm that your instance environment variable `NEXT_PUBLIC_EMAIL_PROVIDER` is set correctly.
+- Check error notifications in the UI.
+- For self-hosted instances, ensure SMTP/email server is reachable and credentials are valid.
+
+### Problem: User Cannot Access Collection After Accepting Invitation
+- Verify that collection permissions include the user.
+- Confirm that user has completed email verification if required.
+- Re-send invitation if acceptance process was interrupted.
+
+### Problem: Permission Changes Not Reflected
+- Refresh the user interface.
+- Ask users to log out and back in to sync permissions.
+
+---
+
+## 5. Code Example: How the Invite Modal Works
+
+This React snippet (simplified) demonstrates how the invitation form handles email vs. username input depending on configuration, and submits the invitation asynchronously:
+
+```tsx
+function InviteModal({ onClose }) {
+  const [form, setForm] = useState({ username: '', email: '', invite: true });
+  const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER === 'true';
+
+  async function submit(event) {
+    event.preventDefault();
+    if (emailEnabled ? form.email : form.username) {
+      // Send invite via API
+      await addUser({ ...form });
+      // Initiate the sign-in flow for invited user
+      signIn('invite', { email: form.email });
+      onClose();
+    } else {
+      alert('Please fill all required fields.');
+    }
+  }
+
+  return (
+    <form onSubmit={submit}>
+      {emailEnabled ? (
+        <input
+          type="email"
+          placeholder="Enter email"
+          value={form.email}
+          onChange={e => setForm({ ...form, email: e.target.value })}
+        />
+      ) : (
+        <input
+          type="text"
+          placeholder="Enter username"
+          value={form.username}
+          onChange={e => setForm({ ...form, username: e.target.value })}
+        />
+      )}
+      <button type="submit">Send Invitation</button>
+    </form>
+  );
+}
+```
+
+---
+
+## 6. Next Steps & Related Documentation
+
+- [Inviting Members and Setting Permissions (this page)](/guides/collaboration-and-sharing/inviting-collaborators)
+- [Sharing Collections or Links Publicly](/guides/collaboration-and-sharing/public-sharing)
+- [Authentication & Authorization](https://docs.linkwarden.app/security/auth-models-identity/auth-overview)
+- [Managing Users and API Access](/guides/advanced-tasks-and-best-practices/user-administration-tokens)
+- [Quickstart: Adding and Preserving Your First Link](/getting-started/initial-experience-validation/quickstart-adding-links)
+- [Troubleshooting & Common Setup Issues](/getting-started/initial-experience-validation/troubleshooting-common-issues)
+
+---
+
+## 7. Summary
+
+Collaborating in Linkwarden hinges on inviting the right members and assigning permissions sensibly. This guide leads you through the invitation workflow, details session behaviors like seat billing impacts, highlights permission settings per collection, and arms you with practical advice to maintain a smooth collaboration environment.
+
+By following these steps, your team will quickly experience the power of shared, preserved links with controlled access, enhancing productivity and security.
+
+---
+
+<Info>
+For deeper insights into Linkwarden’s user roles and permission models, visit the [Authorization & Permissions](https://docs.linkwarden.app/security/auth-models-identity/authorization-models) documentation.
+</Info>
+
+---
+
+## 8. Frequently Asked Questions
+
+<AccordionGroup title="Frequently Asked Questions">
+<Accordion title="Can I invite collaborators without an email provider configured?">
+Yes. When email invitations are not enabled, you can invite members using their Linkwarden username. However, user onboarding is smoother with email invites.
+</Accordion>
+<Accordion title="What happens if I exceed my subscription seats when inviting?">
+Linkwarden attempts to update your seat count automatically with Stripe if configured. If your subscription limit is reached, invitations might be blocked or require billing upgrade.
+</Accordion>
+<Accordion title="How do I revoke or change permissions after inviting a member?">
+Use the Collections Membership or Permissions panel to adjust roles. Changes apply immediately upon saving.
+</Accordion>
+</AccordionGroup>

@@ -1,0 +1,215 @@
+---
+title: "Organizing Links: Collections & Tags"
+description: "Shows how to create collections and sub-collections, add descriptions, and assign multiple tags to your links. Includes strategies for effective organization and retrieval. Guides users on making sense of stored content and best practices for long-term organization."
+---
+
+# Organizing Links: Collections & Tags
+
+Efficient link organization is essential to maximize the value of your saved web content. This guide explains how to create and manage **collections** and **sub-collections**, add clear descriptions, and assign multiple tags to your links. You will learn strategies for organizing your content hierarchically and thematically, enabling quick retrieval and long-term maintainability.
+
+---
+
+## 1. Understanding Collections and Tags
+
+### What are Collections?
+Collections are user-defined groupings for your links. Think of them as folders or topics where you store related links together. Collections can have **sub-collections** allowing you to organize your bookmarks with nested hierarchies suited to your needs.
+
+### What are Tags?
+Tags are flexible labels that you can assign to links across collections. Unlike collections, tags are not hierarchical but help in cross-cutting organization — for example, marking links with topics such as "research", "read-later", or "project-x".
+
+### Why Use Both?
+- **Collections** provide a primary structural hierarchy.
+- **Tags** create overlapping dimensions to classify and filter links.
+
+Combining both allows you to categorize links effectively by project, topic, status, or any other attribute.
+
+---
+
+## 2. Prerequisites
+
+- You must be **logged in** to your Linkwarden account.
+- Have access to the **Collections page** in either web or mobile app.
+- Basic familiarity with adding and editing links.
+
+---
+
+## 3. Creating Collections and Sub-Collections
+
+### Step 1: Access Collections
+Navigate to the collections management area in your app. On the web, click the 'Collections' menu; on mobile, open the Collections section from the main menu.
+
+### Step 2: Create a New Collection
+- Click or tap **Create New Collection**.
+- Enter a clear, descriptive **name** that reflects the purpose of the collection.
+- Optionally, choose a **color** to visually identify it.
+- Add an optional **description** to provide context.
+
+### Step 3: Create Sub-Collections
+- While editing or creating a collection, there is an option to assign a **parent collection**.
+- Select an existing collection as the parent to nest your new collection as a sub-collection.
+
+### Step 4: Save Your Collection
+- Confirm and save your collection.
+- Newly created collections will appear hierarchically in the collections list.
+
+#### Example:
+```json
+{
+  "name": "Research Articles",
+  "description": "Collections of academic and industry insights",
+  "parentId": 12,  // This links it as a sub-collection under collection with ID 12
+  "color": "blue"
+}
+```
+
+<Note>
+Sub-collections inherit visibility and sharing permissions consistent with their parent collection, so review permissions accordingly.
+</Note>
+
+---
+
+## 4. Adding Descriptions to Collections and Links
+
+Adding context through descriptions helps recall why a collection or link matters, especially over time.
+
+### How to Add/Edit Descriptions:
+- When creating or editing a collection, find the **Description** field and enter meaningful details.
+- For individual links, open the link editor and add notes or summaries in the description box.
+
+### Best Practices:
+- Keep descriptions concise but informative.
+- Use keywords or project identifiers to improve searchability.
+
+---
+
+## 5. Assigning Multiple Tags to Your Links
+
+### Why Multiple Tags?
+Tags let you slice your saved content in versatile ways. Assigning multiple tags can mark a link for:
+- Topic
+- Priority
+- Status
+- Associated project
+
+### How to Add Tags:
+- When adding or editing a link, locate the **Tags** section.
+- Type to add existing tags or create new ones on the fly.
+- You can assign multiple tags separated by commas or by selecting from presented options.
+
+### Managing Tags:
+- Tags are managed globally and can be reused across collections.
+- Consider using consistent tag naming conventions to avoid duplicates (e.g., singular vs plural).
+
+---
+
+## 6. Organizing Strategy for Effective Retrieval
+
+### Hierarchy + Tagging Workflow
+- Create a **folder-like structure** with collections and sub-collections that represent broad categories or projects.
+- Use **tags** as metadata layers enabling cross-category retrieval.
+
+### Examples
+- Collection: "Marketing Campaigns"
+  - Sub-collection: "2024 Q2"
+  - Tags on links: "email", "strategy", "analytics"
+
+- Collection: "Personal"
+  - Tags: "read-later", "recipes", "travel"
+
+### Search and Filter
+- Use collection-based filters to narrow down by project or area.
+- Use tags to perform thematic or status-based searches.
+
+---
+
+## 7. Step-by-Step Instructions: Editing Links to Manage Collections and Tags
+
+<Steps>
+<Step title="Open Link Editor">
+Open the link details or editing pane for the link you want to organize.
+</Step>
+<Step title="Assign or Change Collection">
+Select or change the collection by choosing from the folder/tree list. To create a new collection, use the shortcut available in the selection interface.
+</Step>
+<Step title="Add Description">
+Write or update the description field with notes or contextual info.
+</Step>
+<Step title="Add Tags">
+Type and select existing tags or create new ones. You can assign multiple tags to describe the link comprehensively.
+</Step>
+<Step title="Save Updates">
+Hit the Save button to apply changes. Your link now belongs to the chosen collection with the assigned tags and description.
+</Step>
+</Steps>
+
+---
+
+## 8. Practical Tips and Best Practices
+
+- **Use descriptive collection names**: Clear names reduce confusion.
+- **Use sub-collections sparingly**: Keep hierarchy at 2-3 levels deep to avoid complexity.
+- **Tag consistently**: Define common tags and avoid variations.
+- **Add descriptions where helpful**: This pays off when searching later.
+- **Review collections periodically**: Archive or consolidate rarely used collections.
+
+---
+
+## 9. Troubleshooting Common Issues
+
+### Problem: Cannot find a collection when assigning a link
+- Verify that your account is authenticated.
+- Refresh collections list to sync new collections.
+- Check if the collection is archived or deleted.
+
+### Problem: Tags don’t seem to apply or save
+- Ensure you have the required permissions to edit tags.
+- Avoid special characters in tag names.
+- Refresh and retry, as some UI latency can delay tag updates.
+
+### Problem: Collections do not appear in expected hierarchy
+- Confirm the parent collection assignment is saved correctly.
+- Refresh the page to reload latest collection structure.
+
+<Tip>
+In case of unexpected behavior, logging out and back in or clearing app cache often resolves sync issues.
+</Tip>
+
+---
+
+## 10. Next Steps & Related Content
+
+- Learn about **Adding and Preserving Your First Link** in the [Quickstart Guide](https://linkwarden/docs/guides/getting-started/quick-start-workflow).
+- Explore **Preserving Pages with Archive & Reader View** to complement collections and tagging.
+- Advance to **Smart Tagging and Full-Text Search** to leverage AI-driven organization.
+- Review **Inviting Members and Setting Permissions** to collaborate on collections.
+
+You may also want to explore the broader overview of how collections fit into Linkwarden’s workflow in [Core Concepts and Terminology](https://linkwarden/docs/overview/core-concepts-and-architecture/core-concepts-terminology).
+
+---
+
+## Appendix: Sample JSON Payloads for Collection Operations
+
+### Create Collection Request
+```json
+{
+  "name": "Project Phoenix",
+  "description": "Primary collection for the Phoenix project links",
+  "color": "green"
+}
+```
+
+### Update Collection Request
+```json
+{
+  "id": 7,
+  "name": "Project Phoenix - Updated",
+  "description": "Updated description with milestones",
+  "color": "darkgreen"
+}
+```
+
+---
+
+By following this guide, you will have your links arranged clearly, making search and recall effortless while enabling powerful collaboration.
+
+---

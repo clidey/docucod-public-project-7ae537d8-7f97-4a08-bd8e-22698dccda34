@@ -1,0 +1,359 @@
+---
+title: "Collections API"
+description: "Reference for organizing links using collections and sub-collections. Covers creating, updating, deleting, and sharing collections, as well as permission management for collaboration and public access."
+---
+
+# Collections API Reference
+
+Organize and collaborate on your saved links effectively using the Collections API. This reference guides you through creating, updating, deleting, and sharing collections and sub-collections, managing permissions for collaboration, and accessing public collections. Whether you want to build personal curated libraries or team-shared collections, this API enables complete lifecycle management of collections with fine-grained access control.
+
+---
+
+## Overview
+The Collections API provides endpoints to manage collections, which are containers for organizing saved links. Collections support hierarchical structure with parent-child relationships (sub-collections), sharing options for team collaboration, and public visibility for sharing collections externally.
+
+Users can perform the following actions through the API:
+
+- Create new collections or sub-collections
+- Retrieve detailed information about collections and their members
+- Update collection metadata and permissions
+- Delete collections or leave collections as members
+- Access public collections and their tags
+
+This API requires authentication and respects user roles and permissions to ensure data security and controlled collaboration.
+
+---
+
+## Base URL
+All endpoints are rooted at:
+
+```
+/api/v1/collections
+```
+
+---
+
+## Authentication & Authorization
+
+### Required Authentication
+All endpoints except those under `/public` require valid user authentication via session tokens or API keys.
+
+### Permission Model
+- **Owner:** Full permissions to update, delete, and manage members.
+- **Members:** Permissions vary by assigned role defining their ability to create, update, or delete within the collection.
+- Only owners and authorized members can make updates or deletions.
+
+Unauthorized requests will receive HTTP status codes 401 Unauthorized or 403 Forbidden based on the nature of the denial.
+
+---
+
+## Endpoints
+
+### 1. List User Collections
+
+Retrieves all collections accessible to the authenticated user.
+
+- **Method:** GET
+- **URL:** `/api/v1/collections`
+
+**Response:** List of collection objects including member info and link counts.
+
+**Example Request:**
+```http
+GET /api/v1/collections
+Authorization: Bearer {token}
+```
+
+**Example Response:**
+```json
+{
+  "response": [
+    {
+      "id": 42,
+      "name": "Research Articles",
+      "description": "Curated research links.",
+      "color": "#4caf50",
+      "isPublic": false,
+      "members": [{"user": {"username": "alice", "name": "Alice"}, "canCreate": true, "canUpdate": true, "canDelete": false}],
+      "_count": {"links": 100}
+    }
+  ]
+}
+```
+
+---
+
+### 2. Create a Collection
+
+Create a new top-level collection or a sub-collection.
+
+- **Method:** POST
+- **URL:** `/api/v1/collections`
+- **Body:** JSON object with collection details
+
+| Field       | Type     | Description                                                   |
+|-------------|----------|---------------------------------------------------------------|
+| name        | string   | Collection name (required)                                    |
+| description | string   | Optional textual description of the collection                |
+| color       | string   | Hex color code for UI theming                                 |
+| icon        | string   | Optional icon name                                            |
+| iconWeight  | string   | Optional icon style weight                                    |
+| parentId    | number | 'root' | Parent collection ID for sub-collections or 'root' for top-level |
+| isPublic    | boolean  | Whether the collection is publically accessible               |
+| members     | array    | List of member assignments, each with `userId`, `canCreate`, `canUpdate`, `canDelete` flags |
+
+**Example Request:**
+```json
+{
+  "name": "Project X",
+  "description": "Links for Project X research",
+  "color": "#ff5722",
+  "parentId": "root",
+  "isPublic": false,
+  "members": [
+    { "userId": 10, "canCreate": true, "canUpdate": true, "canDelete": false }
+  ]
+}
+```
+
+**Example Response:**
+```json
+{
+  "response": {
+    "id": 101,
+    "name": "Project X",
+    "description": "Links for Project X research",
+    "isPublic": false,
+    "members": [...],
+    "_count": {"links": 0}
+  }
+}
+```
+
+**Important:** Only the authenticated user who will be the owner can create collections. Member access must be validated.
+
+---
+
+### 3. Retrieve a Specific Collection
+
+Fetch detailed information for a collection including member list and link count.
+
+- **Method:** GET
+- **URL:** `/api/v1/collections/{id}`
+
+**Path Parameters:**
+- `id` (number): The ID of the collection.
+
+**Response:**
+```json
+{
+  "response": {
+    "id": 101,
+    "name": "Project X",
+    "description": "Links for Project X research",
+    "isPublic": false,
+    "members": [
+      {
+        "user": {
+          "id": 10,
+          "username": "alice",
+          "name": "Alice",
+          "image": "https://..."
+        },
+        "canCreate": true,
+        "canUpdate": true,
+        "canDelete": false
+      }
+    ],
+    "_count": {"links": 25}
+  }
+}
+```
+
+**Notes:**
+- Only accessible if the user has membership or ownership rights.
+- Includes nested member user details and the number of links.
+
+---
+
+### 4. Update a Collection
+
+Modify collection properties, rearranging parent-child relationships, managing member permissions, and toggling public visibility.
+
+- **Method:** PUT
+- **URL:** `/api/v1/collections/{id}`
+- **Body:** Same structure as Create, but optional fields for partial updates.
+
+**Validation Rules:**
+- The authenticated user must be the collection owner.
+- Sub-collection creation respects ownership of parent collections.
+- Members must be unique and cannot include the owner.
+
+**Example:** Updating a collection to change its name and add a member:
+```json
+{
+  "id": 101,
+  "name": "Project X Updated",
+  "members": [
+    { "userId": 11, "canCreate": true, "canUpdate": false, "canDelete": false}
+  ]
+}
+```
+
+**Response:** Updated collection data excluding link details.
+
+---
+
+### 5. Delete or Leave a Collection
+
+Either delete the collection if the user is the owner or leave the collection membership if only a member.
+
+- **Method:** DELETE
+- **URL:** `/api/v1/collections/{id}`
+
+**Behavior:**
+- Owners delete the collection including all sub-collections and associated links.
+- Members remove themselves from the collection membership.
+
+**Response:** Confirmation of deletion or membership removal.
+
+**Important:** Deletion is recursive for sub-collections and cleans up storage and search indexes.
+
+---
+
+### 6. Access Public Collections
+
+### a) Get Public Collection
+
+Retrieve a public repository collection without authentication.
+
+- **Method:** GET
+- **URL:** `/api/v1/public/collections/{id}`
+
+**Response:** Public collection details.
+
+### b) Get Public Collection Tags
+
+Retrieve tags associated with a public collection to help filter or organize links.
+
+- **Method:** GET
+- **URL:** `/api/v1/public/collections/tags?collectionId={id}`
+
+**Query Parameters:**
+- `collectionId` (number): ID of the public collection.
+
+**Response:** List of tags used in the collection's links.
+
+---
+
+## Data Models
+
+### Collection Object
+
+| Field       | Type           | Description                                    |
+| ----------- | -------------- | ----------------------------------------------|
+| id          | number         | Unique identifier                              |
+| name        | string         | Collection name                               |
+| description | string         | Optional description                          |
+| color       | string (Hex)   | UI color indicator                            |
+| icon        | string         | Optional icon symbol                          |
+| iconWeight  | string         | Optional icon weight/style                    |
+| isPublic    | boolean        | Public visibility status                       |
+| parentId    | number | null | Parent collection ID if sub-collection       |
+| ownerId     | number         | User ID of the collection owner                |
+| members     | array          | List of member assignments with permissions  |
+| _count      | object         | Counts of related entities, e.g., links      |
+
+### Member Object
+
+| Field      | Type    | Description                               |
+| ---------- | ------- | -----------------------------------------|
+| userId     | number  | User ID                                  |
+| canCreate  | boolean | Permission to add content                  |
+| canUpdate  | boolean | Permission to update collection or content|
+| canDelete  | boolean | Permission to delete collection or content|
+
+---
+
+## Practical Usage and Workflows
+
+### Creating a Collection with Sub-Collections and Members
+Workflow: You want to create a main collection "Bookmarked Articles" and a sub-collection "2024 Research" with your team members having differing access levels.
+
+- POST to `/api/v1/collections` with `parentId` set to the main collection's ID for the sub-collection.
+- Define members explicitly with permissions.
+- Validate the ownership of parent collections to ensure sub-collection creation.
+
+### Updating Collection Access
+You need to update the members of a collaborative collection by adding a new user with create and update permissions.
+
+- PUT to `/api/v1/collections/{id}` including updated `members` array.
+- Ensure the request is made by the owner.
+
+### Public Sharing
+To share a collection publicly:
+
+- Update the collection's `isPublic` flag to `true`.
+- Access public details via `/api/v1/public/collections/{id}`.
+
+### Deletion
+
+Owners deleting a collection will recursively remove all related sub-collections and content, cleaning related storage and search indexes to maintain data integrity and avoid orphaned records.
+
+Members can remove themselves from collections without affecting others.
+
+---
+
+## Common Pitfalls & Troubleshooting
+
+- **404 Collection not found:** Ensure the collection ID exists and you have access.
+- **401 Unauthorized:** Make sure authentication token is valid; only owners or authorized members can modify.
+- **403 Forbidden:** You lack sufficient permissions, e.g., trying to create a sub-collection in a collection you don’t own.
+- **Duplicate Members:** The API enforces unique members; avoid duplicates in submission.
+- **Recursive Deletion Safety:** Deleting large collection trees can affect many items; confirm actions beforehand.
+
+---
+
+## Example: Update Collection Request
+```http
+PUT /api/v1/collections/101
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+  "name": "Updated Collection Name",
+  "description": "Expanded description for better clarity.",
+  "isPublic": true,
+  "members": [
+    { "userId": 12, "canCreate": true, "canUpdate": true, "canDelete": false },
+    { "userId": 15, "canCreate": false, "canUpdate": false, "canDelete": false }
+  ]
+}
+```
+
+Response:
+```json
+{
+  "response": {
+    "id": 101,
+    "name": "Updated Collection Name",
+    "description": "Expanded description for better clarity.",
+    "isPublic": true,
+    "members": [...],
+    "_count": {"links": 30}
+  }
+}
+```
+
+---
+
+## See Also
+
+- [Integrations & API Access](../overview/integrations-and-extensibility/integrations) for integrating Linkwarden with third-party tools
+- [Authentication & Authorization API Reference](../api-reference/core-workflows/authentication-and-authorization) for securing your API requests
+- [Collections and Tags Basics Guide](../../guides/getting-started/collections-and-tags-basics) for organizing links
+- [Inviting Collaborators Guide](../../guides/collaboration-and-sharing/inviting-collaborators) for managing team access
+
+---
+
+This API reference equips developers and advanced users with precise capabilities to control collections and collaborate efficiently in Linkwarden. Following the detailed permission model and parent-child constraints ensures a secure and structured organization of your saved content.
