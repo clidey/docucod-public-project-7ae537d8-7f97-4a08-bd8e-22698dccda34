@@ -3,4 +3,163 @@ title: "Performing Bulk Operations"
 description: "Guide to using bulk select, delete, tagging, and update actions for efficient library management. Highlights pitfalls to avoid and tips for managing large link collections."
 ---
 
-*This page will automatically be generated from the codebase*
+# Performing Bulk Operations in Linkwarden
+
+Efficiently managing a large collection of saved links is essential for staying organized and productive. The "Performing Bulk Operations" page offers you practical guidance on using Linkwarden's bulk select, delete, tagging, and update features to handle multiple links at once.
+
+This guide walks you through everything you need to know to confidently perform bulk actions, avoid common pitfalls, and maintain control over your library.
+
+---
+
+## Workflow Overview
+
+### Task Description
+This guide helps you perform bulk operations on your saved links, such as selecting multiple items, deleting them, updating tags, or moving them to different collections — all at once — to streamline library management.
+
+### Prerequisites
+- You must be signed into your Linkwarden account.
+- Have access to the web app library where your links are listed.
+- Ensure you have proper permissions to delete or modify links in collections.
+
+### Expected Outcome
+After following this guide, you will be able to:
+- Select multiple links efficiently.
+- Delete many links in bulk with confirmation.
+- Apply or remove tags and update collection assignments for multiple links simultaneously.
+- Understand how to avoid common errors such as permission issues or accidental deletions.
+
+### Time Estimate
+Depending on the number of links, expect to spend 5–15 minutes performing bulk operations.
+
+### Difficulty Level
+Intermediate — Basic familiarity with Linkwarden’s link management interface is required.
+
+---
+
+## Step-by-Step Instructions
+
+### 1. Selecting Links in Bulk
+
+- Navigate to your Links library view.
+- Use the bulk select checkbox next to each link to select multiple items.
+- To select a range quickly, hold the `Shift` key and click the first and last items in the desired range.
+  
+<Tip>
+Using `Shift` + click speeds up selecting many consecutive links without clicking each one individually.
+</Tip>
+
+- Verify selected items appear highlighted or counted in the interface.
+
+### 2. Performing Bulk Deletes
+
+- With links selected, click the bulk delete option/button.
+- You will see a confirmation modal detailing how many links will be deleted.
+- Read the warning carefully; deletions are irreversible.
+
+```plaintext
+Warning: Deleting links is permanent and cannot be undone.
+```
+
+- Confirm deletion by clicking the "Delete" button.
+
+**Expected Result:**
+- Selected links are removed from your library.
+- The selection resets automatically.
+
+### 3. Bulk Tagging and Updating
+
+- After selecting multiple links, open the bulk edit interface.
+- You can add tags, remove existing tags, or change the collection for the selected links.
+
+<Tip>
+Choose to remove previous tags only if you want to replace _all_ tags; otherwise, new tags will be appended to existing ones.
+</Tip>
+
+- Confirm changes to apply updates across all selected links.
+
+**Expected Result:**
+- Tags and collection assignments update on all selected links.
+- Your library view refreshes to reflect changes.
+
+### 4. Tips to Avoid Common Pitfalls
+
+- Ensure you have permission to modify or delete links in the target collections, or you will receive a "Permission denied" error.
+- Double-check selections before deleting, especially when handling large batches.
+- Keep in mind demo mode disables bulk operations.
+- Use pagination or search filters to narrow down your link list for more controlled bulk editing.
+
+### 5. Verification
+
+- Confirm the absence of deleted links in your library.
+- Check that intended tags or collections are correctly applied.
+- Refresh the page if necessary to ensure the UI reflects backend changes.
+
+---
+
+## Examples & Scenarios
+
+### Scenario: Cleaning Up Outdated Links
+
+You have over 100 saved links, some are no longer relevant.
+
+- Use the search or filter to show outdated links.
+- Select all visible links (using Shift + click for speed).
+- Bulk delete them with confirmation.
+
+You clear clutter while preserving important entries.
+
+### Scenario: Reorganizing Links into a New Collection
+
+- Select multiple links from various collections.
+- Bulk edit and change their collection to your new project folder.
+- Add a new tag "ProjectX" to all.
+
+You efficiently regroup and tag relevant links for easier retrieval.
+
+---
+
+## Troubleshooting & Best Practices
+
+<AccordionGroup title="Common Issues and Solutions">
+<Accordion title="Bulk Delete Fails with Permission Errors">
+Check that you have deletion rights on all collections containing the selected links. Bulk deletion requires deletion permission on every link’s collection.
+</Accordion>
+<Accordion title="Selected Links Do Not Update Tags">
+Make sure you confirm the bulk edit action and verify connectivity. Refresh the page to ensure updates are reflected.
+</Accordion>
+<Accordion title="Accidentally Deleted Important Links">
+Currently, deleted links cannot be recovered. Always double-check your bulk selections before confirming deletions.
+</Accordion>
+</AccordionGroup>
+
+<Tip>
+Utilize filters and sorting to narrow down your selection scope, reducing mistakes and improving bulk operation speed.
+</Tip>
+
+---
+
+## Additional Tips for Large Collections
+
+- Work in small batches to avoid overwhelming the system and making mistakes.
+- Regularly tag and categorize links during addition to simplify future bulk editing.
+- Leverage saved filters and search queries to isolate specific groups for bulk operations.
+
+---
+
+## Next Steps & Related Documentation
+
+- Review the [Organizing Links with Collections & Tags guide](/guides/getting-started/collections-and-tags-basics) to better understand tagging and collection management.
+
+- Explore the [Preserving Pages guide](/guides/getting-started/preserving-and-reading-links) to learn about link preservation.
+
+- Consult the [Bulk Actions API Reference](/api-reference/core-workflows/managing-links) to automate or script bulk operations.
+
+- Learn about [Collaboration and Permissions](/guides/collaboration-and-sharing/inviting-collaborators) to manage team access impacting bulk operations.
+
+---
+
+## Summary
+
+Using bulk operations in Linkwarden empowers you to efficiently manage large sets of saved links, avoiding repetitive tasks and boosting productivity. This guide focused exclusively on the user experience of selecting, deleting, and updating multiple links, emphasizing practical, safe workflows with helpful tips and troubleshooting.
+
+Master these bulk operations to keep your link library organized, accurate, and relevant with minimal effort.
