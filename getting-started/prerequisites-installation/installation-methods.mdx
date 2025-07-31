@@ -3,4 +3,207 @@ title: "Installation Methods"
 description: "Choose the best way to get started with Linkwarden: explore the official cloud option for instant access, or follow detailed steps for self-hosting via Docker Compose or manual deployment. Covers both the web app and mobile app installation flows."
 ---
 
-*This page will automatically be generated from the codebase*
+# Installation Methods
+
+Welcome to Linkwarden! This guide will help you choose the best way to get started based on your needs. Whether you want instant access via our official cloud service or prefer the flexibility and control of self-hosting, this guide walks you through the options for installing the Linkwarden web and mobile apps.
+
+---
+
+## 1. Overview of Installation Options
+
+Linkwarden offers three primary ways to get up and running:
+
+- **Official Cloud Service**: The fastest way to start using Linkwarden with zero setup.
+- **Self-Hosting with Docker Compose**: Ideal for users who want a reliable, containerized setup with minimal manual effort.
+- **Manual Self-Hosting Deployment**: A more hands-on route for advanced users or specific environment needs.
+
+Additionally, this page covers installation flows for both the **web app** and the **mobile app**.
+
+---
+
+## 2. Using the Official Cloud Service for Instant Access
+
+The most straightforward way to start is to use Linkwarden's official cloud-hosted service. This lets you sign up, log in, and begin saving and preserving links immediately without worrying about infrastructure or configuration.
+
+### Steps:
+
+1. Navigate to [https://linkwarden.app](https://linkwarden.app).
+2. Click **Sign Up** to create a new account using your email address.
+3. Follow the on-screen instructions to verify your email and log in.
+4. Once logged in, you can start adding links, creating collections, and exploring preservation features.
+
+<Tip>
+Using the official cloud means no server maintenance, automated backups, and seamless mobile app integration out-of-the-box.
+</Tip>
+
+---
+
+## 3. Self-Hosting Installation Methods
+
+If data sovereignty, customization, or control over your environment is a priority, self-hosting Linkwarden is the ideal choice. We support two main self-hosting methods:
+
+### 3.1 Docker Compose Deployment (Recommended for Most Users)
+
+Docker Compose simplifies running Linkwarden’s backend services and database with a single configuration.
+
+#### Prerequisites:
+- Docker and Docker Compose installed (recommended versions: Docker 20.10+, Docker Compose 1.29+).
+- A Linux, macOS, or Windows system with minimum required resources (see [System Requirements](../prerequisites-installation/system-requirements)).
+
+#### Step-by-Step:
+
+<Steps>
+<Step title="Clone the Linkwarden Repository">
+Open your terminal and run:
+```bash
+git clone https://github.com/linkwarden/linkwarden.git
+cd linkwarden
+```
+</Step>
+<Step title="Create Environment Configuration">
+Copy the example environment file and customize it:
+```bash
+cp .env.example .env
+# Edit .env to set database URL, domain, and other settings
+```
+</Step>
+<Step title="Start Docker Compose">
+Run the following to launch Linkwarden services:
+```bash
+docker-compose up -d
+```
+</Step>
+<Step title="Verify Running Services">
+Check container status:
+```bash
+docker-compose ps
+```
+You should see web, worker, and database containers running.
+</Step>
+<Step title="Access Linkwarden Web App">
+Open your browser to your configured domain or localhost on port 80/443.
+Create the first admin user if prompted.
+</Step>
+</Steps>
+
+<Note>
+Make sure your firewall allows access to the ports used by Linkwarden (default HTTP/HTTPS ports).
+</Note>
+
+### Troubleshooting:
+- If containers fail to start, check logs with:
+```bash
+docker-compose logs -f
+```
+- Verify correct database connectivity string in `.env` file.
+
+---
+
+### 3.2 Manual Deployment (Advanced)
+
+Manual deployment involves setting up and running all necessary components individually, suitable for users who require custom orchestration or environments without Docker.
+
+#### Prerequisites:
+- Node.js environment for the backend.
+- PostgreSQL database.
+- Web server (e.g., Nginx) to serve static frontend assets and handle TLS.
+
+#### Steps Overview:
+
+<Steps>
+<Step title="Obtain Source Code">
+Clone the repository and checkout the latest main branch:
+```bash
+git clone https://github.com/linkwarden/linkwarden.git
+git checkout main
+```
+</Step>
+<Step title="Set Up Database">
+Install and configure PostgreSQL.
+Create database and user as specified in your `.env`.
+</Step>
+<Step title="Configure Environment Variables">
+Copy `.env.example` to `.env` and fill in database URL, domains, and other config.
+</Step>
+<Step title="Build and Start Backend Services">
+Run installation and start commands:
+```bash
+npm install
+npm run build
+npm start
+```
+</Step>
+<Step title="Build and Deploy Web Frontend">
+Build static assets:
+```bash
+cd apps/web
+npm install
+npm run build
+```
+Serve the generated `dist` or `build` folder with your web server.
+</Step>
+<Step title="Configure Proxy and TLS">
+Set up Nginx or Apache to proxy requests to the backend and serve static web frontend with HTTPS.
+</Step>
+<Step title="Launch Mobile App"
+(See Mobile App Section below.)
+
+</Step>
+</Steps>
+
+<Warning>
+Manual deployment requires significant knowledge of Node.js, database management, and web server configuration. Ensure you secure your installation with proper firewall rules, HTTPS, and backups.
+</Warning>
+
+---
+
+## 4. Installing the Mobile App
+
+The Linkwarden mobile app complements the web experience on iOS and Android, providing anywhere access with native features.
+
+### How to Install:
+
+- Visit your mobile platform's app store (Apple App Store for iOS, Google Play Store for Android).
+- Search for 'Linkwarden'.
+- Download and install the app.
+
+### Configuring the Mobile App:
+
+- Launch the app.
+- Enter your Linkwarden cloud account credentials or your self-hosted server URL along with your username/password.
+- Sync your data to start managing and preserving links on the go.
+
+<Tip>
+The mobile app automatically supports account types from the official cloud and your self-hosted instances, maintaining a consistent experience.
+</Tip>
+
+---
+
+## 5. Verification and First Run
+
+After installation:
+
+- Open Linkwarden in a browser or the mobile app.
+- Log in with your account.
+- Create and save your first link.
+- Confirm that the preservation process starts (indicated by status or dashboard widgets).
+
+<Check>
+If you encounter issues logging in or no links are preserved, verify your installation steps and configuration detailed in the Troubleshooting guides.
+</Check>
+
+---
+
+## 6. Additional Resources
+
+- [System Requirements](../prerequisites-installation/system-requirements) for hardware and software specs.
+- [Configuration & First Run](../prerequisites-installation/first-run-setup) for detailed post-install setup.
+- [Quickstart Guide](../../guides/getting-started/quick-start-workflow) to add your first link.
+- [Troubleshooting & Common Setup Issues](../../getting-started/initial-experience-validation/troubleshooting-common-issues) to solve potential problems.
+
+
+If you need further assistance, visit our [support page](https://linkwarden.app/support) or join the community forums for expert help.
+
+---
+
+Enjoy preserving and organizing your web content with Linkwarden!
