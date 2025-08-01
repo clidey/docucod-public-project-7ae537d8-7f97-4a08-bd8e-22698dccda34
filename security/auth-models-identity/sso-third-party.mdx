@@ -3,4 +3,196 @@ title: "Single Sign-On (SSO) and OAuth Providers"
 description: "Explore the details of integrating SSO and third-party identity providers. Learn how to configure and manage SSO for enterprise deployments, requirements for OAuth flows, and how to enable secure logins with popular providers."
 ---
 
-*This page will automatically be generated from the codebase*
+# Single Sign-On (SSO) and OAuth Providers
+
+Secure and streamline your Linkwarden authentication experience by integrating Single Sign-On (SSO) and third-party OAuth identity providers. This guide empowers you to configure, manage, and troubleshoot federated login methods that enhance security and simplify access, especially for enterprise deployments.
+
+---
+
+## 1. Introduction to SSO and OAuth in Linkwarden
+
+Single Sign-On (SSO) enables users to authenticate with Linkwarden through an external identity provider, reducing password fatigue and increasing security by leveraging trusted third-party authentication systems. Linkwarden supports OAuth 2.0 and OpenID Connect providers, allowing seamless integration with popular services like Google, GitHub, Azure AD, Auth0, and many others.
+
+By centralizing user authentication, enterprises gain enhanced control over access policies while providing users with a frictionless login experience.
+
+---
+
+## 2. Supported SSO and OAuth Providers
+
+Linkwarden integrates with a broad spectrum of identity providers out of the box, including but not limited to:
+
+- **Major cloud providers:** Google, Azure AD, Apple, Auth0, Okta, OneLogin
+- **Enterprise and open-source IdPs:** Keycloak, FusionAuth, IdentityServer4, Authentik
+- **Social and gaming platforms:** GitHub, GitLab, Facebook, Discord, Twitch, Battle.net
+- **Other OAuth providers:** Salesforce, Slack, Spotify, Dropbox, Patreon, Mailchimp, and more
+
+A full list of supported providers is dynamically detected and enabled based on environment variable configurations, ensuring you only expose those you have configured.
+
+---
+
+## 3. Enabling and Configuring Providers
+
+### Setting Environment Variables
+
+Each provider requires specific environment variables to configure client IDs, secrets, issuers, and scopes as needed. For example:
+
+```bash
+NEXT_PUBLIC_GOOGLE_ENABLED=true
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+```
+
+Similarly, each supported provider has its own prefix and parameters. Ensure you consult the [Environment Configuration guide](/deployment/production-setup/environment-configuration) for detailed variable names and setup instructions.
+
+### Adding Providers
+
+Providers are programmatically loaded during authentication setup based on these environment variables. No manual coding is required to add new providers supported by `next-auth` and integrated into Linkwarden.
+
+### Example: Enabling Google and GitHub
+
+```bash
+NEXT_PUBLIC_GOOGLE_ENABLED=true
+GOOGLE_CLIENT_ID=abc123.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=secret
+
+NEXT_PUBLIC_GITHUB_ENABLED=true
+GITHUB_ID=xyz456
+GITHUB_SECRET=secret
+```
+
+---
+
+## 4. Managing User Registration via SSO
+
+### Registration Control
+
+For enterprises, Linkwarden offers the ability to disable creating new users via SSO by setting:
+
+```bash
+DISABLE_NEW_SSO_USERS=true
+```
+
+This prevents unauthorized user registrations through federated login and ensures that only invited or pre-authorized users can sign in via SSO.
+
+### Email Verification and Account Linking
+
+When a user logs in through an SSO provider, their email is verified automatically, and the system attempts to link the external account to an existing internal user record if their email matches.
+
+If a user with a matching email exists but has no linked external accounts, Linkwarden will link the provider to that user to avoid duplicates.
+
+---
+
+## 5. How SSO and OAuth Flows Work in Linkwarden
+
+### User Login Flow
+
+1. **User clicks an SSO provider button on the login page.**
+2. **Redirect to the provider's authorization endpoint** occurs following OAuth 2.0 / OIDC protocols.
+3. **User authenticates with the provider,** which then returns an authorization code or token.
+4. **Linkwarden exchanges the code for tokens** and retrieves the user's profile information.
+5. **User session is created** upon successful authentication.
+
+### Session Management
+
+- Sessions for SSO authenticate with JSON Web Tokens (JWTs), offering stateless, scalable session handling.
+- Tokens have a configurable maximum age (default is 30 days) and can be revoked via the API token management system.
+
+### Security Checks
+
+- Upon each session verification, tokens are checked for expiration and revocation status to prevent unauthorized access.
+- Linkwarden uses internal logic to reconcile user data with identity from external providers securely.
+
+---
+
+## 6. Configuring the Login Interface
+
+The login page dynamically renders available login options based on which providers are enabled. This includes traditional credentials (username/password) and any configured OAuth/SSO providers.
+
+Example UI features:
+
+- Buttons for each SSO provider with customizable names
+- Support for email-based passwordless login where configured
+- Clear messaging and error handling during authentication failures
+
+Example user journey:
+
+- A new employee clicks "Sign in with Google".
+- They authenticate with their Google account.
+- If this is their first time, an account is created and linked.
+- They are securely logged into Linkwarden without creating a password.
+
+---
+
+## 7. Best Practices for Secure SSO Integration
+
+- **Use HTTPS:** Ensure your Linkwarden instance and all identity provider endpoints use SSL/TLS.
+- **Limit new SSO user creation:** For enterprise deployments, disable new SSO registrations unless explicitly intended.
+- **Monitor API tokens and sessions:** Regularly audit and revoke unused or suspicious tokens.
+- **Keep secrets safe:** Store OAuth client secrets securely and avoid exposing them in public environments.
+- **Validate environment configuration:** Confirm environment variables are set precisely to avoid misconfiguration.
+- **Test login flows:** After enabling providers, verify authentication workflows thoroughly.
+
+---
+
+## 8. Troubleshooting Common Issues
+
+### SSO Provider Not Appearing on Login Screen
+
+- Confirm the related environment variable to enable the provider is set to `true`.
+- Restart your instance after configuration changes.
+- Check the logs for any errors loading provider credentials.
+
+### Authentication Fails or User Not Created
+
+- Verify client ID and secret are correct and not expired.
+- Ensure redirect URIs are properly configured with your provider.
+- Confirm no conflicts with user email verification or existing accounts.
+
+### Session Expiry or Revoked Token
+
+- Sessions expire after 30 days by default; ask users to re-authenticate if needed.
+- Use the API token management features to revoke compromised tokens.
+
+### Disabling SSO User Registration Does Not Work
+
+- Check that `DISABLE_NEW_SSO_USERS` is set to `true` (string).
+- Confirm your environment variables are properly loaded and the application restarted.
+
+---
+
+## 9. Additional Resources
+
+- [Authentication Overview](/security/auth-models-identity/auth-overview)
+- [API Tokens Management](/api-reference/advanced-features/api-tokens)
+- [Environment Configuration](/deployment/production-setup/environment-configuration)
+- [Login Page and UI Configuration](/apps/web/pages/login.tsx source code)
+- [Token Verification Logic](/apps/web/lib/api/verifyToken.ts source code)
+
+---
+
+## 10. Example Code Snippet: Adding a New OAuth Provider
+
+While typical users do not need to edit code, here is a simplified snippet showing how Linkwarden registers conditional OAuth providers during initialization.
+
+```typescript
+import { Providers } from 'next-auth/providers';
+
+const providers = [];
+
+if (process.env.NEXT_PUBLIC_GOOGLE_ENABLED === 'true') {
+  providers.push(
+    Providers.Google({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    })
+  );
+}
+
+// Additional providers registered similarly
+```
+
+This dynamic setup ensures only authorized providers are active.
+
+---
+
+With this guide, you’re equipped to securely implement, manage, and troubleshoot SSO and OAuth provider integrations within Linkwarden. This enables your organization to benefit from enhanced security, simplified authentication, and operational efficiency.
