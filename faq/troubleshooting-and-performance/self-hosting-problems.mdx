@@ -3,4 +3,148 @@ title: "Troubleshooting self-hosting and deployment"
 description: "Explains typical self-hosting pitfalls, such as environment configuration, common deployment errors, or indexing issues, and how to approach solving them."
 ---
 
-*This page will automatically be generated from the codebase*
+# Troubleshooting Self-Hosting and Deployment
+
+This FAQ page addresses common pitfalls and troubleshooting approaches encountered when self-hosting Linkwarden or deploying it in a production environment. Whether you are facing environment configuration issues, deployment hiccups, or indexing problems, this guide walks you through practical solutions designed to get your system running smoothly and reliably.
+
+---
+
+## 1. What are common environment configuration mistakes in self-hosting?
+
+Misconfigured environment variables are the most frequent source of issues when deploying Linkwarden yourself. Here are key areas to double-check:
+
+- **NEXTAUTH_URL**: Must correctly point to your deployed API endpoint (e.g., `https://your-domain.com/api/v1/auth`). If incorrect, user authentication will fail.
+- **DATABASE_URL** or **POSTGRES_PASSWORD**: Confirm the database connection string or credentials match your PostgreSQL setup. Mismatches here cause database connectivity errors.
+- **NEXT_PUBLIC_DISABLE_REGISTRATION**: If set to `true`, user registration is disabled, which prevents new users from signing up.
+- **MEILI_HOST** and **MEILI_MASTER_KEY**: For search indexing, improper settings result in broken search or delayed indexing of links.
+- **SPACES_*** and **SMTP** related variables: If you use AWS S3 compatible storage or email providers, confirm their credentials and URLs for uploads and notifications.
+
+**Tip:** Always start with a clean `.env` sample and fill in only the necessary values to your environment. Avoid leftover or placeholder values that might cause unexpected behaviors.
+
+---
+
+## 2. What are frequent deployment errors and how can I resolve them?
+
+### Deployment Startup Failures
+
+- **Worker service not running or restarting repeatedly**: Check logs for errors. The worker (`apps/worker/index.ts`) automatically restarts on failure with a delay. Persistent crashes often indicate missing dependencies or config errors.
+- **Database initialization errors**: Validate that the PostgreSQL instance is running and accessible with the given credentials.
+- **Docker-related pitfalls**:
+  - Ensure `.dockerignore` excludes directories like `node_modules`, `pgdata`, and `.env` to prevent unnecessary rebuilds and secrets leakage.
+  - If using Docker Compose, verify volumes and networking settings allow connectivity between web, API, and worker containers.
+
+### Web and Mobile App Deployment Issues
+
+- The web frontend requires proper bundling and environment variables for API URL and features.
+- Mobile apps (`apps/mobile/.env.sample`) need accurate URLs and configuration to connect correctly.
+
+**Tip:** Logs are your first line of defense. Use container logs, systemd journal, or cloud provider logs to uncover startup issues.
+
+---
+
+## 3. Why are my links missing or not indexing correctly?
+
+Link preservation and indexing issues typically arise from:
+
+- **Misconfigured MeiliSearch settings**:
+  - `MEILI_HOST` must point to your running MeiliSearch instance.
+  - `MEILI_MASTER_KEY` should be set if MeiliSearch requires authentication.
+- **Worker service failures** that process indexing and preservation queues.
+- **Database connection problems** impacting background jobs.
+
+**How to fix:**
+
+- Check the **worker logs** to confirm that link archival and indexing jobs are executed without error.
+- Verify MeiliSearch is reachable and accessible with correct credentials.
+- If broken or missing preservations accumulate, consider using the admin interface or API to re-trigger preservation jobs.
+
+---
+
+## 4. How do I troubleshoot authentication and registration problems?
+
+Authentication is controlled largely by environment variables:
+
+- Ensure **NEXTAUTH_URL** matches the deployed API URL.
+- Verify registration flags like **NEXT_PUBLIC_DISABLE_REGISTRATION** are set as intended.
+- Confirm active SSO providers have their settings correctly configured (see environment variables starting with `NEXT_PUBLIC_*_ENABLED` and their related credentials).
+- For email-based authentication, ensure SMTP settings (`EMAIL_SERVER`, `EMAIL_FROM`) are valid.
+
+**Common mistakes:**
+
+- Using HTTP URLs instead of HTTPS for production.
+- Forgetting to include secrets or keys for OAuth providers.
+
+Refer to the [Authentication Overview](https://docs.linkwarden.app/security/auth-models-identity/auth-overview) and [SSO Third-Party Setup](https://docs.linkwarden.app/security/auth-models-identity/sso-third-party) for detailed guidance.
+
+---
+
+## 5. What steps should I take if I encounter performance or scaling issues?
+
+- Monitor worker service logs and resource usage to ensure it is processing link preservation tasks efficiently.
+- Check PostgreSQL responsiveness and query performance.
+- Scale horizontally by increasing workers or vertically by upgrading server resources.
+- For deployments behind proxies or load balancers, ensure they correctly forward headers and SSL termination is configured securely.
+
+See the guides on [Scaling Strategies](https://docs.linkwarden.app/deployment/operations-monitoring/scaling-strategies) and [Monitoring and Logging](https://docs.linkwarden.app/deployment/operations-monitoring/monitoring-logging) for advanced techniques.
+
+---
+
+## 6. Step-by-Step Troubleshooting Workflow
+
+<Steps>
+<Step title="Verify Environment Configuration">
+Review your `.env` file for correctness against `.env.sample`. Pay close attention to URLs, database connections, and authentication settings.
+</Step>
+<Step title="Check Logs and Service Status">
+Inspect logs for the web server, API, and worker. Identify errors and restart services as needed.
+</Step>
+<Step title="Validate Database Connectivity">
+Ensure PostgreSQL is reachable, credentials are correct, and migrations have been applied.
+</Step>
+<Step title="Confirm MeiliSearch and Background Jobs">
+Verify MeiliSearch connection and check that the worker is indexing links and running preservation jobs.
+</Step>
+<Step title="Test Authentication Flows">
+Test login, registration, and SSO providers to confirm authentication works end-to-end.
+</Step>
+<Step title="Use Admin Tools to Reprocess Broken Data">
+If links are not preserved or missing, use admin functions to delete broken preservations and trigger re-preservation.
+</Step>
+</Steps>
+
+---
+
+## 7. Tips and Best Practices
+
+- Start with a minimal environment configuration to validate core features before enabling advanced options.
+- Keep environment variables secret and avoid committing actual secrets to source control.
+- Regularly monitor logs and system health.
+- Use secure HTTPS URLs everywhere in production.
+- When changing environment variables, restart all services to apply changes fully.
+- Use official Docker images and keep them updated.
+
+---
+
+## 8. Where to Get More Help
+
+If problems persist beyond the common issues:
+
+- Consult the [System Requirements](../getting-started/prerequisites-installation/system-requirements) guide to ensure platform compatibility.
+- Review the [Environment Configuration](../deployment/production-setup/environment-configuration) documentation for environment variable details.
+- Explore [Monitoring and Logging](../deployment/operations-monitoring/monitoring-logging) for ways to gather more diagnostic data.
+- Reach out on community forums or official support channels linked from the main product website.
+
+---
+
+## Related Documentation
+
+- [Environment Configuration Guide](../deployment/production-setup/environment-configuration)
+- [Getting Started with Deployment](../deployment/production-setup/deployment-getting-started)
+- [Scaling Strategies](../deployment/operations-monitoring/scaling-strategies)
+- [Authentication Overview](../security/auth-models-identity/auth-overview)
+- [SSO and OAuth Providers Setup](../security/auth-models-identity/sso-third-party)
+- [Monitoring and Logging](../deployment/operations-monitoring/monitoring-logging)
+
+---
+
+This troubleshooting FAQ empowers administrators and self-hosters to identify, diagnose, and resolve typical pitfalls ensuring a stable, high-performing Linkwarden deployment.
