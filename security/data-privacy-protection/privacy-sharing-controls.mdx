@@ -3,4 +3,158 @@ title: "Privacy & Sharing Controls"
 description: "Learn how to control what you share with others and the public. This page covers options for public vs. private links, collections, and annotations; safe sharing tips; and how sensitive data is protected when publishing content."
 ---
 
-*This page will automatically be generated from the codebase*
+# Privacy & Sharing Controls
+
+Controlling what you share and how your data is exposed is critical to maintaining privacy and security in Linkwarden. This guide walks you through the available options for managing the privacy of your links, collections, and annotations, along with practical advice for safe sharing and protecting sensitive information.
+
+---
+
+## 1. Understanding Privacy in Linkwarden
+
+Linkwarden empowers you to decide how your saved content is shared or kept private. Privacy applies at multiple levels:
+
+- **Links**: Individual bookmarks and resources can be kept private or made public.
+- **Collections**: Groups of links can be configured for private team use or public sharing.
+- **Annotations and Highlights**: Notes and highlights tied to links can be restricted or shared.
+
+You remain in control of who can view or collaborate on your content.
+
+## 2. Public vs. Private Links and Collections
+
+### 2.1 Private Links
+Private links are only accessible to you or authorized collaborators within collections you have permission to access. This is the default mode ensuring your data remains confidential by default.
+
+### 2.2 Public Sharing
+Linkwarden supports sharing collections or individual links publicly via special URLs that do not require authentication. This feature makes it easy to disseminate bookmarks or reading lists while maintaining privacy elsewhere.
+
+- Public links provide **read-only** access.
+- Public collections can display an aggregated set of links openly.
+
+### 2.3 Managing Access Permissions
+
+Access permissions to collections are based on a robust authorization model assigning privileges at the collection level:
+
+- **Owner**: Full rights including sharing, editing, and deleting.
+- **Members**: Rights as assigned (create, update, delete).
+- **Public users**: Read-only via public URLs.
+
+The system ensures that only authorized users can modify or view private content.
+
+<Note>
+For details on managing permissions and inviting collaborators, see the [Authorization & Permissions](https://docs.linkwarden.com/security/auth-models-identity/authorization-models) guide.
+</Note>
+
+## 3. Sharing Controls for Annotations and Highlights
+
+Annotations and highlights attached to links inherit the visibility of their parent link or collection. You can control who can view your comments and highlights as follows:
+
+- Keep annotations private within your team or collection.
+- Share highlights publicly by publishing the parent link or collection.
+
+Be cautious with sensitive notes as public sharing grants read access to anyone with the link.
+
+## 4. Safe Sharing Best Practices
+
+To ensure your private data stays secure when sharing, follow these guidelines:
+
+- **Review collection privacy before sharing**: Confirm if the collection or link is set to public or private.
+- **Limit collaborator permissions** to what’s necessary — prefer granular control.
+- **Use expiring or limited-access links** when available (planned features).
+- **Avoid including sensitive personal information in shared annotations**.
+- **Regularly audit shared collections and links** to revoke access if no longer needed.
+
+<Tip>
+Consider using collections specifically created for public sharing while keeping private or sensitive content in separate, secured collections.
+</Tip>
+
+## 5. How Sensitive Data is Protected When Publishing Content
+
+Linkwarden safeguards your data privacy during both private and public usage:
+
+- **Authentication-first on private collections**: API and web access require verified user credentials.
+- **Authorization enforced at API endpoints**: Requests verify user permissions before data is served.
+- **Public routes serve limited, read-only data**: No sensitive internal metadata or permissions are exposed.
+- **No private user details leaked**: Public APIs sanitize users’ PII.
+
+For example, the public links API endpoint allows unauthenticated GET requests only to fetch the public link data but does not reveal collection membership or editing rights.
+
+<Info>
+See the [Authentication & Authorization](https://docs.linkwarden.com/api-reference/core-workflows/authentication-and-authorization) and [Session Management](https://docs.linkwarden.com/security/auth-models-identity/session-management) guides for deeper insights into Linkwarden's secure access controls.
+</Info>
+
+## 6. Controlling Your Sharing Settings
+
+You can manage sharing settings through the Linkwarden user interface or API:
+
+- **Set collections as public or private** in collection settings.
+- **Generate public URLs for specific collections or links** to share with others.
+- **Manage team member invitations and permission levels**.
+
+### Example: Securely Fetching a Public Link via API
+
+When fetching a public link, the API endpoint `/api/v1/public/links/[id]` allows unauthenticated access but returns only approved public data with no sensitive info.
+
+```http
+GET /api/v1/public/links/12345
+
+Response:
+{
+  "response": {
+    "id": 12345,
+    "url": "https://example.com",
+    "name": "Example Site",
+    "tags": [],
+    "collection": {
+      "id": 67890,
+      "name": "Public Collection"
+    }
+  }
+}
+```
+
+<Tip>
+Avoid exposing private link IDs in public contexts to prevent unauthorized attempts even if the API doesn’t reveal private data.
+</Tip>
+
+## 7. Troubleshooting Common Privacy Issues
+
+<AccordionGroup title="Common Privacy & Sharing Issues">
+<Accordion title="Cannot Access a Shared Collection or Link">
+Verify you have the appropriate permissions and are signed in. Owners control which users or members have access privileges.
+</Accordion>
+<Accordion title="Public Link Not Working or Returning 401">
+Ensure the link or collection is marked public. Changes to privacy settings may take a few moments to propagate.
+</Accordion>
+<Accordion title="Annotations Visible Publicly Even Though I Expect Privacy">
+Check if the parent link or collection is public, as annotations inherit visibility from parents.
+</Accordion>
+</AccordionGroup>
+
+## 8. Summary and Next Steps
+
+Privacy and sharing settings in Linkwarden provide fine-grained control over who can view or collaborate on your saved bookmarks, collections, and annotations. By understanding public versus private distinctions, managing permissions carefully, and following safe sharing practices, you ensure your data remains secure and only accessible to intended recipients.
+
+To extend your knowledge and secure your deployment further, consult:
+
+- [Authorization & Permissions](https://docs.linkwarden.com/security/auth-models-identity/authorization-models)
+- [Authentication Overview](https://docs.linkwarden.com/security/auth-models-identity/auth-overview)
+- [Session Management](https://docs.linkwarden.com/security/auth-models-identity/session-management)
+- [Security Hardening Guide](https://docs.linkwarden.com/deployment/security-disaster-recovery/security-hardening)
+
+---
+
+View this documentation within the full Linkwarden docs navigation under **Security > Data Protection & Privacy > Privacy & Sharing Controls**.
+
+---
+
+## Appendix: Key API Endpoints Related to Sharing
+
+| Endpoint                               | Purpose                              | Access          |
+|--------------------------------------|------------------------------------|-----------------|
+| `/api/v1/links/[id]`                  | Fetch, update, delete a user’s link | Authenticated users with permissions |
+| `/api/v1/public/links/[id]`           | Publicly fetch a link’s data         | Public, read-only |
+| `/api/v1/collections/[id]` (not shown) | Manage collections and sharing     | Authenticated with owner/member rights |
+
+Use these APIs to programmatically manage sharing and visibility.
+
+<Note>For API usage examples, visit the [SDK Usage & Code Snippets](https://docs.linkwarden.com/api-reference/integration-and-support/sdk-examples) page.</Note>
