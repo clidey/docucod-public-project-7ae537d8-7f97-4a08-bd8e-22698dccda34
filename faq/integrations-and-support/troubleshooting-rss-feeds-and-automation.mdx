@@ -3,4 +3,156 @@ title: "RSS Feed, AI Tagging, and Automation Issues"
 description: "Covers how to resolve issues connecting RSS feeds, understanding why automation might not be working, and where to find logs or debugging information for these integrations."
 ---
 
-*This page will automatically be generated from the codebase*
+# RSS Feed, AI Tagging, and Automation Issues FAQ
+
+This documentation page focuses on helping users identify, troubleshoot, and resolve common problems related to RSS feed subscriptions, AI tagging automation, and Linkwarden's general automation workflows. Whether your RSS feeds are not updating, AI tags are missing or incorrect, or automation tasks seem stalled, this guide will walk you through effective diagnosis and actionable solutions.
+
+---
+
+## 1. Common RSS Feed Subscription Issues
+
+### Why am I not seeing new articles added from my RSS feeds?
+- **Feed Content Updated But Not Imported**: Linkwarden compares the `lastBuildDate` or, if unavailable, the newest `pubDate` in the RSS feed to the last stored timestamp. If your feed's timestamps are incorrect or missing, new items won’t be detected.
+- **Exceeded Link Creation Limits**: Linkwarden enforces a per-user maximum number of saved links and RSS subscriptions. If you have too many links, new RSS items are skipped automatically to avoid overload.
+- **Polling Interval Delays**: By default, RSS feeds are polled hourly. Changes will only be picked up during the next polling cycle.
+
+### How do I check that my RSS feed subscription is active and valid?
+1. Go to your **RSS Subscriptions** page under Settings.
+2. Verify your subscriptions show the correct URL and assigned collection.
+3. If you suspect a subscription is not working, try removing and re-adding it.
+
+### Why do I get permission errors when creating or deleting RSS subscriptions?
+- You must own or have appropriate permission on the associated collection.
+- In multi-user/team deployments, verify your user role allows adding to that collection.
+- Actions are blocked in demo mode (read-only).
+
+### How does Linkwarden handle feed polling and processing?
+- The background RSS polling worker regularly fetches feeds at a configured interval (default 60 minutes).
+- New feed items since the last processed timestamp are added as links in the selected collection.
+- If errors occur (e.g., unreachable feed, malformed XML), processing logs an error and skips that cycle.
+
+<AccordionGroup title="RSS Feed Troubleshooting">
+<Accordion title="How can I manually trigger RSS feed processing?">
+Currently, RSS feeds are processed automatically on a polling schedule. After adding a subscription, Linkwarden attempts an immediate fetch, but ongoing checks happen in the background. Manual trigger endpoints or UI buttons are not exposed.
+</Accordion>
+<Accordion title="What are the common RSS feed format problems?">
+- Missing or incorrect `lastBuildDate` and `pubDate` fields cause update detection failures.
+- Feeds that require authentication or are temporarily unreachable will fail to be processed.
+- Non-standard or customized RSS formats can cause parser errors.
+</Accordion>
+<Accordion title="Where can I find logs for RSS feed processing errors?">
+- Background worker logs capture polling activity and errors. Review your deployment’s worker process logs.
+- Look for log entries containing "Processing new RSS feed items" or error messages referencing specific feed URLs.
+- If self-hosted, configure centralized logging or monitor stdout/stderr of the worker.
+</Accordion>
+</AccordionGroup>
+
+---
+
+## 2. AI Tagging & Automation Issues
+
+### Why am I not seeing AI-generated tags on my saved links?
+- Ensure AI tagging features are enabled in your environment configuration.
+- AI tagging runs asynchronously after link preservation, so tags may appear shortly after saving.
+- If the AI service is down or misconfigured, tags may not be generated.
+
+### Can I manually adjust AI-generated tags?
+Yes, Linkwarden supports manual tag edits to refine or correct AI suggestions. Use the Tags management interface to add or remove tags as needed.
+
+### What if automation workflows like link preservation or indexing fail?
+- Confirm background workers are running properly in your deployment.
+- Review worker logs for errors related to preservation tasks or indexing delays.
+- Common issues include network outages, permission errors on stored files, or database conflicts.
+
+---
+
+## 3. General Automation Troubleshooting
+
+### How to verify that RSS polling and automation workers are running?
+- Check the logs of the worker service processes.
+- You should see startup messages like "Initializing the worker..." and recurring logs about RSS polling intervals.
+- If using containerized deployment, inspect container statuses and logs for restarts or crashes.
+
+### What environment variables affect automation?
+- `NEXT_PUBLIC_RSS_POLLING_INTERVAL_MINUTES`: Controls RSS feed polling frequency.
+- Limits on link and RSS subscription counts per user to enforce quotas.
+- AI feature toggles for tag generation.
+
+### What are best practices to avoid automation failure?
+- Keep your RSS feed URLs accurate and publicly accessible.
+- Monitor link and subscription limits to prevent hitting hard caps.
+- Regularly check and update environment configuration for API keys and AI services.
+- Maintain updated Linkwarden versions with bug fixes and improvements.
+
+### How can I diagnose automation bottlenecks?
+1. Review system and worker logs for slow or failed tasks.
+2. Check database performance and connection health.
+3. Inspect resource usage (CPU, memory) on your server.
+4. Verify network connectivity to external services like RSS sources or AI APIs.
+
+---
+
+## 4. Step-by-Step Guide to Resolve RSS Feed Issues
+
+<Steps>
+<Step title="Step 1: Confirm RSS feed URL validity">
+Use a standalone RSS reader or online validator with the URL you entered. Confirm the feed is accessible and well-formed.
+</Step>
+<Step title="Step 2: Check subscription settings in Linkwarden">
+Verify the feed name, URL, and selected collection under RSS Subscriptions settings.
+</Step>
+<Step title="Step 3: Review worker logs">
+Access your deployment logs for the Linkwarden worker service and search for errors related to your feed or processing times.
+</Step>
+<Step title="Step 4: Validate Link and RSS subscription limits">
+Ensure your user account has not exceeded limits defined by environment variables and system policies.
+</Step>
+<Step title="Step 5: Restart workers and services">
+If issues persist, restart background workers and the application to refresh internal states.
+</Step>
+<Step title="Step 6: Contact support or consult community forums">
+If unresolved, gather log samples and error messages to report to support or relevant community channels.
+</Step>
+</Steps>
+
+---
+
+## 5. Additional Resources and Where to Find Logs
+
+- **RSS Subscriptions Settings:** Manage your active subscriptions and collections (Settings > RSS Subscriptions).
+- **Worker Logs:** Logs for RSS polling and automation run within your server or deployment environment's process logs.
+- **Background Worker Status:** Confirm all background workers (polling, indexing, processing) are active.
+- **Error Messages:** API responses when creating or deleting subscriptions give immediate feedback for permission or validation issues.
+
+<Note>
+If running Linkwarden in a self-hosted environment, configure centralized log collection (e.g., via systemd journaling, Docker logs, or a logging stack) to track automation and RSS polling activities effectively.
+</Note>
+
+---
+
+## 6. FAQ Summary
+
+| Question                                             | Quick Answer                                      |
+| ----------------------------------------------------| ------------------------------------------------ |
+| Why are new RSS articles not appearing?             | Feed timestamps missing/incorrect or exceeded link limits.                     |
+| How often does Linkwarden poll RSS feeds?           | Typically every 60 minutes, configurable via environment variable.             |
+| What errors cause RSS polling to fail?               | Network issues, feed format problems, permission restrictions.                 |
+| Can I manually add AI tags or override automatic ones?| Yes, manual tag management is supported.                                      |
+| Where can I find automation error logs?              | Check worker process logs in your deployment environment.                      |
+| What to do if I hit RSS subscription limits?         | Remove unused subscriptions or contact admin to raise quota.                  |
+
+---
+
+## 7. Useful Links
+
+- [Subscribing and Automating with RSS Feeds Guide](https://linkwarden/docs/guides/automation-and-integrations/rss-feed-subscription) — Comprehensive user guide for RSS subscriptions
+- [Background Worker and Polling Configuration](https://linkwarden/docs/deployment/operations-monitoring/monitoring-logging) — How to monitor and troubleshoot worker processes
+- [AI Tagging and Search Guide](https://linkwarden/docs/guides/advanced-tasks-and-best-practices/ai-tagging-search) — Understanding AI-driven tags and manual adjustments
+- [Error Handling & Status Codes API Reference](https://linkwarden/docs/api-reference/integration-and-support/error-handling) — Understanding API error messages
+- [System Architecture Overview](https://linkwarden/docs/overview/core-concepts-and-architecture/architecture-overview) — High-level understanding of components interacting
+
+---
+
+<Tip>
+Maintaining effective RSS feed subscriptions and automation requires regular monitoring of quotas, validating feed accessibility, and confirming that background workers are running. Proactive troubleshooting will ensure your links stay fresh and AI enhancements operate smoothly.
+</Tip>
