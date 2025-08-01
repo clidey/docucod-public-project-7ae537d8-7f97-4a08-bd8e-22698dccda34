@@ -3,4 +3,159 @@ title: "Authorization & Permissions"
 description: "Discover Linkwarden’s role-based and permission models used to secure user actions and collaboration. This page details how user privileges are assigned, how collection sharing is secured, and the mechanisms for controlling who can view or modify resources."
 ---
 
-*This page will automatically be generated from the codebase*
+# Authorization & Permissions in Linkwarden
+
+Linkwarden secures user actions and collaboration through a robust, role-based authorization and granular permission model. This ensures that resources such as collections and links are accessible only to authorized users, keeping your data safe and your workflows seamless.
+
+---
+
+## 1. Understanding the Authorization Model
+
+At its core, Linkwarden governs access by assigning specific privileges to users based on their relationship to collections or resources. This model controls who can view, modify, create, or delete content within the application, aligning security with user intent and teamwork requirements.
+
+### Key Concepts:
+- **Owners:** The primary users who create and fully control collections, with unrestricted permissions.
+- **Members:** Users invited to collaborate on collections with individually assigned permission levels.
+- **Public Access:** Some collections may be marked as 'public,' allowing broad view access without membership.
+
+
+Users don't have implicit access beyond what is explicitly granted, ensuring the principle of least privilege is enforced.
+
+
+## 2. Assigning and Managing User Permissions
+
+Permission assignments in Linkwarden revolve around collections, the main organizational containers for links.
+
+### Permissions Include:
+- **View Access:** Permission to view collection content and links.
+- **Create Access:** Ability to add new links or resources within a collection.
+- **Update Access:** Rights to edit existing links, metadata, or collection details.
+- **Delete Access:** Permission to remove links or collections entirely.
+
+
+Owners inherently retain full authorization, while members can have customized access settings defined by the collection owner.
+
+### How Permissions Are Applied:
+Linkwarden verifies user permissions at the API level before performing sensitive actions, such as:
+- Uploading archived files or modifying collections.
+- Editing or deleting links.
+- Sharing collections with other users.
+
+
+The system consistently checks if users have the required access flags (e.g., `canCreate`, `canUpdate`) before proceeding.
+
+
+## 3. Securing Collection Sharing and Collaboration
+
+Collaboration is powered by invitations and controlled membership.
+
+- Owners invite members by email or username.
+- Members receive permissions tailored for their role.
+- Public collections allow anonymous or broad read-only access.
+
+This structure promotes secure, flexible teamwork without exposing content unintentionally.
+
+### Practical Example: How Linkwarden Protects Collection Access
+When a user requests access to an archived file or attempts to upload a preview image, the system:
+1. Verifies the user's authentication credentials.
+2. Checks if the user is the owner or is a member with adequate `canCreate` permission.
+3. Allows or denies the request if conditions are unmet.
+
+```ts
+// Simplified permission check example
+function userHasCreatePermission(collectionPermissions, userId) {
+  if (!collectionPermissions) return false;
+  const memberHasAccess = collectionPermissions.members.some(
+    e => e.userId === userId && e.canCreate
+  );
+  return collectionPermissions.ownerId === userId || memberHasAccess;
+}
+```
+
+
+This guardrail prevents unauthorized modification of preserved content.
+
+## 4. User Privilege Levels and Their Impact
+
+Linkwarden classifies users in relation to collections:
+
+| Role  | Permissions Summary                       | Common Actions Allowed                          |
+|--------|------------------------------------------|------------------------------------------------|
+| Owner  | Full control over collection and links  | Add/remove links, invite member, change perms  |
+| Member | Permissions assigned by owner            | Create, update, or view links per permission   |
+| Public | Usually view-only                        | Access publicly shared collections              |
+
+
+Owners govern permission grants, ensuring trusted control over sharing capabilities.
+
+## 5. Workflow: Collaborating on a Collection
+
+<Steps>
+<Step title="Invitation and Access">
+The collection owner sends invites to collaborators by email or username, assigning them specific roles with explicit permissions.
+</Step>
+<Step title="Member Joins and Access Verification">
+Upon accepting the invitation, the member’s accesses are verified at each action, ensuring operations like link creation or modification are authorized.
+</Step>
+<Step title="Performing Actions with Controlled Access">
+Members interact with links and collections using permissions; unauthorized attempts are blocked and error responses provided.
+</Step>
+</Steps>
+
+## 6. Practical Tips for Secure Permission Management
+
+- **Grant Minimal Permissions:** Share collections with members only the rights they strictly need.
+- **Review Public Collections Regularly:** Ensure sensitive data is never unintentionally exposed.
+- **Monitor User Access:** Periodically audit membership and permissions for compliance.
+- **Use Invitation Workflows:** Always use the built-in invitation and permission assignment to onboard collaborators securely.
+
+
+## 7. Error Handling for Permissions
+
+When users attempt unauthorized actions, Linkwarden returns clear, actionable errors, such as:
+- `401 Unauthorized` for access violations.
+- `400 Bad Request` when actions are incompatible with current permissions.
+- Informative messages guide users to correct their access or contact an administrator.
+
+<AccordionGroup title="Common Permission Errors and Guidance">
+<Accordion title="Collection Access Denied">
+If you encounter a message saying 'You don't have access to this collection', it means your current user does not hold required permissions or membership. Contact the owner to request access.
+</Accordion>
+<Accordion title="Operation Disabled in Demo Mode">
+Certain actions may be disabled in demonstration environments, indicating restricted functionality unrelated to your permissions.
+</Accordion>
+<Accordion title="Permission Denied on Link Modification">
+This error indicates your account lacks update or delete privileges for that link. Review assigned roles or request elevated access from the collection owner.
+</Accordion>
+</AccordionGroup>
+
+## 8. Summary
+
+Linkwarden ensures secure collaboration with a permission model that is both flexible and strict. Assigning roles with explicit access rights protects collections and links from unauthorized viewing or modification, while supporting teamwork through controlled sharing.
+
+By understanding the roles and access controls detailed here, users can confidently manage collections and collaborate effectively.
+
+
+---
+
+For further mastery, consult additional documentation on:
+- [Inviting Members and Setting Permissions](../guides/collaboration-and-sharing/inviting-collaborators)
+- [Authentication Overview](../security/auth-models-identity/auth-overview)
+- [Privacy & Sharing Controls](../security/data-privacy-protection/privacy-sharing-controls)
+
+
+
+---
+
+<CardGroup cols={2}>
+<Card title="Related Guides">
+- [Inviting Members and Setting Permissions](../guides/collaboration-and-sharing/inviting-collaborators)
+- [Sharing Collections or Links Publicly](../guides/collaboration-and-sharing/public-sharing)
+- [Managing Users and API Access](../guides/advanced-tasks-and-best-practices/user-administration-tokens)
+</Card>
+<Card title="Security References">
+- [Authentication Overview](../security/auth-models-identity/auth-overview)
+- [Session Management](../security/auth-models-identity/session-management)
+- [Privacy & Sharing Controls](../security/data-privacy-protection/privacy-sharing-controls)
+</Card>
+</CardGroup>
