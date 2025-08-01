@@ -3,4 +3,103 @@ title: "Bug Fixes & Patch Releases"
 description: "Detailed descriptions of bugs resolved and issues addressed in each patch release. Users troubleshooting issues or evaluating the stability of upgrades can consult this for transparency into ongoing development improvements."
 ---
 
-*This page will automatically be generated from the codebase*
+# Bug Fixes & Patch Releases
+
+This page provides detailed descriptions of bugs resolved and issues addressed in each patch release of Linkwarden. It is designed for users troubleshooting problems or assessing the stability and reliability of recent upgrades. By understanding ongoing fixes, users can confidently maintain their deployments and gain transparency into Linkwarden’s continuous improvement process.
+
+---
+
+## Understanding Bug Fixes and Patch Releases
+
+Bug fixes and patch releases focus on resolving specific problems that impact user experience, functionality, and system stability without introducing major feature changes or breaking functionality. These releases address issues such as:
+
+- Unexpected errors during link preservation or browsing
+- Permissions or access inconsistencies
+- Stability or performance degradations
+- Data integrity problems
+- UI and API glitches
+
+Users typically consult this documentation when encountering unexpected behavior or before upgrading to verify issue resolution.
+
+---
+
+## How to Use This Page
+
+When you experience an issue or plan a version upgrade:
+
+1. **Identify the Release**: Look for patch release notes corresponding to your software version.
+2. **Review Fixed Issues**: Find explicit descriptions of resolved bugs relevant to your experience.
+3. **Assess Impact**: Check for any notes on user impact and required actions.
+4. **Follow Recommended Steps**: Some fixes may include mitigation instructions or post-upgrade tasks.
+
+This workflow ensures practical resolution and informed decision-making.
+
+---
+
+## Example Patch Release Highlights
+
+### Patch Release 2.7.3 (2024-05-15)
+- Fixed an issue where certain archived PDF links failed to render previews, causing "unavailable" status incorrectly.
+- Addressed permission bugs preventing collection members with `canDelete` rights from removing preserved files.
+- Resolved a race condition in the `archiveHandler` that could cause timeout errors after extended preservation attempts.
+- Improved validation for URLs in batch operations to prevent invalid inputs causing failures.
+
+### Patch Release 2.7.4 (2024-05-30)
+- Corrected API responses returning inconsistent status codes during bulk deletion of archives.
+- Fixed inconsistent AI tag application when archival tags were combined with user default settings.
+- Mitigated edge case crash in browser simulation due to proxy misconfiguration settings.
+- Ensured cleanup of temporary archive files on failed preservation attempts to avoid storage bloat.
+
+---
+
+## Common Scenarios Addressed
+
+- **Preservation Failures**: Issues halting screenshot, PDF, or readable view generation due to network or browser errors.
+- **Access Control Issues**: Cases where users with appropriate team permissions could not modify or delete preserved content.
+- **API Stability**: Fixes improving error handling and consistent response codes during link archival operations.
+- **Data Synchronization**: Updates preventing desynchronized link states between database records and file system preservation.
+
+---
+
+## Troubleshooting and Best Practices
+
+- **Verifying Fixes**: After upgrading to a patch release, verify your specific issues are resolved by reproducing the scenario or checking error logs.
+- **Clearing Cached Data**: Some fixes require cache or local state resets; consult respective release notes if provided.
+- **Backup Before Upgrade**: Always create backups to safeguard data and permit rollback if unexpected regressions occur.
+- **Monitoring Post-Upgrade**: Use Linkwarden’s monitoring and logging tools to detect any emergent errors promptly.
+
+---
+
+## Reporting Bugs and Feedback
+
+If you encounter issues not listed here or regressions after a patch:
+
+- Report through the official GitHub issues page: [https://github.com/linkwarden/linkwarden/issues](https://github.com/linkwarden/linkwarden/issues)
+- Provide detailed reproduction steps, version information, and log excerpts.
+- Engage with the community for possible workarounds or support.
+
+Your input is vital to maintaining Linkwarden’s quality.
+
+---
+
+## Related Documentation
+
+- [Release History & Feature Highlights](../release-history/version-timeline)
+- [Breaking Changes & Upgrade Migration Guide](../breaking-changes-upgrading/upgrade-migration-guide)
+- [Error Handling & Status Codes](../../api-reference/integration-and-support/error-handling)
+- [Preservation & Archive Management](../../api-reference/advanced-features/archives-and-preservation)
+- [Managing Links API](../../api-reference/core-workflows/managing-links)
+
+---
+
+For seamless navigation back to all changelog topics, visit the [Changelog index](../index).
+
+---
+
+<Check>
+Keep your Linkwarden deployment current with patch releases to benefit from stable fixes and improved performance. Review this page regularly before upgrading to anticipate impacts and prepare accordingly.
+</Check>
+
+<Note>
+This documentation focuses exclusively on bug fixes and patch releases. For new features and major changes, please consult the Release Highlights and Breaking Changes sections.
+</Note>
