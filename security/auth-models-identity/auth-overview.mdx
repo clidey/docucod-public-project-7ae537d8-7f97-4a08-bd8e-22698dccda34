@@ -3,4 +3,178 @@ title: "Authentication Overview"
 description: "An introduction to how Linkwarden authenticates users, including email/password, OAuth providers, and Single Sign-On (SSO) support for enterprise and self-hosted environments. Review how user identities are established and the underlying protocols powering login and session establishment."
 ---
 
-*This page will automatically be generated from the codebase*
+# Authentication Overview
+
+Linkwarden provides a secure, flexible authentication framework to establish user identities and manage access efficiently across both individual and enterprise deployments. This guide introduces the supported authentication methods—ranging from traditional email/password login to OAuth-based external providers and Single Sign-On (SSO)—and explains how Linkwarden leverages modern protocols to power these workflows. Understanding these methods empowers users and administrators to choose the best approach for their security and usability needs.
+
+---
+
+## 1. Authentication Methods Supported
+
+Linkwarden supports multiple user authentication mechanisms tailored to different operational contexts, providing seamless user experiences while maintaining robust security.
+
+### 1.1 Email and Password Authentication
+
+- **Description**: Users can sign in using their username or email coupled with a password.
+- **Verification**: Email verification is enforced to confirm valid user email ownership.
+- **Password Security**: Passwords are hashed securely before storage. Failed credential attempts provide clear, security-conscious error messages.
+
+#### User Sign-In Flow:
+1. User enters username/email and password on the login page.
+2. System verifies credentials and confirms email is verified.
+3. Upon success, a session token is generated (see Session Establishment).
+4. On failure, users receive an actionable error message, including a prompt for email verification if required.
+
+### 1.2 OAuth Providers and Third-Party Integration
+
+Linkwarden integrates with a comprehensive list of OAuth-compatible providers to streamline login:
+
+- Popular providers include Google, GitHub, Facebook, Apple, Azure AD, Okta, and many more.
+- Administrators enable/disable providers via environment configuration.
+- User profile information from the provider (e.g., username, email, profile picture) is linked to the Linkwarden user identity.
+
+#### Key Points:
+- **Account Linking**: If a user previously registered via password login and then uses SSO with the same email, Linkwarden links the external account accordingly.
+- **Disabling New SSO Users**: Registration via SSO can be restricted in enterprise setups.
+- **Email Verification**: SSO users typically have their email automatically verified if trusted.
+
+### 1.3 Single Sign-On (SSO) in Enterprise and Self-Hosted Environments
+
+- Linkwarden supports enterprise-grade SSO protocols to integrate with existing identity infrastructures.
+- SSO providers can be configured using OpenID Connect or OAuth2 via supported environment variables.
+- User provisioning can be either dynamic or manual, with options to restrict new SSO user creation.
+
+<Note>
+Administrators managing enterprise or self-hosted instances should evaluate deployment-specific SSO configuration guides for secure integration.
+</Note>
+
+---
+
+## 2. User Identity Establishment and Verification
+
+Linkwarden authenticates users securely and ensures that identity information is consistent and verified.
+
+### 2.1 User Lookup and Credentials Verification
+
+- Username or email serves as the login identifier.
+- The password is hashed and compared securely.
+- If email verification is enabled, unverified users are prompted to verify their email before gaining access.
+
+### 2.2 Token Generation and Session Establishment
+
+Upon successful authentication, Linkwarden issues a JSON Web Token (JWT) representing the authenticated session.
+
+- **Token Lifespan**: Tokens have long expiration periods by default (e.g., 30 days for JWT sessions), but tokens can be revoked or refreshed as needed.
+- **Session Tokens**: Stored and tracked server-side in an `accessToken` store with metadata for audit and revocation.
+- **Revocation Support**: Tokens can be revoked, invalidating sessions immediately.
+
+#### Example: Session Creation Workflow
+
+```text
+User authenticated with credentials -> createSession() generates JWT -> JWT contains user ID, issued-at, expiry, and unique token ID (jti) -> JWT saved in Access Tokens database with expiration and session metadata -> JWT returned to user client for use in authenticated requests
+```
+
+### 2.3 Session Validation
+
+- Every API request is validated against the JWT for authenticity.
+- The system checks token expiry and revocation status before granting access.
+- Expired or revoked tokens cause rejection and require re-authentication.
+
+<Warning>
+If a session token is detected as revoked or expired, users will be asked to sign in again to ensure account security.
+</Warning>
+
+---
+
+## 3. Login User Interface Experience
+
+Linkwarden’s login page is designed to handle multiple authentication methods transparently and provide clear, helpful feedback.
+
+### 3.1 Credential Login UI
+
+- Prompts for username/email and password entry.
+- Optionally shows a "forgot password" link when email login is enabled.
+- Supports demo accounts with pre-filled credentials and a one-click sign-in for demonstration environments.
+
+### 3.2 External OAuth and SSO Buttons
+
+- Dynamically displays login buttons for enabled external providers.
+- Button clicks initiate respective OAuth flows seamlessly.
+
+### 3.3 Registration Access
+
+- If registration is enabled, users see clear signup links.
+- Administrators can disable registration in locked environments.
+
+<Info>
+User experience prioritizes minimal friction without compromising security, balancing multiple authentication options within a unified form.
+</Info>
+
+---
+
+## 4. Security Best Practices for Authentication
+
+To maximize security across login workflows, consider these recommendations:
+
+- **Enforce Email Verification**: Prevent unverified accounts from accessing the system.
+- **Secure Password Storage**: Use strong hashing (e.g., bcrypt) to protect passwords.
+- **Rate Limit Login Attempts**: Apply throttling or CAPTCHA mechanisms to prevent brute-force attacks.
+- **Use HTTPS/TLS Everywhere**: Protect all authentication data in transit.
+- **Manage Session Lifetimes**: Limit session validity and support explicit logout and token revocation.
+- **Enable MFA via SSO Providers**: When possible, leverage multi-factor authentication from external identity providers.
+
+---
+
+## 5. Troubleshooting Common Authentication Issues
+
+### 5.1 Invalid Credentials
+- Confirm username or email is correct and properly cased.
+- Reset password using the "forgot password" flow if unsure.
+
+### 5.2 Email Not Verified
+- Check your user email inbox (including spam) for verification messages.
+- Follow the verification link or request a new verification email.
+- Contact administrator if email verification is disabled or broken.
+
+### 5.3 Session Expired or Revoked
+- Log out and log in again to obtain a new session token.
+- If persistent, check with administrators about account or token status.
+
+### 5.4 OAuth Provider Errors
+- Ensure third-party OAuth providers are configured correctly.
+- Verify environment variables and callback URLs.
+- Clear browser cookies/cache or try incognito mode.
+
+<Check>
+If issues persist, consult deployment and environment configuration guides relevant to your Linkwarden installation.
+</Check>
+
+---
+
+## 6. Additional Technical Notes
+
+- Linkwarden uses the NextAuth.js framework for managing authentication flows internally.
+- Providers can be dynamically enabled or disabled through environment variables for flexible deployment.
+- Tokens are securely generated with cryptographically random UUIDs for JWT IDs.
+- The Prisma ORM manages user and token persistence to ensure robust data integrity.
+
+---
+
+## 7. Related Documentation and Next Steps
+
+- [Single Sign-On (SSO) and OAuth Providers](../sso-third-party) — Deep dive into configuring external identity providers.
+- [Session Management](../session-management) — Understanding session lifecycle, refresh, and revocation.
+- [User & Session Management API](../../api-reference/core-workflows/user-management) — Automate user and token handling.
+- [Security Hardening Guide](../../../deployment/security-disaster-recovery/security-hardening) — Best practices for secure deployment.
+- [Login Troubleshooting FAQ](../../../faq/troubleshooting-and-performance/cant-login-or-authentication-problems) — Common problems and fixes.
+
+<Note>
+For administrators of self-hosted or enterprise Linkwarden, carefully review environment configurations to enable the appropriate authentication providers and to align them with your organizational security policies.
+</Note>
+
+---
+
+By mastering these authentication methods and protocols, you ensure that your Linkwarden deployment maintains strong identity guarantees while providing users with convenient, secure access.
+
+
+---
