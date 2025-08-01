@@ -3,4 +3,188 @@ title: "API Keys & Access Tokens"
 description: "An overview of API and access token management for integrations and automation. Learn how to generate, restrict, and revoke tokens, and understand best practices for using tokens securely."
 ---
 
-*This page will automatically be generated from the codebase*
+# API Keys & Access Tokens
+
+Efficient and secure automation with Linkwarden relies heavily on managing API keys and access tokens properly. This guide provides you with a clear understanding of how to generate, use, restrict, and revoke these tokens to maintain a secure integration with Linkwarden's services.
+
+---
+
+## 1. Introduction to API Keys and Access Tokens
+
+API keys and access tokens serve as the credentials that enable applications or users to authenticate and perform authorized actions programmatically within Linkwarden. They are essential for integrations, automation workflows, and managing sessions across multiple devices.
+
+- **Access Tokens:** Long-lived tokens typically associated with user sessions or automated workflows.
+- **API Keys:** Tokens specifically created for API access, controlling scope and permissions to limit exposure.
+
+Using these tokens correctly ensures secure, seamless interaction with Linkwarden’s APIs without exposing user credentials or compromising account security.
+
+---
+
+## 2. Managing Access Tokens
+
+### 2.1 Listing and Retrieving Tokens
+
+Users can retrieve their active access tokens through the API, which includes tokens for active sessions or API usage. Each token contains metadata such as name, creation date, expiry, and whether it is session-based.
+
+#### Example Response Structure:
+```json
+[
+  {
+    "id": 123,
+    "name": "My API Token",
+    "isSession": false,
+    "expires": "2025-12-31T23:59:59Z",
+    "createdAt": "2023-04-01T10:00:00Z"
+  },
+  {
+    "id": 124,
+    "name": "Laptop Session",
+    "isSession": true,
+    "expires": "2043-04-01T10:00:00Z",
+    "createdAt": "2023-04-01T09:00:00Z"
+  }
+]
+```
+
+### 2.2 Creating Access Tokens and Sessions
+
+- **Session Tokens:** Created when logging in, associated with a device or browser session, and typically have a long expiry.
+- **API Tokens:** Created explicitly for automation or integrations, often with configurable expiry and naming.
+
+#### How to Create a Session Token (Example Flow):
+1. Authenticate with username and password.
+2. Provide an optional session name to identify the token.
+3. Receive a JWT token with embedded expiry and unique identifier.
+4. The system stores the token with metadata in the database for validation and revocation.
+
+---
+
+## 3. Security Best Practices for Tokens
+
+### 3.1 Store Tokens Securely
+
+Tokens should be securely stored on the client side, never exposed in public code repositories, logs, or user interfaces beyond trusted environments.
+
+### 3.2 Use Scoped Tokens
+
+When possible, restrict tokens to minimal required scopes or permissions to adhere to the principle of least privilege.
+
+### 3.3 Rotate and Revoke Tokens Promptly
+
+Tokens can be revoked by users or automatically if compromised. Regular token rotation minimizes risk.
+
+### 3.4 Set Expiry Dates
+
+Tokens should have appropriate expiration dates. Use shorter lifetimes for sensitive tokens, balancing usability and security.
+
+<Tip>
+Always name your tokens descriptively (e.g., 'CI Integration Token' or 'Mobile App Session') so you can easily identify and revoke them if needed.
+</Tip>
+
+---
+
+## 4. Revoking Tokens
+
+Users can revoke tokens individually to immediately invalidate their access.
+
+### Revocation Workflow:
+1. Identify the token to revoke (by name or ID).
+2. Use the API endpoint to send a DELETE request targeting the token ID.
+3. The system marks the token as revoked, preventing future use.
+
+#### Example Revocation Request:
+```http
+DELETE /api/v1/tokens/{tokenId}
+Authorization: Bearer <your_valid_token>
+```
+
+#### Example Revocation Response:
+```json
+{
+  "response": "Token revoked successfully."
+}
+```
+
+<Tip>
+Revoking unused or compromised tokens immediately limits the risk of unauthorized access.
+</Tip>
+
+---
+
+## 5. Token Validation and Revocation Checks
+
+Linkwarden validates tokens on every API request by:
+
+- Checking the token's signature and expiry.
+- Confirming the token has not been revoked in the database.
+- Verifying user existence and associated permissions.
+
+If the token is invalid or revoked, API calls return an error prompting re-authentication.
+
+---
+
+## 6. Common Workflows
+
+### 6.1 Automating API Access
+
+- **Generate an API token:** via the user dashboard or API.
+- **Integrate** the token in your automation scripts or external applications.
+- **Revoke** the token when no longer needed.
+
+### 6.2 Managing Multiple Sessions
+
+- **View active sessions:** list tokens marked as sessions.
+- **Revoke stale sessions:** remove devices no longer in use to maintain control.
+
+---
+
+## 7. Troubleshooting Token Issues
+
+<AccordionGroup title="Common Token-Related Problems and Solutions">
+<Accordion title="Authentication Failures">
+- *Issue:* API requests return 401 Unauthorized.
+- *Solution:* Verify token validity, check expiration, confirm token hasn’t been revoked.
+</Accordion>
+<Accordion title="Token Revocation Does Not Take Effect Immediately">
+- *Issue:* Revoked tokens still sometimes work.
+- *Solution:* Ensure the API cache is cleared or wait a short propagation time; tokens check revocation status on each request.
+</Accordion>
+<Accordion title="Creating Tokens Fails in Demo Mode">
+- *Issue:* API returns errors when creating or revoking tokens in demo environments.
+- *Solution:* Demo mode is read-only; use a production environment to modify tokens.
+</Accordion>
+</AccordionGroup>
+
+---
+
+## 8. API Endpoints Summary
+
+| Endpoint                         | Method | Description                    |
+|---------------------------------|--------|-------------------------------|
+| `/api/v1/tokens`                | GET    | List your active tokens       |
+| `/api/v1/tokens`                | POST   | Create a new API token/session|
+| `/api/v1/tokens/{tokenId}`      | DELETE | Revoke a token by its ID      |
+
+For detailed request/response formats, see the [API Tokens & Access Control](https://linkwarden.com/api-reference/advanced-features/api-tokens) documentation.
+
+---
+
+## 9. Additional Security Recommendations
+
+- Monitor token usage and audit logs regularly.
+- Limit token creation permissions to administrators or end users explicitly.
+- Combine token management with session controls and Multi-Factor Authentication (MFA) for enhanced protection.
+
+---
+
+## 10. Related Documentation
+
+- [Authentication Overview](https://linkwarden.com/security/auth-models-identity/auth-overview)
+- [Session Management](https://linkwarden.com/security/auth-models-identity/session-management)
+- [Managing Users and API Access](https://linkwarden.com/guides/advanced-tasks-and-best-practices/user-administration-tokens)
+- [API Tokens & Access Control](https://linkwarden.com/api-reference/advanced-features/api-tokens)
+- [Security Hardening](https://linkwarden.com/deployment/security-disaster-recovery/security-hardening)
+
+---
+
+Linkwarden’s API key and token system provide powerful programmatic access while emphasizing security through revocation, expiry, and scoped permissions. Following this guide will help you automate safely and maintain control over your data and integrations.
