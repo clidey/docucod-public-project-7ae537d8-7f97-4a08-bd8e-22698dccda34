@@ -3,4 +3,176 @@ title: "Deploying Linkwarden Securely"
 description: "Step-by-step guidelines for securely deploying Linkwarden (cloud or self-hosted). Includes advice on network and server configuration, recommended environment file practices, secrets management, update strategies, and monitoring."
 ---
 
-*This page will automatically be generated from the codebase*
+# Deploying Linkwarden Securely
+
+This guide provides detailed, step-by-step instructions to help you deploy Linkwarden securely, whether you choose a cloud-hosted or self-hosted setup. It covers best practices for network and server configuration, environment file management, secrets handling, update strategies, and monitoring. By following these guidelines, you'll ensure your Linkwarden instance remains robust against attacks and maintains data confidentiality, integrity, and availability.
+
+---
+
+## 1. Network and Server Configuration
+
+Securing the deployment's underlying infrastructure is the critical first step to protecting Linkwarden.
+
+### 1.1 Use HTTPS Everywhere
+
+- Configure an SSL/TLS certificate using a trusted provider (e.g., Let's Encrypt).
+- Redirect all HTTP traffic to HTTPS to prevent unencrypted data transmission.
+- Regularly renew certs and verify TLS configuration with tools like [SSL Labs](https://www.ssllabs.com).
+
+### 1.2 Firewall and Network Segmentation
+
+- Restrict inbound traffic to only necessary ports (typically 80/443 for web).
+- Block all other unsolicited inbound connections.
+- If deploying self-hosted behind corporate firewalls or cloud security groups, isolate the Linkwarden server from other internal systems.
+
+### 1.3 Use a Reverse Proxy for Additional Security
+
+- Place a trusted reverse proxy (e.g., NGINX, Caddy) in front of Linkwarden to handle SSL termination, rate limiting, and request filtering.
+- Configure HTTP security headers (CSP, HSTS, X-Frame-Options) at the proxy level.
+
+<Tip>
+Linkwarden does not include built-in web server hardening features, so rely on upstream infrastructure to enforce best networking practices.
+</Tip>
+
+## 2. Environment File Practices
+
+Linkwarden relies on environment variables to configure core components like authentication, email, and integrations. Managing these securely prevents accidental leaks of secrets and misconfiguration.
+
+### 2.1 Minimizing Secret Exposure
+
+- Store all secrets (e.g., `NEXTAUTH_SECRET`, email server credentials, OAuth client secrets) exclusively in environment files or secure secret management systems.
+- Never commit `.env` files or secret information to source control.
+- Use unique, strong values for secrets to prevent token forgery or unauthorized access.
+
+### 2.2 Environment Variable Configuration Tips
+
+- Double-check boolean flags and identifiers to avoid unintentionally exposing user registration or admin privileges.
+- When enabling email providers or SSO, verify all required variables are set to avoid partial or broken authentication flows.
+
+<Tip>
+Use environment variable validation tools or libraries to catch errors early in deployment.
+</Tip>
+
+## 3. Secrets and Credentials Management
+
+Proper handling of secrets such as tokens, API keys, and passwords is vital to secure deployment.
+
+### 3.1 Secure Storage
+
+- Use dedicated secret stores like HashiCorp Vault, AWS Secrets Manager, or Kubernetes Secrets where possible.
+- Consider encrypting environment files at rest, especially on shared or cloud storage.
+
+### 3.2 Least Privilege Principle
+
+- Limit access to secrets only to the minimum required services and personnel.
+- Rotate secrets regularly and after any suspected compromise.
+
+### 3.3 Session Tokens and API Keys
+
+- Linkwarden issues JWT-based session tokens with server-side revocation support.
+- Store and transmit tokens securely with HTTPS.
+- Regularly monitor and revoke compromised or unused tokens via the administrative interface or APIs.
+
+## 4. Update and Patch Strategy
+
+Frequent updates and patches protect Linkwarden against known vulnerabilities and security bugs.
+
+### 4.1 Regular Updates
+
+- Subscribe to Linkwarden release announcements.
+- Schedule regular maintenance to apply security patches with minimal disruption.
+
+### 4.2 Verify Integrity
+
+- Always obtain deployment artifacts from official, verified sources (e.g., official Docker images or trusted binaries).
+- Validate container image signatures or checksums where supported.
+
+### 4.3 Backup Before Update
+
+- Back up databases and configuration files prior to updating.
+- Test updates in a staging environment where possible.
+
+## 5. Monitoring and Incident Awareness
+
+Active monitoring helps detect security incidents early and maintain a secure deployment.
+
+### 5.1 Log Collection and Analysis
+
+- Collect logs from web servers, proxies, application containers, and databases.
+- Centralize logs on a dedicated platform (e.g., ELK stack, Prometheus, Grafana) and establish alerting for anomalies.
+
+### 5.2 Health and Security Probes
+
+- Set up automated health checks covering all critical services.
+- Monitor for failed login attempts, suspicious API token usage, or abnormal traffic patterns.
+
+### 5.3 Incident Response Preparation
+
+- Establish clear procedures to respond to incidents, including token revocation, user notification, and system rollback.
+- Regularly test incident response plans to ensure preparedness.
+
+<Warning>
+Ignoring monitoring or delaying updates greatly increases exposure to attacks and potential data loss.
+</Warning>
+
+## 6. Summary of Key Security Configuration Steps
+
+<Steps>
+<Step title="Enable HTTPS and Configure Firewall">
+Ensure all traffic to Linkwarden uses HTTPS with valid certificates and restrict network access to necessary ports.
+</Step>
+<Step title="Secure Environment Variables">
+Keep all secrets out of version control, store them in encrypted or dedicated secret stores, and restrict access.
+</Step>
+<Step title="Implement Least Privilege for API and Sessions">
+Use the built-in token revocation and session management features to minimize token lifetime and promptly revoke compromised keys.
+</Step>
+<Step title="Keep Software Up-to-date">
+Regularly apply patches or upgrades and follow verified update procedures.
+</Step>
+<Step title="Establish Monitoring and Alerting">
+Collect logs centrally and set alerts for suspicious user or system activity.
+</Step>
+</Steps>
+
+## 7. Troubleshooting Common Deployment Security Issues
+
+<AccordionGroup title="Troubleshooting Deployment Security">
+<Accordion title="Unexpected Token Revocation or Authentication Failures">
+- Verify the `NEXTAUTH_SECRET` environment variable is set and consistent across all app instances.
+- Check that JWT tokens are transmitted only over HTTPS.
+- Ensure no clock skew between clients and server to prevent premature token expiration.
+</Accordion>
+<Accordion title="Email Verification and SSO Login Problems">
+- Confirm `EMAIL_FROM` and `EMAIL_SERVER` are correctly configured.
+- Review SMTP server logs and retry limits to avoid verification spam blocking.
+- For SSO, verify all OAuth client IDs, secrets, and issuer URLs match the provider's setup.
+- Disable `DISABLE_NEW_SSO_USERS` only when intentionally restricting user registration.
+</Accordion>
+<Accordion title="Environment Variables Not Loading as Expected">
+- Ensure environment files are correctly placed and named for your deployment platform.
+- Use logging or debug modes to verify variables are loaded.
+</Accordion>
+<Accordion title="Insecure Network Configuration">
+- Double-check firewall rules and reverse proxy settings to prevent exposing admin ports or backend APIs.
+- Use external tools to scan your deployment for open ports or weak TLS configs.
+</Accordion>
+</AccordionGroup>
+
+---
+
+## Additional Resources
+
+For a broader perspective on securing and managing your Linkwarden deployment, consult these related guides:
+
+- [Security Hardening](../security-disaster-recovery/security-hardening) — For comprehensive security practices beyond deployment.
+- [Environment Configuration](../production-setup/environment-configuration) — Details on environment variables including secret keys and feature toggles.
+- [Monitoring and Logging](../operations-monitoring/monitoring-logging) — Best practices to monitor your deployment continuously.
+- [Backup and Disaster Recovery](../security-disaster-recovery/backup-and-recovery) — Ensuring data safety in case of incidents.
+- [Authentication Overview](../../security/auth-models-identity/auth-overview) — Understand Linkwarden’s authentication and session handling model.
+
+By integrating these best practices, your Linkwarden deployment will remain secure, resilient, and ready to serve your persistent web content needs safely.
+
+---
+
+*This documentation aligns with Linkwarden's commitment to secure, user-focused deployment guidance, enabling confident setup for cloud or self-hosted environments.*
