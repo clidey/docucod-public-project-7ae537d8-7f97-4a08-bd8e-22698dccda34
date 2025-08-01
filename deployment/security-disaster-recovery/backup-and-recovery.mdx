@@ -3,4 +3,188 @@ title: "Backup and Disaster Recovery"
 description: "Step-by-step instructions for creating timely database and file backups, and for restoring the platform to a previous state in case of failures. Describes how to schedule backups and validate their integrity."
 ---
 
-*This page will automatically be generated from the codebase*
+# Backup and Disaster Recovery
+
+Ensuring the safety and availability of your data is paramount. This guide provides you with clear, actionable steps to create reliable backups of your Linkwarden platform's databases and files, schedule these backups for timely execution, validate their integrity, and restore your system quickly and confidently in the event of a failure.
+
+---
+
+## 1. Understanding Backup and Disaster Recovery
+
+Backups are your safety net — copies of critical data that let you recover from hardware failures, corruption, or accidental deletions. Disaster recovery covers the processes and tools that get your platform back online with minimal downtime.
+
+In Linkwarden, backups involve two main components:
+
+- **Database backups**: Safeguarding all your saved links, collections, user data, and system state.
+- **File backups**: Preserving uploaded files and archived snapshots such as screenshots, PDFs, and web archives.
+
+This guide walks you through how to handle both reliably and efficiently.
+
+---
+
+## 2. Creating Timely Backups
+
+### 2.1 Database Backups
+
+Linkwarden uses PostgreSQL for data storage. Regular database dumps are the foundation of your backup strategy.
+
+**Steps to create a manual backup:**
+
+1. Connect to your server terminal where the database runs.
+2. Use the following command to create a backup dump:
+
+```bash
+pg_dump -U <db-username> -F c -b -v -f "<backup-file-path>/linkwarden_backup_<YYYYMMDD>.dump" <database-name>
+```
+
+- Replace `<db-username>`, `<backup-file-path>`, and `<database-name>` with your configuration.
+- The `-F c` option creates a compressed custom-format backup.
+
+### 2.2 File Backups
+
+Your Linkwarden files (e.g., archives, previews) reside in the file storage configured during deployment. To back up these files:
+
+1. Identify the storage directory, commonly the `archives/` folder or equivalent.
+2. Use file system commands or scripts to copy the directory to a safe location.
+
+```bash
+ts
+cp -r <archives-folder> <backup-destination-folder>
+```
+
+- Ensure backup storage is secure and has sufficient space.
+
+### 2.3 Scheduling Automated Backups
+
+To avoid manual overhead, set up scheduled jobs (cron jobs in Linux) for automatic backups.
+
+**Example cron job for daily database backup at 2 a.m.:**
+
+```cron
+0 2 * * * pg_dump -U <db-username> -F c -b -v -f "/backups/linkwarden_backup_$(date +\%Y\%m\%d).dump" <database-name>
+```
+
+**Example cron job for daily file backup (assuming archives folder at `/var/linkwarden/archives`):**
+
+```cron
+30 2 * * * rsync -a --delete /var/linkwarden/archives/ /backups/archives_backup/
+```
+
+<Note>
+Test automated jobs manually after setup to confirm proper execution and permissions.
+</Note>
+
+---
+
+## 3. Validating Backup Integrity
+
+A backup is only as good as its ability to restore your data. Follow these best practices:
+
+- **Verify backup files exist and are complete** immediately after each run.
+- Use built-in PostgreSQL tools or scripts to test restore from backup files in a non-production environment.
+- Regularly checksum your backups and compare them over time to detect corruption.
+- For files, confirm that copied archives and previews open correctly and match originals.
+
+<Info>
+Maintaining multiple historical backup copies (e.g., daily backups for the last 7 days) guards against unnoticed corruption.
+</Info>
+
+---
+
+## 4. Restoring Your Platform
+
+Accidental data loss or system failure requires prompt, reliable restoration.
+
+### 4.1 Restoring the Database
+
+1. Stop the Linkwarden backend service to prevent data writes during restore.
+2. Use the following command to restore from a backup dump:
+
+```bash
+pg_restore -U <db-username> -d <database-name> -v <backup-file-path>/linkwarden_backup_<YYYYMMDD>.dump
+```
+
+3. Confirm restoration success in logs and verify data presence.
+4. Restart your Linkwarden services.
+
+### 4.2 Restoring Files
+
+1. Replace the current files directory with backup copies:
+
+```bash
+ts
+rsync -a --delete <backup-destination-folder>/archives/ <archives-folder>/
+```
+
+2. Verify that archive files and thumbnails appear correctly in the UI.
+
+<Warning>
+Ensure permissions and ownership of restored files match your platform's runtime user to avoid access issues.
+</Warning>
+
+---
+
+## 5. Practical Backup and Recovery Workflow
+
+Here’s a streamlined workflow illustrating your journey through backup and recovery:
+
+<Steps>
+  <Step title="Configure Automated Backups">
+  Define cron jobs or scheduled tasks to back up your database and files daily.
+  </Step>
+  <Step title="Validate Backups Regularly">
+  Periodically run restore tests in a staging environment to confirm your backups can be successfully restored.
+  </Step>
+  <Step title="React to Incidents">
+  Upon failure or data loss, stop impacted services immediately to prevent further corruption.
+  </Step>
+  <Step title="Restore Database and Files">
+  Use commands described above to restore your PostgreSQL database and file archives.
+  </Step>
+  <Step title="Verify Restoration">
+  Check Linkwarden interface and logs to ensure the system is fully operational.
+  </Step>
+</Steps>
+
+---
+
+## 6. Common Pitfalls and Tips
+
+- **Storage Location**: Avoid backing up to the same physical disk as your production data to prevent losing backups during hardware failure.
+- **Backup Retention**: Keep multiple backup versions and automate purging old backups to balance safety and storage use.
+- **Test Restores**: Make restoration exercises a routine part of maintenance to stay confident in your disaster recovery plans.
+- **Permissions**: Verify user permissions for scheduled jobs and restored files to avoid silent failures.
+
+<Check>
+Maintain an offsite or cloud copy of backups to guard against physical disasters.
+</Check>
+
+---
+
+## 7. Troubleshooting Backup and Recovery Issues
+
+| Issue                               | Troubleshooting Steps                                              |
+|------------------------------------|------------------------------------------------------------------|
+| Backup files not generating         | Check cron logs, confirm `pg_dump` and `rsync` commands execute with correct permissions.
+|
+| Backup file corrupted or incomplete | Validate backups with `pg_restore --list` and compare sizes.
+|
+| Restore fails due to permission errors | Ensure PostgreSQL user and system user have right access, check file ownership.
+|
+| Missing archived files after restore | Verify file paths and permissions; confirm that all files were copied.
+|
+| Automated backups not running       | Confirm cron daemon is active; check environment variables in cron context.
+
+---
+
+## 8. Additional Resources
+
+- [PostgreSQL Backup and Restore Documentation](https://www.postgresql.org/docs/current/backup-dump.html)
+- [Linux Cron Job Basics](https://help.ubuntu.com/community/CronHowto)
+- Linkwarden [Environment Configuration](/deployment/production-setup/environment-configuration) for managing storage settings
+- Linkwarden [Monitoring and Logging](/deployment/operations-monitoring/monitoring-logging) to keep track of backup job health
+
+
+---
+
+Successfully implementing and regularly testing your backup and disaster recovery plans ensures Linkwarden remains a reliable repository for your valuable web content, even in unforeseen circumstances. Your deliberate preparation today is the key to operational resilience tomorrow.
