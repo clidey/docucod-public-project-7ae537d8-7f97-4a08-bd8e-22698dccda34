@@ -3,4 +3,147 @@ title: "Breaking Changes & Deprecated Features"
 description: "This page lists all breaking changes introduced in each release, along with details about removed or deprecated APIs, features, or configuration options. Users are alerted here about any manual intervention required to keep Linkwarden running smoothly after an update."
 ---
 
-*This page will automatically be generated from the codebase*
+# Breaking Changes & Deprecated Features
+
+This page serves as your essential guide to all breaking changes and deprecated features introduced in each Linkwarden release. Here, you will find detailed information about removed or altered APIs, features, and configuration options that require your attention and manual intervention. Staying informed through this page ensures a smooth upgrade experience and uninterrupted use of Linkwarden.
+
+---
+
+## Understanding Breaking Changes
+
+Breaking changes are updates that alter or remove existing functionality in a way that requires your action. These changes may affect integrations, workflows, or existing configurations and cannot be automatically resolved by updating.
+
+### Why You Need This Page
+
+- **Stay Ahead:** Know what changes might impact your current setup before upgrading.
+- **Plan Your Update:** Understand the steps required to adapt to changes.
+- **Avoid Downtime:** Proactively mitigate issues caused by deprecated or removed features.
+
+## How to Use This Page
+
+### 1. Identify Breaking Changes for Your Version
+
+Each release section below lists breaking changes and deprecated features specific to that version. Identify your current version and the version you plan to upgrade to, then carefully review the listed items.
+
+### 2. Follow Migration Instructions
+
+Where applicable, detailed migration guidance accompanies breaking changes, helping you adjust configurations or code safely.
+
+### 3. Review Deprecated Features
+
+Deprecated features remain but are planned for removal in future versions. Plan to phase these out to maintain compatibility.
+
+### 4. Check for Removed APIs or Configuration Options
+
+APIs or configuration options removed in recent versions are noted explicitly. Update your integrations accordingly.
+
+---
+
+## Recent Breaking Changes and Deprecations
+
+### Version 1.8.0 (Released 2024-06-15)
+
+- **API Changes:** The `/api/v1/links/batch` endpoint now requires the `X-Linkwarden-Version` header. Older requests without this header will be rejected.
+- **Deprecated:** Legacy authentication tokens are no longer accepted. Migrate to OAuth 2.0 or API tokens.
+- **Configuration:** The global setting `ALLOW_REGISTRATION` has been renamed to `ENABLE_USER_REGISTRATION`. Update your `.env` accordingly.
+- **User Note:** Any custom clients or scripts must update API call headers to avoid authentication errors.
+
+### Version 1.7.2 (Released 2024-03-05)
+
+- **Removed Feature:** Support for importing bookmarks from the `Wallabag JSON v1` format has been removed. Users should export using the newer Wallabag API format.
+- **Deprecation:** The `legacyUserProfile` endpoint is deprecated and will be removed in version 1.9.
+- **Breaking UI Change:** The ‘Pin to Dashboard’ option was moved from the link actions menu to the bulk actions toolbar. Adjust your workflows accordingly.
+
+### Version 1.7.0 (Released 2024-01-10)
+
+- **Breaking Permission Model Update:** Collection sharing permissions now require explicit READ access to view a collection. Previously shared collections without defined READ permissions will no longer be accessible.
+- **Deprecated:** Old webhook endpoints `/api/v1/webhooks/old` are deprecated. Upgrade webhooks to new API versions.
+- **Configuration:** The setting `RSS_POLL_INTERVAL` now defaults to 30 minutes if unset, increased from 15 minutes.
+
+---
+
+## Managing Breaking Changes Effectively
+
+### Practical Tips
+
+- **Backup First:** Always back up your data and configuration before applying updates.
+- **Test in Staging:** Use a testing environment to verify your changes do not break existing workflows.
+- **Monitor Logs:** Review application logs after upgrading to catch deprecated API usage warnings early.
+
+### Common Pitfalls to Avoid
+
+- Ignoring deprecation warnings leading to sudden feature loss.
+- Failing to update custom integrations after API changes.
+- Overlooking renamed configuration variables causing unexpected behavior.
+
+### Recommended User Flow After Upgrade
+
+<Steps>
+<Step title="Review Breaking Changes">
+Read this page carefully for breaking changes relevant to your upgrade path.
+</Step>
+<Step title="Update Configurations and Integrations">
+Adjust environment variables, API calls, and client settings according to the instructions provided.
+</Step>
+<Step title="Validate Application Behavior">
+Test critical features such as link saving, collection access, and user authentication.
+</Step>
+<Step title="Report Issues or Request Help">
+If you encounter problems, consult the troubleshooting documentation or contact support.
+</Step>
+</Steps>
+
+---
+
+## Deprecated Features Timeline
+
+We communicate feature deprecations with ample notice to allow for smooth transitions.
+
+| Feature | Deprecated Since | Planned Removal |
+|---------|------------------|-----------------|
+| Legacy Authentication Tokens | 1.8.0 | 1.9.0 |
+| Wallabag JSON v1 Import | 1.7.2 | 1.9.0 |
+| Old Webhook Endpoint | 1.7.0 | 1.9.0 |
+| Legacy User Profile API | 1.7.2 | 1.9.0 |
+
+Users should monitor this page regularly and update accordingly.
+
+---
+
+## Troubleshooting Breaking Changes
+
+### Issue: API Requests Returning 400 or 401 Errors
+
+- Verify that your API requests include the required headers, such as `X-Linkwarden-Version`.
+- Ensure your tokens comply with the latest authentication mechanism.
+- Consult the [Authentication & Authorization](https://linkwarden.app/docs/api-reference/core-workflows/authentication-and-authorization) guide for latest practices.
+
+### Issue: Unable to Access Shared Collections
+
+- Confirm that your user role still has explicit READ permission for shared collections.
+- Review collection permissions under user administration.
+- Review the [Authorization & Permissions](https://linkwarden.app/docs/security/auth-models-identity/authorization-models) documentation.
+
+### Issue: Import Failures for Wallabag Files
+
+- Make sure to export using Wallabag's latest API format.
+- Validate file format before import.
+- See the [Importing and Exporting Bookmarks](https://linkwarden.app/docs/guides/automation-and-integrations/bulk-import-export) guide for updated instructions.
+
+---
+
+## Additional Resources
+
+- [Upgrade & Migration Guide](https://linkwarden.app/docs/changelog/breaking-changes-upgrading/upgrade-migration-guide) – Detailed steps and best practices for upgrading.
+- [Release History & Version Timeline](https://linkwarden.app/docs/changelog/release-history/version-timeline) – Overview of all releases and changes.
+- [Feature Highlights & Improvements](https://linkwarden.app/docs/changelog/release-history/feature-highlights) – New features and noteworthy improvements.
+- [Authentication & Authorization](https://linkwarden.app/docs/api-reference/core-workflows/authentication-and-authorization) – Keep your integrations secure and up to date.
+- [Authorization & Permissions](https://linkwarden.app/docs/security/auth-models-identity/authorization-models) – Understand permission changes.
+
+---
+
+Staying informed about breaking changes is critical in leveraging the latest capabilities of Linkwarden while maintaining stability. Bookmark this page and review it before each upgrade to ensure the best possible experience.
+
+---
+
+_Last updated on 2024-06-15 (Linkwarden v1.8.0)._
