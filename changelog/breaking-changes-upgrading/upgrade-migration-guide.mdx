@@ -3,4 +3,165 @@ title: "Upgrade & Migration Guide"
 description: "Provides actionable, step-by-step instructions for upgrading Linkwarden, including how to apply new database migrations, adapt integrations, or update environment configuration. Users planning their upgrade journey rely on this section to ensure a smooth and safe transition."
 ---
 
-*This page will automatically be generated from the codebase*
+# Upgrade & Migration Guide
+
+Welcome to the Linkwarden Upgrade & Migration Guide, designed specifically to guide you through the process of safely upgrading your Linkwarden installation. This guide delivers clear, step-by-step instructions tailored to users planning their upgrade journey—covering critical aspects such as applying new database migrations, adapting integrations, and updating environment configurations. By following this guide, you ensure a smooth, risk-mitigated transition to newer versions of Linkwarden.
+
+---
+
+## 1. Preparing for the Upgrade
+
+Before beginning your upgrade, it’s essential to back up your current data and environment to prevent data loss in case of unexpected issues.
+
+### Step 1: Backup Current Data
+- **Create a full database backup:** Use your database tools (e.g., `pg_dump` for PostgreSQL) to export your current state.
+- **Export user data:** Utilize Linkwarden’s export functionality via the API or web interface to create a portable backup.
+
+### Step 2: Review Release Notes and Breaking Changes
+- Check the [Breaking Changes & Deprecated Features](https://linkwarden.com/changelog/breaking-changes-upgrading/breaking-changes) page for version-specific upgrade instructions.
+- Identify changes impacting collections, links, and integrations.
+
+### Step 3: Verify System Requirements
+- Ensure your environment meets the [System Requirements](https://linkwarden.com/getting-started/prerequisites-installation/system-requirements) for the new version.
+- Update dependencies such as Node.js, PostgreSQL, and container images if applicable.
+
+---
+
+## 2. Applying Database Migrations
+
+As part of the upgrade, new database schema migrations are often released. These changes are crucial to ensure compatibility with the new application version.
+
+### Step 1: Prepare Migration Environment
+- Stop the Linkwarden web and worker services to prevent data inconsistencies.
+- Confirm you have sufficient permissions for schema updates.
+
+### Step 2: Run Database Migrations
+- Execute the migration scripts or commands packaged with the upgrade. Typically, this step involves running:
+
+```bash
+npx prisma migrate deploy
+```
+
+- Monitor the migration process for errors and review database logs if necessary.
+
+### Step 3: Verify Migration Success
+- Confirm that migration tables and columns have updated correctly.
+- Optionally, use Linkwarden's API or web interface to verify data integrity.
+
+---
+
+## 3. Updating Environment Configuration
+
+Linkwarden’s newer versions may require or support updated environment variables to enable new features or adjust existing behavior.
+
+### Step 1: Review Environment Variables
+- Check the [Environment Configuration](https://linkwarden.com/deployment/production-setup/environment-configuration) documentation for newly introduced or deprecated variables.
+- Compare your current `.env` file against the sample `.env.example` provided in the update package.
+
+### Step 2: Modify Configuration Safely
+- Add or update variables such as:
+  - Import/Export file size limits (`IMPORT_LIMIT`)
+  - Feature flags (e.g., AI tagging, archive formats)
+  - Security and session settings
+
+- Avoid removing variables unless explicitly instructed in the changelog or breaking changes.
+
+### Step 3: Reload and Validate
+- Restart your Linkwarden services after applying the new configuration.
+- Monitor logs for warnings or errors related to environment settings.
+
+---
+
+## 4. Adapting Integrations and Imports
+
+Upgrading may affect how data imports are handled or how external integrations function.
+
+### Step 1: Import & Export Compatibility
+- Linkwarden supports importing bookmarks and links from formats like Linkwarden JSON, HTML files, Wallabag, Omnivore (ZIP), and Pocket CSV.
+- Verify that imports continue functioning as expected after upgrade. The import system relies on [migration formats](https://linkwarden.com/packages/types/global.ts) and import handlers that might receive incremental improvements.
+
+### Step 2: Browser Extensions and API Integrations
+- Check for updated versions of browser extensions compatible with the new API.
+- Confirm that API tokens and authentication workflows still function without disruption.
+
+### Step 3: Validate RSS and Other Automation
+- Review any RSS feed subscriptions or automation workflows to ensure polling intervals and API interactions remain stable.
+
+---
+
+## 5. Step-by-Step Upgrade Workflow Example
+
+<Steps>
+<Step title="Backup your data">
+Create a full backup of your database and export user bookmarks through the API.
+</Step>
+<Step title="Stop all Linkwarden services">
+Shut down the web server and background workers to prevent write conflicts.
+</Step>
+<Step title="Apply database migrations">
+Run `npx prisma migrate deploy` or the equivalent migration command supplied.
+</Step>
+<Step title="Update environment configuration">
+Review and update your environment variables per the latest documentation.
+</Step>
+<Step title="Restart services">
+Start the Linkwarden web and worker services with the new version.
+</Step>
+<Step title="Verify functionality">
+Log in, check collection visibility, and test importing/exporting.
+</Step>
+</Steps>
+
+---
+
+## 6. Troubleshooting Common Upgrade Issues
+
+### Problem: Migration fails or rolls back
+- **Check logs** for detailed error messages.
+- Ensure no concurrent connections are modifying the database.
+- Verify permissions for your database user.
+
+### Problem: Config variables not recognized
+- Confirm that you have restarted the service after updating the `.env` file.
+- Validate syntax and correct variable naming.
+
+### Problem: Imports fail or result in errors
+- Check file formats and sizes—some limits may be enforced via `IMPORT_LIMIT`.
+- For Omnivore ZIP imports, ensure the ZIP contents meet expected metadata file structure.
+- Consult logs for detailed import failure messages.
+
+### Problem: Unexpected UI behavior or missing features
+- Clear browser caches.
+- Confirm that the frontend and backend versions are compatible.
+
+<Tip>
+If encountering persistent issues, consult the [Breaking Changes & Deprecated Features](https://linkwarden.com/changelog/breaking-changes-upgrading/breaking-changes) and [Release History](https://linkwarden.com/changelog/release-history/version-timeline) for detailed guidance.
+</Tip>
+
+---
+
+## 7. Best Practices for a Smooth Upgrade
+
+- **Plan downtime** during migration phases for minimal user disruption.
+- **Back up comprehensively** before every upgrade.
+- **Test upgrades** in a staging or testing environment before production deployment.
+- **Monitor logs closely** immediately after upgrade.
+- Keep all components (web frontend, backend API, workers) synchronized to the same version.
+
+---
+
+## 8. Additional Resources
+
+For more detailed insights related to upgrading and managing your Linkwarden deployment, see:
+
+- [Breaking Changes & Deprecated Features](https://linkwarden.com/changelog/breaking-changes-upgrading/breaking-changes)
+- [Release History & Version Timeline](https://linkwarden.com/changelog/release-history/version-timeline)
+- [Environment Configuration Guide](https://linkwarden.com/deployment/production-setup/environment-configuration)
+- [Importing and Exporting Bookmarks](https://linkwarden.com/guides/automation-and-integrations/bulk-import-export)
+- [System Requirements](https://linkwarden.com/getting-started/prerequisites-installation/system-requirements)
+
+For community or commercial support, consider visiting the Linkwarden GitHub repository and official support channels.
+
+---
+
+Upgrade confidently with Linkwarden and continue securing your valuable web content with ease.
