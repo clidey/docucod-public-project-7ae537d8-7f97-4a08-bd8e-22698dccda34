@@ -3,4 +3,148 @@ title: "How can I improve performance?"
 description: "Provides tips for optimizing speed and reliability in Linkwarden—covering bulk actions, large collections, mobile vs. web traits, and recommended platform-specific settings."
 ---
 
-*This page will automatically be generated from the codebase*
+# How Can I Improve Performance?
+
+Optimize your Linkwarden experience effortlessly by understanding the unique strengths and considerations of the web and mobile platforms. This guide provides actionable tips for boosting speed and reliability, especially when handling bulk actions, managing large collections, and adjusting platform-specific settings.
+
+---
+
+## Understanding Performance in Linkwarden
+
+Linkwarden is designed to be fast and reliable, but performance can vary based on factors such as collection size, device type, and the scope of your actions. Improving performance translates directly into smoother navigation, quicker data handling, and efficient collaboration.
+
+---
+
+## Tips to Optimize Performance
+
+### 1. Use Bulk Actions Wisely
+
+Bulk operations, such as editing or deleting multiple links and tags, are powerful but can strain system responsiveness, especially with large datasets.
+
+- **Tip:** Select manageable chunks of links for bulk edits or deletions rather than all at once.
+- **Best Practice:** Use filtering and sorting to narrow down selections before applying operations.
+- **Example:** Instead of deleting 1,000 links in one go, filter by tag or date and delete in batches of 100.
+
+<Note>
+Overloading with large bulk operations may momentarily slow down the interface or cause timeouts on some devices.
+</Note>
+
+### 2. Manage Large Collections Effectively
+
+Collections with thousands of links can impact loading and searching speed.
+
+- **Tip:** Regularly archive or split very large collections into smaller, topic-focused subcollections.
+- **Best Practice:** Use descriptive collection names and tags for quick filtering.
+- **Example:** For a "Research and Studies" collection, create subcollections by theme like "Health", "Technology", or "Finance".
+
+
+guides on [Organizing Links: Collections & Tags](https://linkwarden.app/guides/getting-started/collections-and-tags-basics) provide valuable workflows.
+
+### 3. Platform-Specific Optimization
+
+#### Web App Considerations
+
+- **Bulk Performance:** Browsers handle large lists better but can be sensitive to network speed and browser memory.
+- **Extended Features:** Utilize browser extensions and PWA installation for faster access with caching advantages.
+- **Multi-Tab Workflows:** Avoid having many Linkwarden tabs open simultaneously to reduce load on your browser.
+
+#### Mobile App Tips
+
+- **Optimized Builds:** The Linkwarden mobile apps use Hermes JS engine (Android and iOS) to speed up JavaScript execution.
+- **Settings:** Enable recommended native features such as caching and background sync as configured in app settings.
+- **Batch Sync:** When syncing or importing data, do so in smaller batches to avoid crashes or slowdowns, especially on lower-end devices.
+
+<Tip>
+Refer to the mobile app’s environment configuration to ensure Hermes is enabled for best performance on Android and iOS.
+</Tip>
+
+### 4. Utilize Platform Strengths for Your Workflows
+
+- **Web for Heavy Lifting:** Use the web interface for bulk editing, deep search, and managing extensive collections.
+- **Mobile for Quick Access:** Use the mobile app for rapid link saving, quick browsing, and on-the-go retrieval.
+
+---
+
+## Common Pitfalls and How to Avoid Them
+
+- **Excessive Bulk Operations:** Leading to interface slowdowns or session timeouts.
+- **Large, Flat Collections:** Makes searching and filtering inefficient.
+- **Ignoring Native Mobile Settings:** Missing out on performance improvements from optimized JavaScript engine and caching.
+
+---
+
+## Step-by-Step Performance Boosting Workflow
+
+<Steps>
+<Step title="Evaluate Your Collections">
+Review collection sizes and link organization. Identify any large collections or untagged links.
+</Step>
+<Step title="Organize into Manageable Groups">
+Split large collections into focused subcollections and assign meaningful tags.
+</Step>
+<Step title="Leverage Bulk Actions Strategically">
+Perform edits and deletions in batches, using filters and search to select relevant links.
+</Step>
+<Step title="Optimize Platform Settings">
+Ensure the mobile apps have Hermes engine enabled and use the web app in updated browsers with adequate resources.
+</Step>
+<Step title="Monitor Performance and Adjust">
+Observe any slowdowns, then try smaller batch sizes or temporary collection splits to maintain smooth operations.
+</Step>
+</Steps>
+
+---
+
+## Troubleshooting Common Performance Issues
+
+### Issue: Slow Loading of Links or Collections
+
+- **Cause:** Large number of links or slow network connection.
+- **Solution:** Refresh the page, filter the collection for fewer results, or split the collection.
+
+### Issue: Bulk Operation Fails or Times Out
+
+- **Cause:** Too many items processed simultaneously.
+- **Solution:** Break down the operation into smaller batches.
+
+### Issue: Mobile App Crashes When Syncing Many Links
+
+- **Cause:** Memory constraints or large data packets.
+- **Solution:** Sync in smaller intervals, close background apps, or restart the device.
+
+---
+
+## Platform-Specific Recommended Settings
+
+| Platform | Setting                          | Description                                                      |
+| -------- | ------------------------------- | ----------------------------------------------------------------|
+| Android  | `hermesEnabled=true`             | Enables Hermes JavaScript engine for optimal performance        |
+| iOS      | Use Hermes JS enabled builds     | Speeds up app responsiveness and reduces memory use             |
+| Web      | Use modern browsers (Chrome/Firefox/Edge) | Better JavaScript performance and resource management       |
+
+Refer to [Deployment: Web and Mobile Apps](https://linkwarden.app/deployment/production-setup/web-mobile-deployment) for deeper setup guidance.
+
+---
+
+## Additional Resources
+
+- [Bulk Operations Guide](https://linkwarden.app/guides/advanced-tasks-and-best-practices/bulk-actions)
+- [Organizing Links with Collections & Tags](https://linkwarden.app/guides/getting-started/collections-and-tags-basics)
+- [Mobile App Configuration](https://linkwarden.app/deployment/production-setup/web-mobile-deployment#mobile-app-builds)
+- [Scaling Strategies](https://linkwarden.app/deployment/operations-monitoring/scaling-strategies)
+
+---
+
+## Summary
+
+By taking advantage of bulk action best practices, organizing large collections into manageable groups, and tuning platform-specific settings—especially for mobile apps—users can significantly boost Linkwarden’s speed and reliability. Use the web app for complex management tasks and the mobile app for efficient on-the-go access, ensuring each platform’s strengths improve your workflow.
+
+---
+
+## Feedback and Support
+
+If performance issues persist despite optimizations, please contact Linkwarden support or consult the community forums for tailored solutions. Sharing your specific scenario helps improve the system for everyone.
+
+<Check>
+Regularly review your usage patterns and maintenance routines for ongoing optimal performance.
+</Check>
