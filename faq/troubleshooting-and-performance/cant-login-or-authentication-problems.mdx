@@ -3,4 +3,169 @@ title: "I can't log in / authentication issues"
 description: "Answers authentication and access questions, describes what to do if you have login issues, problems with SSO, or password resets, and highlights typical causes and resolutions."
 ---
 
-*This page will automatically be generated from the codebase*
+# I Can't Log In / Authentication Issues
+
+This FAQ page addresses common issues users face when trying to log in to Linkwarden. It provides actionable solutions to resolve authentication problems involving username or password errors, Single Sign-On (SSO) challenges, email verification, and password resets. Follow the guidance below to regain access quickly and securely.
+
+---
+
+## 1. Common Login Problems and Solutions
+
+### 1.1 Invalid Credentials
+- **Problem:** You receive an error message indicating "Invalid credentials" after entering your username/email and password.
+- **Why It Happens:** This usually means either the username/email or the password you entered is incorrect.
+- **How to Fix:**
+  1. Double-check that your username or email is correct, including letter case.
+  2. Ensure you have the latest password. If uncertain, use the **Forgot Password** link to reset.
+  3. If you are sure your credentials are correct but still can't log in, try resetting your password.
+
+### 1.2 Email Not Verified
+- **Problem:** You see the error "Email not verified." when attempting to log in with credentials.
+- **Why It Happens:** Your email address on file has not been verified yet.
+- **How to Fix:**
+  1. After this error, Linkwarden automatically sends a new verification email.
+  2. Check your inbox (and spam/junk folders) for the verification link.
+  3. Complete the email verification by clicking the link.
+  4. Once verified, try logging in again.
+
+### 1.3 Forgot Password? How to Reset
+- Use the **Forgot Password** link on the login page.
+- Enter your registered email or username.
+- Follow the instructions sent to your email to create a new password.
+
+<Info>
+If you do not receive a password reset email, verify your email address or contact your administrator if using an enterprise instance.
+</Info>
+
+### 1.4 Demo Account Use
+- Linkwarden provides a demo mode with sample credentials available on the login page if enabled.
+- Use the **Demo Login** button to authenticate with pre-filled demo credentials instantly.
+
+<Note>
+Demo mode is read-only; changes cannot be saved.
+</Note>
+
+---
+
+## 2. Single Sign-On (SSO) and External Authentication
+
+### 2.1 Supported SSO Providers
+- Linkwarden supports a broad range of SSO/OAuth providers including Google, Apple, GitHub, Microsoft Azure AD, Okta, and many others.
+
+### 2.2 Issues Logging In With SSO
+- **New SSO User Registration Disabled:** Some deployments disable new user registration via SSO. If you cannot register, check with your admin.
+- **Account Linking:** If your email exists but no linked SSO account is found, Linkwarden attempts to link your SSO provider automatically.
+
+### 2.3 Troubleshooting Tips
+- Verify your SSO provider credentials independently.
+- Clear your browser cache and try logging in again.
+- Contact your administrator if the issue persists, as it may be caused by server-side settings or access restrictions.
+
+---
+
+## 3. Session and Token Issues
+
+### 3.1 Session Expired or Invalidated
+- Sessions utilize secure JSON Web Tokens (JWT) with expiration.
+- If your session expires, you may be logged out automatically.
+- Simply log in again to establish a new session.
+
+### 3.2 Token Revocation
+- If your session or API token has been revoked by an administrator, you will no longer be able to authenticate using that token.
+- Contact your administrator to restore access or generate a new token.
+
+---
+
+## 4. Step-by-Step Login Workflow
+
+<Steps>
+<Step title="Prepare to Log In">
+Ensure you have your username or email and password ready. If using SSO, have your SSO account credentials accessible.
+</Step>
+<Step title="Access Login Page">
+Navigate to the Linkwarden login page via web browser or app.
+</Step>
+<Step title="Enter Credentials or Choose SSO">
+Fill in your username/email and password, or click on your preferred SSO provider button.
+</Step>
+<Step title="Handle Errors">
+If an error occurs, follow on-screen guidance: reset password, verify email, or retry.
+</Step>
+<Step title="Successful Login">
+After successfully authenticating, you’ll gain access to your dashboard and collections.
+</Step>
+</Steps>
+
+---
+
+## 5. Troubleshooting Checklist for Login Issues
+
+- [ ] Are your username/email and password correctly entered? Pay attention to case sensitivity.
+- [ ] Did you receive the "Email not verified." message? Check your email for verification link.
+- [ ] Have you tried resetting your password using the **Forgot Password** option?
+- [ ] If using SSO, are you certain the provider is enabled and configured correctly?
+- [ ] Try logging out fully and clearing your browser cache.
+- [ ] Is your account suspended or deleted? Contact your administrator.
+- [ ] For persistent errors, check [Authentication Overview](https://docs.linkwarden.app/security/auth-models-identity/auth-overview) and [Session Management](https://docs.linkwarden.app/security/auth-models-identity/session-management) pages for deeper insights.
+
+---
+
+## 6. Best Practices and Tips
+
+- Always verify your email promptly after registration to avoid login interruptions.
+- Use strong, unique passwords or rely on your organization’s SSO for improved security.
+- Keep your browser or app updated to prevent session token errors.
+- Use the provided demo mode for onboarding and testing without affecting real data.
+
+---
+
+## 7. Additional Help and Support
+
+If you continue encountering issues:
+
+- Consult the [Authentication & Authorization API Reference](https://docs.linkwarden.app/api-reference/core-workflows/authentication-and-authorization) for technical details.
+- Review the [User & Session Management Guide](https://docs.linkwarden.app/api-reference/core-workflows/user-management) for managing your user profile and tokens.
+- Reach out to your system administrator for account or server-side issues.
+- Visit the [Where to Get Support](https://docs.linkwarden.app/faq/integrations-and-support/where-to-get-support) page for official support channels.
+
+---
+
+## 8. Frequently Asked Questions
+
+<AccordionGroup title="Login and Authentication FAQs">
+<Accordion title="Why am I receiving 'Invalid credentials' but I am sure my password is correct?">
+Sometimes an incorrect username or email is the cause. Linkwarden requires exact matches. Try resetting your password if unsure.
+</Accordion>
+<Accordion title="Can I log in with either my username or email?">
+Yes, if email login is enabled for your instance. Otherwise, use your username as required.
+</Accordion>
+<Accordion title="What should I do if I do not get the email verification message?">
+Check your spam or junk folder. If missing, request a new verification from the login page by attempting to sign in again.
+</Accordion>
+<Accordion title="I’m using SSO but cannot log in. What could be wrong?">
+Confirm your SSO provider is enabled and correctly configured. Some instances disable new registrations via SSO, so check with your admin.
+</Accordion>
+<Accordion title="How long does my session last?">
+Sessions typically last up to 30 days but may expire sooner depending on server settings.
+</Accordion>
+</AccordionGroup>
+
+---
+
+For detailed developer insights and advanced scenarios, explore the following resources:
+
+- [Authentication Overview](https://docs.linkwarden.app/security/auth-models-identity/auth-overview)
+- [Session Management](https://docs.linkwarden.app/security/auth-models-identity/session-management)
+- [API Authentication Reference](https://docs.linkwarden.app/api-reference/core-workflows/authentication-and-authorization)
+
+Your ability to log in securely is foundational to fully benefiting from Linkwarden’s powerful preservation, organization, and collaboration features. Follow these guidelines to ensure smooth access and immediate productivity.
+
+---
+
+<Check>
+Ensure your username/email is correct and your password is up-to-date before contacting support.
+</Check>
+
+<Warning>
+Avoid exposing passwords in any public channel. Use secure password reset workflows if you lose access.
+</Warning>
