@@ -3,4 +3,108 @@ title: "Deprecation Notices"
 description: "Formal notifications about features, APIs, or configuration options that are being deprecated, including timelines, suggested alternatives, and upcoming removal plans. Ensures teams can plan ahead for lifecycle changes."
 ---
 
-*This page will automatically be generated from the codebase*
+# Deprecation Notices
+
+This page provides formal notifications about features, APIs, and configuration options within Linkwarden that are scheduled for deprecation. Understanding these notices helps users and administrators plan ahead to adapt workflows, implement alternatives, and avoid disruptions.
+
+---
+
+## Purpose of Deprecation Notices
+
+Linkwarden evolves continuously, and to maintain a robust, secure, and efficient platform, older features or APIs may be phased out. Deprecation notices serve as an essential communication tool for teams to:
+
+- Anticipate lifecycle changes ahead of removal.
+- Understand what alternatives or replacements are available.
+- Plan upgrades and migrations carefully to minimize operational impact.
+
+## What You Will Find on This Page
+
+This documentation covers:
+
+- **Features Marked for Deprecation**: Details on what is deprecated, including UI components and user-facing features.
+- **API Endpoints and Parameters**: Notification of any APIs or data models scheduled for removal or change.
+- **Configuration Options**: Environment variables or settings planned to be removed or changed.
+- **Deprecation Timelines**: Clear timelines for when deprecated features will be disabled or removed.
+- **Recommended Alternatives**: Guidance on how to transition smoothly using the suggested replacements.
+
+## How to Use This Documentation
+
+If you manage or use Linkwarden within your organization, regularly check this page to stay informed of upcoming changes. Here’s a recommended workflow:
+
+1. **Review Deprecations Regularly**: Monitor this page especially before planning upgrades or when adopting new versions.
+2. **Identify Impacted Areas**: Map deprecated features to your current usage.
+3. **Plan Transition**: Follow recommended alternatives or migration guides provided in related documents.
+4. **Test Before Migrating**: Validate your environment with updated features in a controlled setting.
+5. **Update Documentation and Training**: Reflect changes within your team workflows.
+
+<Tip>
+Deprecation notices are your first line of defense against breaking changes. Early adaptation ensures uninterrupted use and leverages improved, supported functionality.
+</Tip>
+
+## Examples of Deprecation Notices
+
+### Example 1: Deprecated Archive Format Option
+
+The `archiveAsMonolith` user preference is scheduled for deprecation in an upcoming release. Users currently using Monolith capture for webpage preservation should consider switching to the `archiveAsReadable` format, which offers enhanced readability and compatibility.
+
+**Action:** Update user preferences and automation settings to exclude `archiveAsMonolith` and enable `archiveAsReadable`.
+
+### Example 2: API Endpoint Changes
+
+Certain legacy RSS feed subscription endpoints will be deprecated, replaced by newer, more secure APIs with extended filtering capabilities.
+
+**Action:** Update all integration code to use the new RSS Feed Subscription Management API as detailed in the [RSS Feed Subscription Management](https://linkwarden.app/api-reference/advanced-features/rss-feed-management) documentation.
+
+### Example 3: Configuration Variable Removal
+
+Environment variable `NEXT_PUBLIC_MAX_FILE_BUFFER` will be phased out, replaced by a consolidated file upload settings scheme.
+
+**Action:** Prepare to migrate environment configurations according to instructions in the [Environment Configuration](https://linkwarden.app/deployment/production-setup/environment-configuration) guide.
+
+## Deprecation Timeline and Versioning
+
+Each deprecated item will include a timeline typically structured as:
+
+- **Announcement Date**: When the deprecation is first documented.
+- **Grace Period**: Duration where both old and new functionality coexist.
+- **Removal Date**: The version and date after which old functionality is completely disabled or removed.
+
+Always check the relevant release notes and upgrade guides for precise version information.
+
+## Practical Tips for Handling Deprecations
+
+- **Stay Current**: Subscribe to release notes or monitoring channels related to Linkwarden changelogs.
+- **Automate Updates**: Use scripting or management tools to update configurations and API usage where feasible.
+- **Incremental Rollout**: If operating in a team or enterprise environment, roll out changes incrementally and monitor for issues.
+- **Engage Support**: Reach out to Linkwarden support or community forums for assistance when facing complex migrations.
+
+## Troubleshooting Common Issues
+
+**Issue:** Unexpected failures after upgrading due to deprecated API usage.
+
+**Solution:** Review deprecation notices and update API calls as per migration guides. Validate API authentication and permissions with the updated tokens.
+
+**Issue:** Loss of preferred preservation format due to feature removal.
+
+**Solution:** Transition to supported archival formats early and re-preserve critical links using the new methods.
+
+## Related Documentation
+
+- [Breaking Changes & Deprecated Features](https://linkwarden.app/changelog/breaking-changes-upgrading/breaking-changes) - Insight into breaking changes and detailed migration strategies.
+- [Upgrade & Migration Guide](https://linkwarden.app/changelog/breaking-changes-upgrading/upgrade-migration-guide) - Stepwise instructions for safely upgrading Linkwarden versions.
+- [Environment Configuration](https://linkwarden.app/deployment/production-setup/environment-configuration) - Configuration variable details including changes affecting deployment.
+- [API Reference: RSS Feed Subscription Management](https://linkwarden.app/api-reference/advanced-features/rss-feed-management) - For updated API usage replacing deprecated endpoints.
+
+## Final Notes
+
+Deprecation notices are a critical communication channel that enables seamless evolution of Linkwarden while minimizing disruption. We strongly advise users and administrators to integrate regular review of these notices into maintenance workflows and to engage with recommended migration paths promptly.
+
+---
+
+For additional support, consult the [User & Session Management API Reference](https://linkwarden.app/api-reference/core-workflows/user-management) and [Managing Users and API Access](https://linkwarden.app/guides/advanced-tasks-and-best-practices/user-administration-tokens) guides to stay current on access and security changes linked to deprecations.
+
+---
+
+_Last updated: June 2024_
+
+---
