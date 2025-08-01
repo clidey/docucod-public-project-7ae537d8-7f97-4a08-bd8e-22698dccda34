@@ -3,4 +3,212 @@ title: "Data Storage and Encryption"
 description: "A look at how Linkwarden secures data at rest and in transit, including underlying encryption technologies, connection security for web and mobile, and any options for additional hardening."
 ---
 
-*This page will automatically be generated from the codebase*
+# Data Storage and Encryption in Linkwarden
+
+Linkwarden safeguards your valuable data through robust encryption strategies both when data is stored and during transmission. This page dives into how Linkwarden protects your information at rest and in transit, details underlying encryption technologies, and outlines best practices and options for additional hardening to increase your deployment’s security posture.
+
+---
+
+## 1. Overview of Data Protection
+
+At its core, Linkwarden is designed to securely preserve and manage web content and associated user data. Ensuring confidentiality, integrity, and availability of this data requires comprehensive encryption mechanisms across all interfaces and storage layers.
+
+Linkwarden implements a defense-in-depth approach, combining: 
+
+- Strong encryption for data stored on disk (at rest).
+- Enforced secure communication channels for all clients (web, mobile) and API endpoints.
+- Controlled, auditable access to sensitive tokens and credentials.
+
+This seamless coverage of storage and transmission encryption guarantees that your data is protected against unauthorized access and interception.
+
+---
+
+## 2. Encryption of Data at Rest
+
+Data at rest includes all persistent information stored within Linkwarden’s databases and file stores, such as user credentials, saved links, collections, and API tokens.
+
+### Database Encryption
+
+- Linkwarden stores primary user and link data within a PostgreSQL database.
+- Although Linkwarden itself does not perform application-layer encryption on the database fields, it is designed to operate seamlessly on databases configured with Transparent Data Encryption (TDE) enabled at the infrastructure level.
+- Users deploying self-hosted or cloud-operated instances are encouraged to enable TDE or equivalent encryption on their PostgreSQL infrastructure to guard against physical or snapshot access attacks.
+
+### Access Tokens and Secrets
+
+- Sensitive tokens such as user sessions and API tokens are stored securely with unique identifiers.
+- Access tokens include cryptographically random UUIDs to ensure unpredictability.
+- Passwords are securely hashed using `bcrypt` to prevent password exposure even if the database is compromised.
+
+### Long-Term Persistence
+
+- Sessions are deliberately configured with very long expiry (up to 200 years), but this is managed through securely signed JSON Web Tokens (JWTs) and stored references.
+- Expiry control and session invalidation mechanisms enable revocation to minimize risk.
+
+<Check>
+Ensure that database-level encryption is active, especially in self-hosted environments, to reinforce data-at-rest protection.
+</Check>
+
+---
+
+## 3. Encryption of Data in Transit
+
+Consistency in protecting data as it travels over networks is critical for preserving confidentiality and preventing man-in-the-middle attacks.
+
+### TLS/SSL Enforcement
+
+- All communications between the user’s browser or mobile app and Linkwarden’s backend API are secured through HTTPS with TLS encryption.
+- Production deployments require valid SSL/TLS certificates for domain endpoints to enable encrypted channels.
+- This means credentials, API tokens, saved content, and metadata are encrypted during transmission.
+
+### Secure API Communication
+
+- The API endpoints, including authentication and token management, enforce authentication checks and transport encryption.
+- All calls to user session endpoints, token creation/deletion, and collection management occur via encrypted requests.
+
+### Mobile and Browser Clients
+
+- The mobile app and browser extension similarly require TLS-secured endpoints and verify server certificates to prevent interception.
+
+<Warning>
+Running Linkwarden without TLS exposes your data to interception and is strictly discouraged in any production scenario.
+</Warning>
+
+---
+
+## 4. Underlying Encryption Technologies
+
+Linkwarden’s security relies on widely adopted, battle-tested cryptography components:
+
+- **bcrypt**: Used for password hashing, bcrypt adds salting and adaptive work factors, making brute force expensive.
+- **JSON Web Tokens (JWTs)**: Signed token payloads use secure secrets (defined in `NEXTAUTH_SECRET`) to prevent tampering.
+- **TLS (Transport Layer Security)**: Protocol ensuring encrypted network communication.
+- **UUIDs for Tokens**: Cryptographically strong identifiers to prevent token prediction.
+
+These technologies align with best practices and provide a solid foundation for resisting common attack vectors.
+
+---
+
+## 5. Additional Hardening and Best Practices
+
+To elevate your data security, consider the following actionable recommendations:
+
+### Use Strong Secrets and Environment Variables
+
+- Secure the `NEXTAUTH_SECRET` with a high-entropy random string. Rotate this secret carefully if needed, understanding the impact on current sessions.
+- Avoid exposing secrets in your deployment configuration meant to be publicly accessible.
+
+### Enable Database-Level Encryption
+
+- If self-hosting, configure PostgreSQL storage encryption or leverage cloud-provider encryption-at-rest features.
+- Regularly backup encrypted databases and validate restoration procedures.
+
+### Enforce HTTPS Everywhere
+
+- Use automated tools like [Certbot](https://certbot.eff.org/) to obtain and renew SSL/TLS certificates easily.
+- Redirect all HTTP requests to HTTPS to prevent accidental plaintext transmissions.
+
+### Restrict Token Lifetimes and Access
+
+- While sessions can last a long time, actively revoke unused tokens or sessions especially when devices are lost or compromised.
+- Use the API Tokens page to review and revoke tokens promptly.
+
+### Audit and Monitor Access
+
+- Integrate with logging and monitoring tools to gain visibility into authentication and API token usage.
+- Monitor for suspicious access patterns or repeated failed authentication attempts.
+
+<Info>
+Deploying in a Zero Trust mindset with layered security and least privilege access maximizes your assurance.
+</Info>
+
+---
+
+## 6. Troubleshooting and Common Issues
+
+### Connection Not Secure
+
+- Confirm TLS certificates are properly installed and valid.
+- Check that the web server or proxy forwards HTTPS requests correctly.
+
+### Invalid or Expired Tokens
+
+- Tokens are securely signed and include expiry; attempting to use an expired token will fail.
+- Clear browser cookies or stored credentials and re-authenticate if necessary.
+
+### Password Hashing Failures
+
+- Ensure the environment supports the `bcrypt` package correctly.
+- Upgrading Node.js or dependencies may resolve related crypto issues.
+
+### Demo Environment Restrictions
+
+- In demo mode, some write actions including token creation may be disabled, returning 400 responses.
+- This protects data integrity but may confuse integration testing.
+
+---
+
+## 7. Summary
+
+Linkwarden implements comprehensive encryption to protect your data at rest and in transit, leveraging industry-standard cryptographic methods. By pairing secure token management, TLS-enforced communication, and application-level safeguards such as bcrypt hashing, Linkwarden delivers a secure platform for preserving your links and content. For production environments, further hardening around environment configuration, database encryption, and operational monitoring will guarantee maximum security.
+
+---
+
+## Additional Resources
+
+- [Authentication Overview](/security/auth-models-identity/auth-overview) — Learn about Linkwarden’s authentication mechanisms.
+- [API Tokens & Access Control](/security/data-privacy-protection/api-keys-access-tokens) — Manage and secure API tokens.
+- [Session Management](/security/auth-models-identity/session-management) — Understand session lifecycles and revocation.
+- [Security Hardening Guide](/deployment/security-disaster-recovery/security-hardening) — Best practices for deploying Linkwarden securely.
+- [Environment Configuration](/deployment/production-setup/environment-configuration) — Configure critical security-related environment variables.
+
+---
+
+For a secure Linkwarden experience, always adhere to encryption best practices, enforce HTTPS, manage secrets carefully, and monitor your production environment consistently.
+
+---
+
+# Appendix: Example Secure Environment Variables Configuration 
+
+```env
+# Cryptographic secret for signing JWTs and encrypting cookies
+NEXTAUTH_SECRET=YourStrongRandomSecretHere
+
+# Ensure HTTPS with valid certificate
+# Managed externally or via reverse proxy
+
+# Disable registration in production for controlled access
+NEXT_PUBLIC_DISABLE_REGISTRATION=false
+
+# Enable email provider for verification and password reset
+NEXT_PUBLIC_EMAIL_PROVIDER=true
+
+# Restrict demo environment write actions
+NEXT_PUBLIC_DEMO=false
+```
+
+<Note>
+Adjust these variables according to your deployment needs. Never commit secrets to source control.
+</Note>
+
+---
+
+# Diagram: Data Protection Flow
+
+```mermaid
+flowchart TD
+  User["User / Client"] -->|HTTPS/TLS| LinkwardenAPI["Linkwarden API Server"]
+  LinkwardenAPI -->|JWT tokens signed with NEXTAUTH_SECRET| AuthDB[("PostgreSQL Database")]
+  LinkwardenAPI -->|bcrypt hashes| AuthDB
+  LinkwardenAPI -.->|Writes/Reads| LinkDataDB[("PostgreSQL Database")]
+  LinkDataDB -.->|Encrypted at rest (via TDE)| Storage["Encrypted Storage Layer"]
+  User -->|Secure Browser/PWA| LinkwardenFrontend["Web/Mobile Application"]
+
+  classDef db fill:#f9f,stroke:#333,stroke-width:2px;
+  class AuthDB,LinkDataDB db;
+```
+
+This diagram illustrates encrypted communication between users and the API, secure token and credential storage, and recommended encrypted storage infrastructure.
+
+---
+
+End of Data Storage and Encryption documentation.
