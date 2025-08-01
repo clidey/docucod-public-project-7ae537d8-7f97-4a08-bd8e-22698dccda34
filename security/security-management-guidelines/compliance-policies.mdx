@@ -3,4 +3,125 @@ title: "Compliance & Regulatory Considerations"
 description: "This page summarizes any legal, compliance, and data processing considerations for organizations using Linkwarden, including GDPR and data residency notes for self-hosters or Cloud subscribers."
 ---
 
-*This page will automatically be generated from the codebase*
+# Compliance & Regulatory Considerations
+
+Linkwarden prioritizes providing organizations with transparency and clarity regarding the legal and compliance aspects of using the platform. This page summarizes the key compliance frameworks, data protection obligations, and regulatory notes relevant to both self-hosted and cloud subscribers.
+
+---
+
+## 1. Data Protection and Privacy Compliance
+
+Linkwarden aligns its platform and user guidance to support organizational compliance efforts, particularly concerning personal data and privacy regulations.
+
+### GDPR (General Data Protection Regulation)
+
+- **Applicability:** Organizations processing data subjects in the European Economic Area (EEA).
+- **Data Handling:** Linkwarden enables compliance by allowing users to control the storage, access, and sharing of personal data within saved links, collections, and user profiles.
+- **User Rights:** Support for personal data management, including data export, rectification, and deletion, is integral to Linkwarden’s user model.
+- **Data Minimization:** Only essential user information (such as email and username) is collected, with optional features for enhanced privacy control.
+
+### Data Subject Rights and Processing
+
+- Users can manage their data, including editing or deleting profiles.
+- Shared content permissions can be adjusted to control visibility and collaboration scope (see the [Privacy & Sharing Controls](https://docs.linkwarden.com/security/data-privacy-protection/privacy-sharing-controls) guide).
+
+### Data Residency
+
+- **Self-Hosted Deployments:** Organizations control the geographic location of Linkwarden installations and data storage, enabling strict adherence to local data residency policies.
+- **Cloud Subscribers:** Linkwarden Cloud complies with relevant data processing agreements and regional data handling requirements.
+
+<Note>
+Organizations should assess their own data processing activities and implement Linkwarden accordingly to meet jurisdiction-specific regulations.
+</Note>
+
+---
+
+## 2. Legal and Regulatory Frameworks
+
+While Linkwarden itself is a tool to empower users and organizations, certain legal considerations apply depending on deployment and use case.
+
+### Relevant Regulations
+
+- **Data Protection Laws:** Beyond GDPR, Linkwarden supports compliance efforts under CCPA (California Consumer Privacy Act), LGPD (Brazil), and other regional regulations by enforcing strict data access controls.
+- **Security and Audit:** The platform supports audit trail capabilities via session and token management to meet internal and external compliance reviews.
+- **Privacy by Design:** Linkwarden's feature set—including user role limitations, collection permissions, and session security—is designed to uphold privacy principles from the outset.
+
+### User Accountability
+
+- Organizations are responsible for configuring Linkwarden with appropriate access controls, retention policies, and collaboration settings to meet industry standards and internal policies.
+
+---
+
+## 3. Compliance Features Supporting Organizational Needs
+
+Linkwarden includes features and controls that assist organizations in meeting compliance and regulatory requirements.
+
+### User Identity and Access Management
+
+- Integration with robust authentication methods, including SSO and OAuth providers, ensures controlled user identity verification.
+- Role-based permission models allow precise control over data access and modification rights.
+
+### Auditability
+
+- Secure session management with JWT tokens and server-side revocation provides traceability.
+- Access tokens and API keys management enables secure integrations with recorded usage and revocation capabilities.
+
+### Data Control and Export
+
+- Users and admins can export collections and data, supporting transparency and compliance with data subject access requests.
+
+### Data Retention and Deletion
+
+- Administrators can configure archiving and retention policies by collection or data type.
+- User-initiated data deletion workflows adhere to privacy regulations.
+
+---
+
+## 4. Deployment Considerations for Compliance
+
+### Self-Hosting
+
+Organizations deploying Linkwarden on-premises or in private clouds gain full control over infrastructure, enabling compliance with strict data residency and sovereignty requirements.
+
+### Cloud Service
+
+Linkwarden Cloud operates under privacy and security policies aligned with recognized standards. Cloud subscribers should review service agreements for data processing terms.
+
+### Environment and Secrets Management
+
+- Proper configuration of environment variables related to authentication, encryption, and network security is critical.
+- Refer to the [Secure Deployment](https://docs.linkwarden.com/security/security-management-guidelines/secure-deployment) guide to ensure hardened, compliant deployment.
+
+---
+
+## 5. Best Practices and Recommendations
+
+To maintain compliance while using Linkwarden effectively, organizations should:
+
+- Implement SSO or OAuth for centralized user authentication.
+- Enforce least privilege access policies through collection-level permissions.
+- Regularly audit user access and API token usage.
+- Establish data retention and deletion policies aligned with regulatory timelines.
+- Leverage Linkwarden’s export features to fulfill data subject requests promptly.
+- Monitor deployment security using recommended logging and monitoring tools.
+
+---
+
+## 6. Reporting Compliance Concerns
+
+If users or administrators identify potential legal or compliance issues related to Linkwarden usage, report these through designated organizational channels or Linkwarden's [Vulnerability Reporting & Responsible Disclosure](https://docs.linkwarden.com/security/security-management-guidelines/vulnerability-reporting) process.
+
+---
+
+## Additional Resources
+
+- [Privacy & Sharing Controls](https://docs.linkwarden.com/security/data-privacy-protection/privacy-sharing-controls)
+- [Authentication Overview](https://docs.linkwarden.com/security/auth-models-identity/auth-overview)
+- [Authorization & Permissions](https://docs.linkwarden.com/security/auth-models-identity/authorization-models)
+- [Session Management](https://docs.linkwarden.com/security/auth-models-identity/session-management)
+- [Secure Deployment Guide](https://docs.linkwarden.com/security/security-management-guidelines/secure-deployment)
+- [API Keys & Access Tokens](https://docs.linkwarden.com/security/data-privacy-protection/api-keys-access-tokens)
+
+---
+
+Linkwarden empowers organizations to meet their compliance needs through transparency, control, and security best practices embedded in platform design and deployment flexibility. It is essential for teams to proactively configure and operate Linkwarden aligned with applicable legal requirements and organizational policies.
