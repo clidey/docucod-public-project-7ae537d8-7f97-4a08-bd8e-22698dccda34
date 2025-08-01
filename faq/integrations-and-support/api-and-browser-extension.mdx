@@ -3,4 +3,181 @@ title: "How do I use the API or browser extensions?"
 description: "Answers common questions about API key usage, accessing the API, and getting Linkwarden to work with browser extensions or third-party integrations."
 ---
 
-*This page will automatically be generated from the codebase*
+# How do I use the API or browser extensions?
+
+This FAQ page provides clear guidance to help you use Linkwarden’s API effectively and integrate with browser extensions and third-party tools. Whether you want to programmatically manage your saved links or streamline your workflow with browser integrations, this documentation explains the essential concepts, usage patterns, and common troubleshooting advice.
+
+---
+
+## 1. Using the Linkwarden API
+
+### What can I do with the Linkwarden API?
+
+Linkwarden’s API lets you programmatically add, update, retrieve, and delete links, manage collections, and integrate with your own tools or automation workflows. You can also use the API to query saved links with filters like tags, collections, pinned status, and search keywords.
+
+### How do I authenticate with the API?
+
+- **Authentication Methods:** Use your session tokens or API tokens to authenticate your requests. Typically, APIs expect an `Authorization: Bearer <token>` header.
+- **API Tokens:** For integrations, generate API tokens via your user settings. These tokens grant scoped access and can be revoked anytime for security.
+
+### How do I add a new link via the API?
+
+Send a POST request to `/api/v1/links` with a JSON body containing at minimum the URL:
+
+```json
+{
+  "url": "https://example.com/article"
+}
+```
+
+Example using `fetch`:
+
+```javascript
+fetch('/api/v1/links', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_API_TOKEN'
+  },
+  body: JSON.stringify({ url: 'https://example.com/article' })
+}).then(response => response.json())
+  .then(data => console.log('Link added:', data));
+```
+
+On success, the API returns the saved link details, including its ID, title, and preservation status.
+
+### How can I update or delete links?
+
+- **Update a Link:** Use a PUT request to `/api/v1/links/{id}` including updated fields like name, description, URL, collection ID, or tags.
+- **Delete a Link:** Use a DELETE request to `/api/v1/links/{id}`.
+
+For bulk actions like batch update or delete, send requests to `/api/v1/links` with appropriate methods and payloads.
+
+### How do I retrieve links from the API?
+
+Use a GET request to `/api/v1/links` with optional query parameters for:
+
+- `sort` — sorting option
+- `collectionId` — filter by collection
+- `tagId` — filter by tag
+- `pinnedOnly` — retrieve only pinned links
+- `searchQueryString` — text search
+
+Example:
+
+```
+GET /api/v1/links?sort=0&searchQueryString=security
+```
+
+This returns paginated results matching your filters.
+
+### What common API limitations should I be aware of?
+
+- Some actions may be disabled in demo mode.
+- Ensure URLs are valid when adding or updating links.
+- Respect rate limits to avoid temporary blocks.
+
+### Troubleshooting API usage
+
+- Verify your authorization token is valid and has the necessary scopes.
+- Check request payloads for required fields and proper format.
+- Review error messages returned from the API for specific causes.
+- Use the [Error Handling & Status Codes documentation](https://linkwarden.com/api-reference/integration-and-support/error-handling) for guidance on interpreting API errors.
+
+---
+
+## 2. Using Browser Extensions & Third-Party Integrations
+
+### What browser extensions does Linkwarden support?
+
+Linkwarden supports browser extensions designed to streamline saving links directly from your web browser. These extensions enable you to:
+
+- Save the current page or highlighted content with a click.
+- Add metadata like collections or tags before saving.
+- Quickly access your saved links and collections.
+
+### How do I set up the browser extension?
+
+1. **Install Extension:** Find and install the Linkwarden extension for your browser (e.g., Chrome, Firefox).
+2. **Authentication:** Log in with your Linkwarden credentials within the extension.
+3. **Configure Settings:** Adjust preferences for default collections, tags, or preservation options.
+
+### How do I save a link using the browser extension?
+
+- Click the Linkwarden icon in your browser toolbar while on the page you want to save.
+- Optionally edit the name, add a description, assign collections or tags.
+- Click **Save** to add the link to your Linkwarden.
+
+### Can I use Linkwarden with other tools or integrations?
+
+Yes. Linkwarden’s API and OAuth-based authentication enable integration with various third-party apps, automation services, and browser environments.
+
+### How do third-party integrations authenticate?
+
+Use API tokens or OAuth sessions to securely connect external tools with your Linkwarden account. Always keep tokens private and revoke unused tokens promptly.
+
+### Tips for smooth browser extension and integration usage
+
+- Ensure your browser extension is updated to the latest version.
+- Authenticate properly—expired or missing sessions will block saving.
+- If saving fails, try refreshing authentication or reinstalling the extension.
+- Consult your Linkwarden administrator if permissions restrict API or extension access.
+
+---
+
+## 3. Common Questions & Answers
+
+<AccordionGroup title="API and Browser Extension FAQs">
+<Accordion title="Why can’t I add links using the API?">
+Ensure your API token is valid and the URL is properly formatted. If you’re using the demo environment, modifying data may be disabled. Check error messages for more details.
+</Accordion>
+
+<Accordion title="Can I automate link saving from outside Linkwarden?">
+Yes, use the API with generated API tokens. Automate via scripts or third-party tools by calling the /api/v1/links endpoint to add new links.
+</Accordion>
+
+<Accordion title="How do browser extensions authenticate with Linkwarden?">
+Extensions use your logged-in session or API tokens to authenticate. Always ensure you’re signed in via the extension’s login prompt.
+</Accordion>
+
+<Accordion title="What if the browser extension isn’t saving links correctly?">
+Try these steps:
+- Refresh your authentication in the extension.
+- Restart your browser.
+- Update the extension to the latest version.
+- Check for permission restrictions in your Linkwarden account.
+- Consult troubleshooting sections or support.
+</Accordion>
+</AccordionGroup>
+
+---
+
+## 4. Additional Resources
+
+- [Authentication & Authorization API Reference](https://linkwarden.com/api-reference/core-workflows/authentication-and-authorization)
+- [Managing Links API Documentation](https://linkwarden.com/api-reference/core-workflows/managing-links)
+- [Integrations & API Access Guide](https://linkwarden.com/overview/integrations-and-extensibility/integrations)
+- [Browser Extension & PWA User Guide](https://linkwarden.com/guides/automation-and-integrations/browser-extension-and-pwa)
+- [Error Handling & Status Codes](https://linkwarden.com/api-reference/integration-and-support/error-handling)
+- [Managing Users and API Tokens](https://linkwarden.com/guides/advanced-tasks-and-best-practices/user-administration-tokens)
+
+---
+
+## 5. Getting Help
+
+If you encounter persistent issues using the API or browser extensions:
+
+- Verify your credentials and tokens.
+- Consult the troubleshooting faq sections.
+- Reach out to Linkwarden support through the contact channels available in your account.
+- Engage with the Linkwarden community forums for shared tips and advice.
+
+<Tip>
+Using the API and browser extensions effectively unlocks powerful workflows to save time and organize your links seamlessly across devices and applications.
+</Tip>
+
+---
+
+Your journey to mastering Linkwarden’s API and browser tools starts here. Leverage these resources clearly and confidently to maximize your productivity and content preservation experience.
+
+---
