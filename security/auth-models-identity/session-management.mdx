@@ -3,4 +3,222 @@ title: "Session Management"
 description: "Understand how Linkwarden establishes, maintains, and invalidates user sessions. This page documents session tokens, expiry, storage best practices, and secure logout flows for both web and mobile clients."
 ---
 
-*This page will automatically be generated from the codebase*
+# Session Management
+
+Secure and reliable session management is at the core of your Linkwarden experience. This guide explains how Linkwarden establishes, maintains, and invalidates user sessions, ensuring seamless access control while protecting your data integrity across web and mobile clients.
+
+---
+
+## 1. Understanding Linkwarden Sessions
+
+Linkwarden uses JSON Web Tokens (JWTs) to represent an authenticated user session. When you log in, a session token is generated, encapsulating your unique user ID, issued-at time, an expiration timestamp, and a cryptographically strong unique identifier.
+
+The session token is the key element for authenticating your requests within the Linkwarden ecosystem, balancing security and convenience.
+
+### Session Token Lifetime
+
+- Sessions are configured for a long lifespan, effectively expiring after many years (around 200 years) to simulate a 'long-lived' session.
+- Despite this, tokens can be explicitly revoked or invalidated by the server, enforcing immediate logout when needed.
+
+<Note>
+This extensive expiration reflects a design choice for persistent sessions managed primarily through server-side token revocation, rather than short expiries.
+</Note>
+
+---
+
+## 2. Establishing a Session: Login Flow
+
+When signing in with your credentials (username/email and password), Linkwarden performs the following steps:
+
+<Steps>
+<Step title="Credential Verification">
+Your provided login credentials are validated against stored user records. If credentials don't match or your email is unverified, access is denied.
+</Step>
+<Step title="Session Token Creation">
+Upon successful authentication, a new JWT session token is created with a unique identifier (`jti`) and long expiration.
+</Step>
+<Step title="Token Storage and Tracking">
+The token ID is recorded in the backend database as an active session entry, labeled with the device or session name for user visibility.
+</Step>
+<Step title="Session Token Delivery">
+The token is returned to your client for use in authenticating subsequent requests.
+</Step>
+</Steps>
+
+### Example: Creating a Session Token
+
+```typescript
+async function createSession(userId: number, sessionName?: string) {
+  const now = Date.now();
+  const expiryDate = new Date();
+  expiryDate.setDate(expiryDate.getDate() + 73000); // ~200 years
+  
+  const token = await encode({
+    token: {
+      id: userId,
+      iat: now / 1000,
+      exp: expiryDate.getTime() / 1000,
+      jti: crypto.randomUUID(),
+    },
+    maxAge: 73050 * 86400,
+    secret: process.env.NEXTAUTH_SECRET as string,
+  });
+
+  await prisma.accessToken.create({
+    data: {
+      name: sessionName || 'Unknown Device',
+      userId,
+      token: tokenBody?.jti as string,
+      isSession: true,
+      expires: expiryDate,
+    },
+  });
+
+  return { token };
+}
+```
+
+<Check>
+Your session token is tied to a stored record flagged as a valid active session on the server, enabling individual session management.
+</Check>
+
+---
+
+## 3. Maintaining a Session: Validation and Security Checks
+
+Every request you make to Linkwarden requiring authentication carries the session token. The server performs these checks:
+
+- **Token Decoding and Expiry Validation:** The JWT is decoded, and its expiration timestamp is checked against the current time.
+- **Revocation Check:** The token's unique `jti` is matched against the server database to verify it has not been revoked.
+- **User Verification:** The user linked to the token is retrieved and confirmed to be active, including subscription status when applicable.
+
+If any of these checks fail, your session is invalidated, prompting a logout or reauthentication.
+
+---
+
+## 4. Ending Sessions: Logout and Token Revocation
+
+Linkwarden ensures you can effectively terminate any session at any time, supporting both manual logout processes and automated expiry.
+
+### Revoke a Session Token
+
+- You or an administrator can explicitly revoke a token by marking it as revoked in the database.
+- Once revoked, the token is no longer accepted even if it hasn't technically expired.
+
+### Logout Flow
+
+1. Your client sends a request to revoke the current session token.
+2. The server marks the token as revoked.
+3. Further uses of that token will fail authentication.
+
+<Steps>
+<Step title="User-Initiated Logout">
+Trigger logout via UI or API.
+</Step>
+<Step title="Token Revocation Request">
+Client sends DELETE request to /api/v1/tokens/{tokenId}.
+</Step>
+<Step title="Backend Revokes Token">
+Server records token as revoked in storage.
+</Step>
+<Step title="Session Ends Immediately">
+Client must discard token, ending authenticated session.
+</Step>
+</Steps>
+
+### API Example: Revoking a Token
+
+```typescript
+async function revokeToken(tokenId: number) {
+  const response = await fetch(`/api/v1/tokens/${tokenId}`, {
+    method: 'DELETE',
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.response);
+  return data.response;
+}
+```
+
+---
+
+## 5. Session Management for Multiple Devices
+
+Linkwarden supports multiple simultaneous sessions across devices or browsers. Each session has an independent token record. You can:
+
+- View active sessions and their device/session names.
+- Revoke or logout from individual sessions without affecting others.
+
+<Info>
+This flexibility enables secure multi-device use with granular control over active sessions.
+</Info>
+
+---
+
+## 6. Best Practices and Security Recommendations
+
+To keep your account and sessions secure, follow these guidelines:
+
+- **Use Strong Credentials:** Always choose complex passwords or use SSO to reduce risk.
+- **Monitor Sessions:** Regularly review and revoke sessions you no longer need or recognize.
+- **Logout When Done:** Always logout from public or shared devices.
+- **Use Secure Connections:** Access Linkwarden only over encrypted HTTPS sessions.
+- **Enable MFA:** If offered in the future, enable multi-factor authentication for added protection.
+
+<Warning>
+Never share your session token or leave your device unattended while logged in.
+</Warning>
+
+---
+
+## 7. Troubleshooting Common Session Issues
+
+<AccordionGroup title="Session Troubleshooting">
+<Accordion title="Session Expired or Invalid">
+If you encounter messages stating your session has expired or is invalid, try:
+
+- Logging out and logging back in.
+- Clearing browser cookies and local storage.
+- Confirming that your system clock is accurate.
+
+If issues persist, check for revoked tokens or contact support.
+</Accordion>
+<Accordion title="Multiple Sessions Causing Conflicts">
+If only one session should be active, review your active sessions list and revoke any unknown or unneeded sessions.
+</Accordion>
+<Accordion title="Cannot Revoke Token / Logout Fails">
+Ensure your network connection is stable and your session token is current.
+Check if you are using a read-only demo environment, which disables logout adjustments.
+</Accordion>
+</AccordionGroup>
+
+---
+
+## 8. How Sessions Fit Within Linkwarden’s Security Model
+
+Sessions are a foundational layer of security, integrating with Linkwarden’s broader approach including:
+
+- Authentication via credentials or external providers (SSO/OAuth).
+- Authorization checks per user and collection permissions.
+- Token revocation as a proactive security control.
+
+Together, these components implement defense-in-depth, least privilege, and session transparency to protect your data.
+
+---
+
+## 9. Additional Resources
+
+To deepen your understanding of authentication and sessions in Linkwarden, explore these topics:
+
+- [Authentication Overview](/security/auth-models-identity/auth-overview)
+- [Authorization & Permissions](/security/auth-models-identity/authorization-models)
+- [API Tokens & Access Control](/api-reference/advanced-features/api-tokens)
+- [Single Sign-On (SSO) and OAuth Providers](/security/auth-models-identity/sso-third-party)
+- [Managing Users and API Access](/guides/advanced-tasks-and-best-practices/user-administration-tokens)
+
+---
+
+Ensure your deployment follows best practices in the [Security Hardening](../deployment/security-disaster-recovery/security-hardening) guide and monitor sessions actively for secure operations.
+
+---
+
+**By understanding and managing sessions effectively, you maintain control over your authentication state, enhancing your security while enjoying a seamless Linkwarden experience.**
