@@ -3,4 +3,202 @@ title: "Why are my links missing, not saving, or not displaying?"
 description: "Addresses issues where links don’t appear after saving, common causes of data not persisting, and how to troubleshoot client and server problems."
 ---
 
-*This page will automatically be generated from the codebase*
+# Why Are My Links Missing, Not Saving, or Not Displaying?
+
+This FAQ addresses common issues users encounter when links do not appear after saving, fail to persist, or are not displayed correctly in Linkwarden. Understanding these scenarios helps identify root causes and solutions, ensuring your links are safely preserved and instantly accessible.
+
+---
+
+## Understanding the Problem
+
+When you save a link but it does not show up in your collection or browser, or it appears to be missing after saving, there are several possible explanations. This page walks you through common causes, troubleshooting workflows, and important tips to help you resolve these issues efficiently.
+
+---
+
+## Common Causes
+
+### 1. Delay in Background Processing and Indexing
+
+- **What happens?** Links you save undergo processing tasks such as archiving, indexing, and metadata fetching in the background. These steps can introduce short delays before the link appears or is fully visible with preserved previews.
+- **Why it matters?** Until finished, the link may exist in the database but not be returned in search results or web UI lists.
+
+### 2. Permission and Access Restrictions
+
+- If you lack sufficient permissions for the collection, saved links may not be visible or editable.
+- Links saved in collections shared with restricted rights (read-only or limited update permissions) might not display or update fully.
+
+### 3. Duplicate Prevention Settings
+
+- Users can enable settings to prevent saving duplicate links (e.g., ignoring URL variants with/without `www`). When duplicates are detected, Linkwarden will not create a new entry and may show a conflict response.
+
+### 4. Link Validation Failures
+
+- Invalid URLs or malformed links will not be saved.
+- The system validates URL formats and will respond with errors if URLs are incorrect.
+
+### 5. Subscription or Quota Limits
+
+- Users on certain subscriptions may have reached their maximum allowed number of saved links.
+- When limits are hit, new links are blocked and users receive corresponding messages.
+
+### 6. Preservation Failures or Pending States
+
+- The preservation system that fetches screenshots, PDFs, readable views, and monolith page saves can experience failures.
+- Links might show as 'pending', 'unavailable', or fail to update preview fields, causing them to not display expected archived content.
+
+### 7. Demo or Read-Only Mode Restrictions
+
+- In demo environments, save and update actions are disabled.
+- Users attempting these actions receive an error indicating read-only mode.
+
+---
+
+## Troubleshooting Steps
+
+Follow this structured approach to identify and resolve link visibility or saving issues.
+
+### Step 1: Verify Link Submission and Response
+
+<Steps>
+<Step title="Confirm the link was successfully submitted">
+- Ensure you see a success message when saving the link.
+- Check for any error like "Invalid URL", "Link already exists", or quota warnings.
+</Step>
+<Step title="Validate URL correctness">
+- Confirm the URL format is valid and well-formed.
+- Avoid typos or unsupported schemes.
+</Step>
+<Step title="Check for duplicate prevention">
+- If you see a conflict error (HTTP 409), review your existing collections to locate the duplicate.
+</Step>
+</Steps>
+
+### Step 2: Confirm Access and Permissions
+
+- Verify you have proper permissions to add or view links in the target collection.
+- For collaborative collections, confirm with the collection owner or admin your current access rights.
+
+### Step 3: Allow Time for Background Processing
+
+- Newly saved links undergo background archival and indexing.
+- Depending on server load and your environment, allow a few seconds to minutes for the link to appear.
+
+### Step 4: Check Preservation Status
+
+- If your link saves but archived content (screenshots, PDFs, preview) is missing:
+  - Check if preservation tasks completed successfully or are stuck in "pending".
+  - Preservation failures will result in fields being set to `null` or special values like "unavailable".
+
+### Step 5: Review Logs and Error Messages
+
+- If self-hosting, check application logs for saving or processing errors.
+- Look for any permission denied, database failure, or file system issues.
+
+### Step 6: Clear Browser Cache and Refresh UI
+
+- Sometimes cached UI data may delay showing new links.
+- Clear cache or try accessing Linkwarden in an incognito window to confirm.
+
+---
+
+## Common Pitfalls and How to Avoid Them
+
+- **Ignoring Trailing Slashes and URL Variants:** Linkwarden normalizes URLs to avoid duplicates, but be aware this may cause apparent missing links if URL variants differ.
+- **Saving Inaccessible Collections:** Links saved to collections you no longer have access to will not be visible.
+- **Using Demo Mode for Testing:** The demo environment is read-only and will explicitly block saving links.
+
+---
+
+## Practical Tips
+
+- Use descriptive names and tags to easily locate links after saving.
+- Validate URLs beforehand using simple online tools or browser address bar.
+- Regularly review your subscription limits to avoid hitting save ceilings.
+- Collaborate with collection owners to ensure proper sharing and permissions.
+
+---
+
+## Deep Dive: How Link Preservation Affects Link Display
+
+When you save a URL, Linkwarden initiates preservation tasks that store screenshots, PDFs, readable views, monolithic HTML archives, and preview images.
+
+- **If preservation succeeds**, these archives appear alongside the link, enhancing browsing and offline access.
+- **If preservation is pending or failed**, links may save but lack visible preserved content.
+- Special flags like `"unavailable"` mark failed archives.
+
+Administrators can trigger reprocessing or cleanup through bulk archival API endpoints or admin actions.
+
+---
+
+## How to Re-Process or Fix Missing Archived Content
+
+If links appear but archival previews or snapshots do not, authorized users can:
+
+- Use the bulk archive management tools (e.g., 'allAndRePreserve') to clear old archives and re-trigger preservation.
+- Investigate server logs to diagnose preservation task errors.
+- Ensure environment variables and system dependencies (like Headless Chrome or Monolith) are properly installed and configured.
+
+---
+
+## Troubleshooting Example: Archival Fails and 'Pending' or 'Unavailable' Status
+
+Sometimes after saving, fields like `pdf`, `image`, `monolith`, or `readable` in the database are set to 'pending' or later to 'unavailable' due to failure.
+
+- **Database Migration:** A recent migration resets all 'pending' preservation states to `null` to retry archival.
+- **Archival Worker:** A background worker service processes links asynchronously, updating records and generating archived files.
+- **Failure Handling:** If archival tasks exceed time limits or encounter errors, the link fields are marked 'unavailable', and preservation retries may be needed.
+
+---
+
+## Additional Resources
+
+- [Preserving Pages: Archive & Reader View](https://linkwarden/docs/guides/getting-started/preserving-and-reading-links) — Learn about how Linkwarden archives and presents saved links.
+- [Inviting Members and Setting Permissions](https://linkwarden/docs/guides/collaboration-and-sharing/inviting-collaborators) — Manage access to collections effectively.
+- [Troubleshooting & Common Setup Issues](https://linkwarden/docs/getting-started/initial-experience-validation/troubleshooting-common-issues) — Fix installation and environment problems.
+- [Bulk Operations Guide](https://linkwarden/docs/guides/advanced-tasks-and-best-practices/bulk-actions) — Manage links and preservation en masse.
+
+---
+
+## Summary
+
+Link saving, display, and preservation rely on multiple asynchronous systems and access controls. Confirm URL validity, user permissions, and subscription quotas first, then allow background tasks to complete. If content remains missing, investigate preservation status, and use administrative tools to retry archival. With these steps, you can ensure your saved links are securely stored and fully visible within your collections.
+
+---
+
+## Troubleshooting Checklist
+
+<AccordionGroup title="Troubleshooting Checklist">
+<Accordion title="Link Not Saving">
+- Check error messages during add link (invalid URL, duplicates, quota limits).
+- Verify collection accessibility and permissions.
+- Confirm environment is not in demo/read-only mode.
+</Accordion>
+<Accordion title="Link Missing After Save">
+- Allow time for background processing.
+- Confirm you have view permission for the collection.
+- Clear UI cache or try refreshing.
+</Accordion>
+<Accordion title="Preserved Content Not Showing">
+- Check archival statuses (pending, unavailable).
+- Review archival worker logs for errors.
+- Trigger manual re-archival or bulk reprocessing.
+</Accordion>
+</AccordionGroup>
+
+---
+
+## Contacting Support
+
+If issues persist despite following this FAQ, contact your system administrator or open a support ticket with logs and detailed problem descriptions. Include:
+
+- Link URLs affected
+- Screenshots of error messages
+- Timestamp of save attempts
+- User and collection IDs involved
+
+This information helps diagnose and resolve complex issues quickly.
+
+
+---
+
+*This page is part of the [Troubleshooting & Performance FAQ](https://linkwarden/docs/faq/troubleshooting-and-performance/missing-or-not-saving-links) and complements related guides on preservation, permissions, and API management.*
